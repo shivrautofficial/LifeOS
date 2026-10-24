@@ -1,0 +1,16 @@
+{
+  "name": "lifeos-wellness-database",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "LifeOS wellness, habits, and personal goals database module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "dexie": "^4.2.1"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.4"
+  }
+}

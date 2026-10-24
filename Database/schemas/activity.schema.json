@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LifeOS Activity Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "date", "activityType", "durationMinutes", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "date": { "type": "string", "format": "date" },
+    "activityType": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "durationMinutes": { "type": "integer", "minimum": 0, "maximum": 1440 },
+    "notes": { "type": "string", "maxLength": 1000 },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

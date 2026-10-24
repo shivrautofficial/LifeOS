@@ -1,0 +1,46 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "LifeOS Mood Entry",
+    "description": "A daily self-reported mood check-in.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "id",
+        "date",
+        "mood",
+        "createdAt",
+        "updatedAt"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "minLength": 1
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "mood": {
+            "type": "string",
+            "enum": [
+                "very_sad",
+                "sad",
+                "neutral",
+                "good",
+                "very_good"
+            ]
+        },
+        "note": {
+            "type": "string",
+            "maxLength": 1000
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+        }
+    }
+}

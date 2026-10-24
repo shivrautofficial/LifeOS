@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LifeOS Habit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "frequency", "createdAt", "isActive"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "description": { "type": "string", "maxLength": 500 },
+    "frequency": {
+      "type": "string",
+      "enum": ["daily", "weekly", "custom"]
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "isActive": { "type": "boolean" }
+  }
+}
