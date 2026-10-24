@@ -1,0 +1,31 @@
+<div class="page-container" id="goals-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Goals & Strategic OKRs</h1>
+      <p class="page-description">Define ambitious long-term objectives and track measurable milestone progress.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" id="btn-show-add-goal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        New Objective
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Goal Panel -->
+  <div id="add-goal-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
+    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Create Strategic Objective</div>
+    <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+      <input type="text" id="input-new-goal-title" class="form-input" placeholder="Objective name..." style="flex: 2; min-width: 200px;">
+      <input type="text" id="input-new-goal-category" class="form-input" placeholder="Category (e.g. Career, Health)" style="flex: 1; min-width: 120px;">
+      <input type="number" id="input-new-goal-progress" class="form-input" placeholder="Progress %" min="0" max="100" value="25" style="width: 100px;">
+      <button class="btn btn-primary" id="btn-submit-new-goal">Add Objective</button>
+      <button class="btn btn-secondary" id="btn-cancel-add-goal">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Goals Cards Grid -->
+  <div id="goals-list-page-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
+    <!-- Dynamically rendered -->
+  </div>
+</div>

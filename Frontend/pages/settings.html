@@ -1,0 +1,57 @@
+<div class="page-container" id="settings-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Settings & Preferences</h1>
+      <p class="page-description">Manage your LifeOS profile, profession persona, local storage, and data backup.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" id="btn-save-settings">Save Changes</button>
+    </div>
+  </div>
+
+  <div id="settings-content-area" style="display: flex; flex-direction: column; gap: var(--space-xl);">
+    <!-- Profile & Profession Preference Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">User Profile & Active Persona</h2>
+      </div>
+      <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label" for="setting-user-name">Display Name</label>
+            <input type="text" id="setting-user-name" class="form-input" value="Sarthak">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="setting-profession">Profession Persona</label>
+            <select id="setting-profession" class="form-select">
+              <option value="engineer" selected>Software Engineer</option>
+              <option value="student">Student & Academic</option>
+              <option value="founder">Founder & Executive</option>
+              <option value="creator">Creator & Designer</option>
+              <option value="freelancer">Freelancer & Consultant</option>
+              <option value="general">General / Life Balance</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Portability Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Local Persistence & Data Ownership</h2>
+      </div>
+      <div class="card-body">
+        <p style="margin-bottom: var(--space-md);">LifeOS operates completely client-side in your browser. No telemetry or server databases are used.</p>
+        <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+          <button class="btn btn-secondary" id="btn-export-backup">Export JSON Data</button>
+          <label class="btn btn-secondary" style="cursor: pointer;">
+            Import JSON Data
+            <input type="file" id="setting-file-import" accept=".json" style="display: none;">
+          </label>
+          <button class="btn btn-outline" id="btn-reset-storage" style="color: var(--color-error); border-color: var(--color-error);">Reset Storage</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

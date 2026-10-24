@@ -1,0 +1,135 @@
+<div class="page-container" id="dashboard-page">
+  <!-- Welcome Header Banner -->
+  <div class="welcome-banner">
+    <div>
+      <h1 class="welcome-title" id="dashboard-greeting">Welcome back, Sarthak 👋</h1>
+      <p class="welcome-subtitle">Here is your life overview for today. All systems and habits are active.</p>
+    </div>
+    <div class="page-actions">
+      <span class="badge badge-indigo" id="dashboard-persona-badge">Software Engineer</span>
+      <span class="badge badge-success">Online & Synced</span>
+    </div>
+  </div>
+
+  <!-- Metric Statistics Strip -->
+  <div class="stats-strip">
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-label">Active Tasks</span>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+      </div>
+      <div class="stat-value" id="stat-active-tasks">8</div>
+      <div class="stat-delta positive">↑ 2 due today</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-label">Habit Consistency</span>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        </div>
+      </div>
+      <div class="stat-value" id="stat-habit-rate">94%</div>
+      <div class="stat-delta positive">🔥 14-day streak</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-label">Goal Milestones</span>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+      </div>
+      <div class="stat-value" id="stat-active-goals">4 / 6</div>
+      <div class="stat-delta neutral">Q4 On Track</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card-top">
+        <span class="stat-label">Focus Time</span>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+      </div>
+      <div class="stat-value" id="stat-focus-time">2.5h</div>
+      <div class="stat-delta positive">Goal: 4.0h</div>
+    </div>
+  </div>
+
+  <!-- Dashboard Modular Widget Slots Grid -->
+  <div class="dashboard-grid">
+    <div class="col-span-8">
+      <div class="widget-slot" id="widget-today-tasks">
+        <div class="widget-slot-header">
+          <h2 class="widget-slot-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Today's Top Priorities
+          </h2>
+          <a href="#tasks" class="btn btn-sm btn-outline">View All Tasks</a>
+        </div>
+        <div id="dashboard-tasks-container">
+          <!-- Rendered by js/dashboard.js -->
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-4">
+      <div class="widget-slot" id="widget-habits-tracker">
+        <div class="widget-slot-header">
+          <h2 class="widget-slot-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Daily Habits
+          </h2>
+          <a href="#habits" class="btn btn-sm btn-outline">Habits</a>
+        </div>
+        <div id="dashboard-habits-container">
+          <!-- Rendered by js/dashboard.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Pomodoro Focus Timer Widget Slot (Col 4) -->
+    <div class="col-span-4">
+      <div class="widget-slot" id="widget-focus-timer">
+        <div class="widget-slot-header">
+          <h2 class="widget-slot-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Focus & Pomodoro
+          </h2>
+          <span class="badge badge-indigo" id="timer-session-count">Session 4</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-md) 0;">
+          <div style="font-size: 2.5rem; font-weight: 800; font-family: var(--font-family-mono); color: var(--color-midnight-navy); margin-bottom: var(--space-sm);" id="timer-digits">25:00</div>
+          <div style="display: flex; gap: var(--space-xs); margin-bottom: var(--space-md);">
+            <button class="btn btn-sm btn-outline active-mode" id="btn-timer-focus">25m</button>
+            <button class="btn btn-sm btn-outline" id="btn-timer-short">5m</button>
+            <button class="btn btn-sm btn-outline" id="btn-timer-long">15m</button>
+          </div>
+          <div style="display: flex; gap: var(--space-sm);">
+            <button class="btn btn-primary" id="btn-timer-toggle">Start Focus</button>
+            <button class="btn btn-secondary" id="btn-timer-reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Profession Workspace Slot (Col 8) -->
+    <div class="col-span-8">
+      <div class="widget-slot" id="widget-profession-workspace">
+        <div class="widget-slot-header">
+          <h2 class="widget-slot-title" id="prof-workspace-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Profession Telemetry
+          </h2>
+          <span class="badge badge-indigo" id="prof-workspace-badge">Active Workspace</span>
+        </div>
+        <div id="profession-workspace-content">
+          <!-- Dynamically populated based on active persona -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

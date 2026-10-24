@@ -1,0 +1,31 @@
+<div class="page-container" id="calendar-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Calendar & Time Blocking</h1>
+      <p class="page-description">Schedule deep focus sessions, deliverables, and calendar commitments.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" id="btn-show-add-event">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        Schedule Block
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Event Panel -->
+  <div id="add-event-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
+    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Schedule Calendar Block</div>
+    <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+      <input type="text" id="input-new-event-title" class="form-input" placeholder="Event title..." style="flex: 2; min-width: 200px;">
+      <input type="text" id="input-new-event-time" class="form-input" placeholder="Time (e.g. 10:00 AM - 11:30 AM)" style="flex: 1; min-width: 150px;">
+      <input type="text" id="input-new-event-date" class="form-input" placeholder="Date (e.g. Today, Tomorrow)" style="flex: 1; min-width: 120px;">
+      <button class="btn btn-primary" id="btn-submit-new-event">Save Block</button>
+      <button class="btn btn-secondary" id="btn-cancel-add-event">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Calendar Events List -->
+  <div id="calendar-events-container" style="display: flex; flex-direction: column; gap: var(--space-sm);">
+    <!-- Dynamically rendered -->
+  </div>
+</div>

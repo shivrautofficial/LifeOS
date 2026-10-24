@@ -1,0 +1,75 @@
+<div class="page-container" id="tasks-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Tasks & Priority Matrix</h1>
+      <p class="page-description">Organize, schedule, and execute your high-impact deliverables across workflow stages.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" id="btn-show-add-task">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        New Task
+      </button>
+    </div>
+  </div>
+
+  <!-- Quick Add Task Bar -->
+  <div id="add-task-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
+    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Create New Deliverable</div>
+    <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+      <input type="text" id="input-new-task-title" class="form-input" placeholder="Task title / description..." style="flex: 2; min-width: 200px;">
+      <select id="select-new-task-priority" class="form-select" style="flex: 1; min-width: 130px;">
+        <option value="urgent">Urgent</option>
+        <option value="high" selected>High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <select id="select-new-task-status" class="form-select" style="flex: 1; min-width: 130px;">
+        <option value="todo" selected>To Do</option>
+        <option value="in_progress">In Progress</option>
+        <option value="review">In Review</option>
+        <option value="done">Done</option>
+      </select>
+      <button class="btn btn-primary" id="btn-submit-new-task">Add</button>
+      <button class="btn btn-secondary" id="btn-cancel-add-task">Cancel</button>
+    </div>
+  </div>
+
+  <!-- 4-Column Kanban Pipeline -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-md);" id="kanban-columns-container">
+    <!-- To Do -->
+    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 8px; border-bottom: 2px solid var(--color-border);">
+        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase;">To Do</span>
+        <span class="nav-badge" id="count-todo">0</span>
+      </div>
+      <div class="kanban-cards-list" id="list-todo" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 2px; border-bottom: 2px solid var(--color-electric-indigo);">
+        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase; color: var(--color-electric-indigo);">In Progress</span>
+        <span class="nav-badge" id="count-in_progress" style="background: var(--color-electric-indigo); color: #fff;">0</span>
+      </div>
+      <div class="kanban-cards-list" id="list-in_progress" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <!-- In Review -->
+    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 2px; border-bottom: 2px solid var(--color-warning);">
+        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase; color: var(--color-warning);">In Review</span>
+        <span class="nav-badge" id="count-review">0</span>
+      </div>
+      <div class="kanban-cards-list" id="list-review" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <!-- Completed -->
+    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 2px; border-bottom: 2px solid var(--color-success);">
+        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase; color: var(--color-success);">Completed</span>
+        <span class="nav-badge" id="count-done" style="background: var(--color-success); color: #fff;">0</span>
+      </div>
+      <div class="kanban-cards-list" id="list-done" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+  </div>
+</div>

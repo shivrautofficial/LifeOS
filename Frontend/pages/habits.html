@@ -1,0 +1,29 @@
+<div class="page-container" id="habits-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Habit Engine & Daily Rituals</h1>
+      <p class="page-description">Compound small daily actions into lasting personal systems with streak telemetry.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-primary" id="btn-show-add-habit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        New Habit
+      </button>
+    </div>
+  </div>
+
+  <!-- Quick Add Habit Panel -->
+  <div id="add-habit-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
+    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Create New Daily Ritual</div>
+    <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+      <input type="text" id="input-new-habit-title" class="form-input" placeholder="Habit title (e.g. 30m Read, Gym, LeetCode)..." style="flex: 2; min-width: 200px;">
+      <button class="btn btn-primary" id="btn-submit-new-habit">Add Habit</button>
+      <button class="btn btn-secondary" id="btn-cancel-add-habit">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Habit Cards Container -->
+  <div id="habits-list-page-container" style="display: flex; flex-direction: column; gap: var(--space-md);">
+    <!-- Dynamically rendered -->
+  </div>
+</div>

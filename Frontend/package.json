@@ -1,0 +1,13 @@
+{
+  "name": "lifeos",
+  "version": "1.0.0",
+  "description": "LifeOS — One Life. One Dashboard.",
+  "scripts": {
+    "dev": "npx --yes serve . -p 3000",
+    "start": "npx --yes serve . -p 3000",
+    "serve": "npx --yes serve . -p 3000"
+  },
+  "keywords": ["lifeos", "dashboard", "productivity"],
+  "author": "Sarthak",
+  "license": "MIT"
+}
