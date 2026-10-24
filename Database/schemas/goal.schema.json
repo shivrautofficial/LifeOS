@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LifeOS Personal Goal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "currentProgress", "status", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 150 },
+    "description": { "type": "string", "maxLength": 1000 },
+    "targetValue": { "type": "number", "exclusiveMinimum": 0 },
+    "currentProgress": { "type": "number", "minimum": 0 },
+    "startDate": { "type": "string", "format": "date" },
+    "deadline": { "type": "string", "format": "date" },
+    "status": {
+      "type": "string",
+      "enum": ["not_started", "in_progress", "completed", "paused"]
+    },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

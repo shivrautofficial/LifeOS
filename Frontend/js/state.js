@@ -7,7 +7,7 @@ import { storage } from './storage.js';
 
 const INITIAL_STATE = {
   profile: {
-    name: 'Sarthak',
+    name: 'User',
     roleTitle: 'Software Engineer',
     profession: 'engineer',
     theme: 'light',
@@ -65,7 +65,14 @@ const INITIAL_STATE = {
 class StateStore {
   constructor() {
     const saved = storage.get('app_state', null);
+    if (saved && saved.profile && saved.profile.name === 'Sarthak') {
+      saved.profile.name = 'User';
+      storage.set('app_state', saved);
+    }
     this.state = saved ? { ...INITIAL_STATE, ...saved } : INITIAL_STATE;
+    if (this.state.profile && this.state.profile.name === 'Sarthak') {
+      this.state.profile.name = 'User';
+    }
     this.subscribers = new Set();
   }
 

@@ -8,6 +8,6 @@
     "serve": "node server.js"
   },
   "keywords": ["lifeos", "dashboard", "productivity"],
-  "author": "Xoders Group",
+  "author": "AuthorX",
   "license": "GNU General Public License v3.0"
 }

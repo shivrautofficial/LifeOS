@@ -1,0 +1,19 @@
+{
+  "name": "lifeos-workflow-and-middle-workers",
+  "version": "1.0.0",
+  "description": "LifeOS — Productivity & Academic Management MVP",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "lifeos",
+    "productivity",
+    "academic-tracker",
+    "task-manager",
+    "agenda"
+  ],
+  "author": "AuthorX",
+  "license": "MIT"
+}

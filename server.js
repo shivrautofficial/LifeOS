@@ -1,7 +1,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -26,11 +25,21 @@ const MIME_TYPES = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-// Locate public directory: either ./Frontend or ./
-const candidateFrontend = path.join(__dirname, 'Frontend');
-const PUBLIC_DIR = fs.existsSync(candidateFrontend) && fs.statSync(candidateFrontend).isDirectory()
-  ? candidateFrontend
-  : __dirname;
+// Locate public directory: either ./Frontend, ../Frontend, or ./
+const candidates = [
+  path.join(__dirname, 'Frontend'),
+  path.join(__dirname, '..', 'Frontend'),
+  path.join(process.cwd(), 'Frontend'),
+  __dirname
+];
+
+const PUBLIC_DIR = candidates.find(dir => {
+  try {
+    return fs.existsSync(dir) && fs.statSync(dir).isDirectory() && fs.existsSync(path.join(dir, 'index.html'));
+  } catch (e) {
+    return false;
+  }
+}) || (fs.existsSync(path.join(__dirname, 'Frontend')) ? path.join(__dirname, 'Frontend') : __dirname);
 
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -39,7 +48,7 @@ function startServer(port) {
   const server = http.createServer((req, res) => {
     // Enable CORS for local dev
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', '*');
 
     if (req.method === 'OPTIONS') {
@@ -48,14 +57,33 @@ function startServer(port) {
       return;
     }
 
+    const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    let pathname = decodeURIComponent(parsedUrl.pathname);
+
+    // Handle basic API endpoints
+    if (pathname.startsWith('/api/')) {
+      res.setHeader('Content-Type', 'application/json');
+      if (pathname === '/api/health' || pathname === '/api/status') {
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          status: 'ok',
+          service: 'LifeOS API',
+          version: '1.0.0',
+          uptime: process.uptime(),
+          timestamp: new Date().toISOString()
+        }));
+        return;
+      }
+      res.writeHead(404);
+      res.end(JSON.stringify({ error: 'Endpoint not found', path: pathname }));
+      return;
+    }
+
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.writeHead(405, { 'Content-Type': 'text/plain' });
       res.end('Method Not Allowed');
       return;
     }
-
-    const parsedUrl = url.parse(req.url);
-    let pathname = decodeURIComponent(parsedUrl.pathname);
 
     // Normalize and prevent directory traversal
     const safePath = path.normalize(pathname).replace(/^(\.\.[\/\\])+/, '');

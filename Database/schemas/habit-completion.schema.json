@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LifeOS Habit Completion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "habitId", "date", "completed"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "habitId": { "type": "string", "minLength": 1 },
+    "date": { "type": "string", "format": "date" },
+    "completed": { "type": "boolean" }
+  }
+}
