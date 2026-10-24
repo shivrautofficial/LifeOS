@@ -9,8 +9,12 @@ import { onboarding, PROFESSIONS } from './onboarding.js';
 import { sound } from './audio.js';
 import { syncBackgroundVideos } from './app.js';
 import { supabaseService } from './supabase.js';
+<<<<<<< HEAD
+import { dbSync } from './dbSync.js';
+=======
 import { authService } from './auth.js';
 import { authModal } from './authModal.js';
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 import { toast } from './toast.js';
 
 export const settingsModule = {
@@ -138,6 +142,26 @@ export const settingsModule = {
       }
     }
 
+<<<<<<< HEAD
+    // Database Engine Status
+    const serverDbBadge = document.getElementById('server-db-status-badge');
+    const dbTimestamp = document.getElementById('db-sync-timestamp');
+    const status = dbSync.getStatus();
+
+    if (serverDbBadge) {
+      if (status.serverDbConnected) {
+        serverDbBadge.textContent = 'Active & Connected';
+        serverDbBadge.className = 'badge badge-success';
+      } else {
+        serverDbBadge.textContent = 'Offline Fallback Active';
+        serverDbBadge.className = 'badge badge-warning';
+      }
+    }
+
+    if (dbTimestamp && status.lastSyncTime) {
+      dbTimestamp.textContent = `Last synced: ${new Date(status.lastSyncTime).toLocaleTimeString()}`;
+    }
+=======
     if (realtimeBadge) {
       if (supabaseService.realtimeChannel) {
         realtimeBadge.textContent = 'Real-time Active';
@@ -147,6 +171,7 @@ export const settingsModule = {
         realtimeBadge.className = 'badge badge-neutral';
       }
     }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
   },
 
   /**
@@ -587,6 +612,60 @@ export const settingsModule = {
             supabaseBadge.className = 'badge badge-neutral';
           }
           showFeedback('Supabase credentials removed. Running in offline/local-first mode.', 'info');
+        }
+      };
+    }
+
+    // Database sync controls
+    const btnForceDbSync = document.getElementById('btn-force-db-sync');
+    const btnReloadDbState = document.getElementById('btn-reload-db-state');
+    const dbTimestamp = document.getElementById('db-sync-timestamp');
+
+    if (btnForceDbSync) {
+      btnForceDbSync.onclick = async () => {
+        sound.playClick();
+        btnForceDbSync.disabled = true;
+        btnForceDbSync.textContent = 'Syncing...';
+        await dbSync.syncAll(state.get());
+        btnForceDbSync.disabled = false;
+        btnForceDbSync.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+            <path d="M16 21h5v-5"/>
+          </svg>
+          Sync Database Now
+        `;
+        sound.playComplete();
+        if (dbTimestamp) {
+          dbTimestamp.textContent = `Last synced: ${new Date().toLocaleTimeString()}`;
+        }
+        toast.success('Database synchronized successfully!');
+      };
+    }
+
+    if (btnReloadDbState) {
+      btnReloadDbState.onclick = async () => {
+        sound.playClick();
+        btnReloadDbState.disabled = true;
+        btnReloadDbState.textContent = 'Reloading...';
+        const res = await dbSync.loadFromDatabase();
+        btnReloadDbState.disabled = false;
+        btnReloadDbState.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/>
+          </svg>
+          Reload From Database
+        `;
+        if (res.success) {
+          sound.playComplete();
+          if (dbTimestamp) {
+            dbTimestamp.textContent = `Last synced: ${new Date().toLocaleTimeString()}`;
+          }
+          toast.success('State successfully reloaded from database!');
+        } else {
+          toast.info('Database offline; current local state preserved.');
         }
       };
     }

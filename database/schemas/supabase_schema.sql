@@ -123,9 +123,47 @@ CREATE TABLE IF NOT EXISTS public.notes (
     updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW())
 );
 
+<<<<<<< HEAD
+-- 5. Projects Table
+CREATE TABLE IF NOT EXISTS public.projects (
+    id TEXT PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    status TEXT DEFAULT 'Active',
+    deadline TEXT DEFAULT 'Ongoing',
+    progress INTEGER DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW()),
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- 6. Calendar Events Table
+CREATE TABLE IF NOT EXISTS public.calendar_events (
+    id TEXT PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    date TEXT NOT NULL,
+    time TEXT NOT NULL,
+    tag TEXT DEFAULT 'Deep Work',
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW()),
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- 7. Health Profile & Telemetry Table
+CREATE TABLE IF NOT EXISTS public.health_data (
+    id TEXT PRIMARY KEY, -- 'health_user' or user_id
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    profile JSONB DEFAULT '{}'::jsonb,
+    daily_logs JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW()),
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- 8. User State & Full Backup Sync Table
+=======
 -- ==============================================================================
 -- 8. User Backups Table (Full State Snapshots & Disaster Recovery)
 -- ==============================================================================
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 CREATE TABLE IF NOT EXISTS public.user_backups (
     id TEXT PRIMARY KEY, -- user_id as string
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -219,8 +257,37 @@ ALTER TABLE public.goals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.calendar_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.calendar_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.health_data ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_backups ENABLE ROW LEVEL SECURITY;
 
+<<<<<<< HEAD
+-- Allow public / anon read & write policies for standalone and single-user apps
+DROP POLICY IF EXISTS "Public access for tasks" ON public.tasks;
+CREATE POLICY "Public access for tasks" ON public.tasks FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for habits" ON public.habits;
+CREATE POLICY "Public access for habits" ON public.habits FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for goals" ON public.goals;
+CREATE POLICY "Public access for goals" ON public.goals FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for notes" ON public.notes;
+CREATE POLICY "Public access for notes" ON public.notes FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for projects" ON public.projects;
+CREATE POLICY "Public access for projects" ON public.projects FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for calendar_events" ON public.calendar_events;
+CREATE POLICY "Public access for calendar_events" ON public.calendar_events FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for health_data" ON public.health_data;
+CREATE POLICY "Public access for health_data" ON public.health_data FOR ALL USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public access for user_backups" ON public.user_backups;
+CREATE POLICY "Public access for user_backups" ON public.user_backups FOR ALL USING (true) WITH CHECK (true);
+=======
 -- 1. Profiles Policies
 DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
 CREATE POLICY "Users can view their own profile" ON public.profiles
@@ -357,6 +424,7 @@ CREATE POLICY "Users can update own backups" ON public.user_backups
 DROP POLICY IF EXISTS "Users can delete own backups" ON public.user_backups;
 CREATE POLICY "Users can delete own backups" ON public.user_backups
     FOR DELETE USING (auth.uid() = user_id OR auth.uid()::text = id);
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 -- ==============================================================================
 -- Realtime Subscriptions Configuration
@@ -364,6 +432,9 @@ CREATE POLICY "Users can delete own backups" ON public.user_backups
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+<<<<<<< HEAD
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.tasks, public.habits, public.goals, public.notes, public.projects, public.calendar_events, public.health_data;
+=======
     ALTER PUBLICATION supabase_realtime ADD TABLE 
       public.profiles,
       public.tasks,
@@ -372,6 +443,7 @@ BEGIN
       public.projects,
       public.calendar_events,
       public.notes;
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
   END IF;
 EXCEPTION WHEN OTHERS THEN
   NULL;

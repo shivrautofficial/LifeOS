@@ -8,8 +8,12 @@ import { router } from './router.js';
 import { onboarding } from './onboarding.js';
 import { sound } from './audio.js';
 import { supabaseService } from './supabase.js';
+<<<<<<< HEAD
+import { dbSync } from './dbSync.js';
+=======
 import { authService } from './auth.js';
 import { authModal } from './authModal.js';
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 import { toast } from './toast.js';
 
 window.toast = toast;
@@ -22,9 +26,19 @@ window.authModal = authModal;
 async function initLifeOS() {
   console.info('[LifeOS] Initializing One Life. One Dashboard...');
 
+<<<<<<< HEAD
+  // Initialize Unified Database Synchronization (Server DB + Supabase + IndexedDB)
+  dbSync.init().catch(err => console.warn('[LifeOS] Database sync init warning:', err));
+
+  // Initialize Supabase Cloud Database Client if configured
+  if (supabaseService.isConfigured()) {
+    supabaseService.init().catch(err => console.warn('[LifeOS] Supabase init warning:', err));
+  }
+=======
   // Initialize Authentication & Cloud Database Services
   authModal.init();
   authService.init().catch(err => console.warn('[LifeOS Auth] Init error:', err));
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
   const contentContainer = document.getElementById('app-content');
   const breadcrumbContainer = document.getElementById('header-breadcrumb');
@@ -222,9 +236,7 @@ function initQuickAddModal() {
         };
 
         state.setKey('todayTasks', [newTask, ...tasks]);
-        if (supabaseService.isConfigured()) {
-          supabaseService.syncTask(newTask).catch(err => console.warn(err));
-        }
+        dbSync.syncTask(newTask, 'upsert');
 
         sound.playComplete();
         toast.success(`Deliverable "${title}" added to active pipeline.`);
@@ -252,9 +264,13 @@ function initQuickAddModal() {
         };
 
         state.setKey('calendarEvents', [...events, newEvent]);
+<<<<<<< HEAD
+        dbSync.syncCalendarEvent(newEvent, 'upsert');
+=======
         if (supabaseService.isConfigured()) {
           supabaseService.syncEvent(newEvent).catch(err => console.warn(err));
         }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         sound.playComplete();
         toast.success(`Schedule block "${title}" added.`);
         if (titleInput) titleInput.value = '';
@@ -281,9 +297,13 @@ function initQuickAddModal() {
         };
 
         state.setKey('goals', [...goals, newGoal]);
+<<<<<<< HEAD
+        dbSync.syncGoal(newGoal, 'upsert');
+=======
         if (supabaseService.isConfigured()) {
           supabaseService.syncGoal(newGoal).catch(err => console.warn(err));
         }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         sound.playComplete();
         toast.success(`Milestone "${title}" established.`);
         if (titleInput) titleInput.value = '';
@@ -310,9 +330,13 @@ function initQuickAddModal() {
         };
 
         state.setKey('notes', [newNote, ...notes]);
+<<<<<<< HEAD
+        dbSync.syncNote(newNote, 'upsert');
+=======
         if (supabaseService.isConfigured()) {
           supabaseService.syncNote(newNote).catch(err => console.warn(err));
         }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         sound.playComplete();
         toast.success(`Note "${title}" saved to Second Brain.`);
         if (titleInput) titleInput.value = '';

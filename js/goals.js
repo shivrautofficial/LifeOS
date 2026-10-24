@@ -6,9 +6,13 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { widgets } from './widgets.js';
+<<<<<<< HEAD
+import { dbSync } from './dbSync.js';
+=======
 import { supabaseService } from './supabase.js';
 
 let unsubscribeState = null;
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 export const goalsModule = {
   /**
@@ -117,9 +121,13 @@ export const goalsModule = {
           goal.progress = Math.min(100, (goal.progress || 0) + 10);
           sound.playClick();
           state.setKey('goals', goals);
+<<<<<<< HEAD
+          dbSync.syncGoal(goal, 'upsert');
+=======
           if (supabaseService.isConfigured()) {
             supabaseService.syncGoal(goal).catch(err => console.warn(err));
           }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           this.renderGoals();
         }
       };
@@ -134,9 +142,13 @@ export const goalsModule = {
           goal.progress = (goal.progress || 0) >= 100 ? 0 : 100;
           sound.playComplete();
           state.setKey('goals', goals);
+<<<<<<< HEAD
+          dbSync.syncGoal(goal, 'upsert');
+=======
           if (supabaseService.isConfigured()) {
             supabaseService.syncGoal(goal).catch(err => console.warn(err));
           }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           this.renderGoals();
         }
       };
@@ -150,9 +162,13 @@ export const goalsModule = {
         const goals = (state.get('goals') || []).filter(g => g.id !== goalId);
         sound.playClick();
         state.setKey('goals', goals);
+<<<<<<< HEAD
+        dbSync.syncGoal({ id: goalId }, 'delete');
+=======
         if (supabaseService.isConfigured()) {
           supabaseService.deleteGoal(goalId).catch(err => console.warn(err));
         }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         this.renderGoals();
       };
     });
@@ -193,7 +209,10 @@ export const goalsModule = {
         const title = titleInput.value.trim();
         if (!title) return;
 
+<<<<<<< HEAD
+=======
         const goals = state.get('goals') || [];
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         const newGoal = {
           id: 'g-' + Date.now(),
           title,
@@ -205,9 +224,13 @@ export const goalsModule = {
         goals.push(newGoal);
         sound.playComplete();
         state.setKey('goals', goals);
+<<<<<<< HEAD
+        dbSync.syncGoal(newGoal, 'upsert');
+=======
         if (supabaseService.isConfigured()) {
           supabaseService.syncGoal(newGoal).catch(err => console.warn(err));
         }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';
