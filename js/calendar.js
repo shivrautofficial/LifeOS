@@ -5,6 +5,13 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+<<<<<<< HEAD
+import { dbSync } from './dbSync.js';
+=======
+import { supabaseService } from './supabase.js';
+
+let unsubscribeState = null;
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 export const calendarModule = {
   /**
@@ -14,6 +21,17 @@ export const calendarModule = {
     this.renderWeekStrip();
     this.renderEvents();
     this.bindEvents();
+    if (unsubscribeState) unsubscribeState();
+    unsubscribeState = state.subscribe(() => {
+      this.renderEvents();
+    });
+  },
+
+  destroy() {
+    if (unsubscribeState) {
+      unsubscribeState();
+      unsubscribeState = null;
+    }
   },
 
   /**
@@ -112,6 +130,13 @@ export const calendarModule = {
         const events = (state.get('calendarEvents') || []).filter(e => e.id !== id);
         sound.playClick();
         state.setKey('calendarEvents', events);
+<<<<<<< HEAD
+        dbSync.syncCalendarEvent({ id }, 'delete');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteEvent(id).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         this.renderEvents();
       };
     });
@@ -152,17 +177,34 @@ export const calendarModule = {
         const title = titleInput.value.trim();
         if (!title) return;
 
+<<<<<<< HEAD
+=======
         const events = state.get('calendarEvents') || [];
-        events.push({
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
+        const newEvent = {
           id: 'e-' + Date.now(),
           title,
           time: timeInput?.value.trim() || '10:00 AM - 11:30 AM',
           date: dateInput?.value.trim() || 'Today',
           tag: tagSelect?.value || 'Deep Work'
-        });
+        };
+<<<<<<< HEAD
 
+        const events = state.get('calendarEvents') || [];
+        events.push(newEvent);
+=======
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
+
+        events.push(newEvent);
         sound.playComplete();
         state.setKey('calendarEvents', events);
+<<<<<<< HEAD
+        dbSync.syncCalendarEvent(newEvent, 'upsert');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncEvent(newEvent).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

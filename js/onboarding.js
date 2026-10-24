@@ -5,6 +5,7 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+import { authService } from './auth.js';
 
 export const PROFESSIONS = {
   engineer: {
@@ -81,6 +82,12 @@ export const onboarding = {
       }
     });
 
+    authService.updateProfile({
+      profession: prof.id,
+      role_title: resolvedTitle,
+      onboarded: true
+    }).catch(err => console.warn('[Onboarding] Profile sync warning:', err));
+
     return prof;
   },
 
@@ -115,6 +122,7 @@ export const onboarding = {
         sound.playClick();
         const profile = state.get('profile') || {};
         state.setKey('profile', { ...profile, onboarded: true });
+        authService.updateProfile({ onboarded: true }).catch(err => console.warn(err));
         this.closeModal();
       };
     }
@@ -143,6 +151,13 @@ export const onboarding = {
             onboarded: true
           }
         });
+
+        authService.updateProfile({
+          display_name: name,
+          profession: selectedId,
+          role_title: finalRole,
+          onboarded: true
+        }).catch(err => console.warn('[Onboarding] Profile update error:', err));
 
         this.closeModal();
       };

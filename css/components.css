@@ -531,7 +531,8 @@ input[type="checkbox"]:focus-visible {
   transition: opacity var(--transition-normal);
 }
 
-.modal-backdrop.open {
+.modal-backdrop.open,
+.modal-backdrop.active {
   opacity: 1;
   pointer-events: auto;
 }
@@ -551,7 +552,8 @@ input[type="checkbox"]:focus-visible {
   transition: transform var(--transition-normal);
 }
 
-.modal-backdrop.open .modal-box {
+.modal-backdrop.open .modal-box,
+.modal-backdrop.active .modal-box {
   transform: scale(1) translateY(0);
 }
 
@@ -711,3 +713,112 @@ input[type="checkbox"]:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
 }
+
+/* ==========================================================================
+   11. Authentication, OAuth & Cloud Sync Component Styles
+   ========================================================================== */
+.auth-error-box {
+  display: none;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-meta);
+  margin-bottom: var(--space-4);
+  line-height: 1.4;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: var(--space-4) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.auth-divider:not(:empty)::before {
+  margin-right: var(--space-3);
+}
+
+.auth-divider:not(:empty)::after {
+  margin-left: var(--space-3);
+}
+
+.auth-social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.btn-oauth {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--button-height-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-main);
+  font-size: var(--font-size-meta);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-oauth:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+}
+
+.auth-otp-input {
+  font-family: var(--font-family-mono);
+  font-size: 1.5rem !important;
+  text-align: center;
+  letter-spacing: 0.35em;
+  padding: var(--space-3) !important;
+}
+
+.user-status-dot.online {
+  background-color: var(--color-success);
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+.user-status-dot.local {
+  background-color: var(--color-text-muted);
+}
+
+.sync-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-border);
+  transition: all var(--transition-normal);
+}
+
+.sync-indicator.active {
+  background-color: #10B981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  animation: pulse-sync 2s infinite;
+}
+
+@keyframes pulse-sync {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+

@@ -20,6 +20,15 @@
   <link rel="stylesheet" href="css/health.css">
   <link rel="stylesheet" href="css/notes.css">
   <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Supabase Client Engine (Global Browser Distribution) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.LIFEOS_CONFIG = Object.assign(window.LIFEOS_CONFIG || {}, {
+      supabaseUrl: 'https://datfcopzrkwffdecxoll.supabase.co',
+      supabaseAnonKey: 'sb_publishable_CKZkfZMH2uX4_eZfYZTzxw_1nE4Fryn'
+    });
+  </script>
 </head>
 <body>
 
@@ -164,10 +173,10 @@
 
       <!-- Sidebar User Profile Footer -->
       <div class="sidebar-footer">
-        <div class="user-profile-widget" onclick="location.hash='#settings'" title="Account & Persona Settings">
+        <div class="user-profile-widget" onclick="location.hash='#settings'" title="Account & Identity Settings">
           <div class="user-avatar-wrap">
             <div class="user-avatar" id="sidebar-user-avatar">U</div>
-            <span class="user-status-dot" title="System Active"></span>
+            <span class="user-status-dot" id="sidebar-sync-dot" title="Account Status"></span>
           </div>
           <div class="user-meta">
             <span class="user-name" id="sidebar-user-name">User</span>
@@ -206,6 +215,25 @@
         </div>
 
         <div class="header-right">
+<<<<<<< HEAD
+          <!-- Live Database Status Indicator -->
+          <div id="database-status-indicator" class="db-status-pill" title="Database Connected" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: var(--radius-full); background: rgba(16, 185, 129, 0.12); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25); cursor: pointer; user-select: none;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); display: inline-block;"></span>
+            <span>DB Connected</span>
+          </div>
+=======
+          <!-- Real-Time Cloud Sync Indicator -->
+          <div class="sync-indicator" id="sync-indicator" title="Cloud Real-Time Sync Active" aria-label="Sync Indicator"></div>
+
+          <!-- Header Auth Sign In Button (shown when unauthenticated) -->
+          <button class="btn btn-secondary btn-sm" id="btn-header-auth" style="display: none;" title="Sign in to LifeOS" aria-label="Sign in">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/>
+            </svg>
+            Sign In
+          </button>
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
+
           <!-- Ambient Focus Sound FX Toggle -->
           <button class="btn btn-secondary btn-sm" id="btn-audio-toggle" title="Toggle Focus Sound FX" aria-label="Toggle Sound FX">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
@@ -401,6 +429,273 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" id="btn-cancel-quick-add">Cancel</button>
         <button class="btn btn-primary" id="btn-submit-quick-add">Create Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complete Authentication, Phone OTP & Account Recovery Modal -->
+  <div class="modal-backdrop" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <div class="modal-box" style="max-width: 480px;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="brand-icon" style="width: 28px; height: 28px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h2 class="modal-title" id="auth-modal-title">LifeOS Identity</h2>
+        </div>
+        <button class="btn btn-icon btn-sm" id="btn-close-auth-modal" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: var(--space-5);">
+
+        <!-- VIEW 1: SIGN IN -->
+        <div id="auth-view-signin" class="auth-view">
+          <div style="margin-bottom: var(--space-4);">
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Welcome back to LifeOS</h3>
+            <p style="font-size: var(--font-size-meta); color: var(--color-text-secondary); margin: 0;">Sign in to restore your personalized tasks, routines, and calendar.</p>
+          </div>
+
+          <div class="auth-social-row">
+            <button type="button" class="btn-oauth" data-oauth-provider="google">
+              <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;" aria-hidden="true"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 10.8 0 12.5s.7 2.8 1.9 5.2l3.7-2.9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 17C3.7 20.7 7.5 24 12 24z"/></svg>
+              Google
+            </button>
+            <button type="button" class="btn-oauth" data-oauth-provider="apple">
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-.93.04-2.07.62-2.73 1.39-.58.67-1.09 1.75-.95 2.81 1.04.08 2.11-.5 2.74-1.27z"/></svg>
+              Apple
+            </button>
+          </div>
+
+          <div class="auth-divider">or with email</div>
+          <div class="auth-error-box" id="auth-error-signin"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-signin-email">Email Address</label>
+            <input type="email" id="auth-signin-email" class="form-input" placeholder="you@domain.com" autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label class="form-label" for="auth-signin-password" style="margin: 0;">Password</label>
+              <a href="#" style="font-size: var(--font-size-xs); color: var(--color-primary); text-decoration: none;" data-auth-switch="forgot">Forgot Password?</a>
+            </div>
+            <input type="password" id="auth-signin-password" class="form-input" placeholder="••••••••" autocomplete="current-password">
+          </div>
+
+          <button class="btn btn-primary" id="btn-submit-signin" style="width: 100%; margin-top: var(--space-3); height: var(--button-height-lg);">
+            Sign In to LifeOS
+          </button>
+
+          <div style="margin-top: var(--space-4); text-align: center; display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--font-size-meta); color: var(--color-text-secondary);">
+            <div>
+              <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 500;" data-auth-switch="phone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px; vertical-align: middle; margin-right: 4px;"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+                Sign in with Phone Number (SMS OTP)
+              </a>
+            </div>
+            <div>
+              Don't have an account? 
+              <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 600;" data-auth-switch="signup">Create an Account</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 2: SIGN UP -->
+        <div id="auth-view-signup" class="auth-view" style="display: none;">
+          <div style="margin-bottom: var(--space-4);">
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Create your LifeOS Account</h3>
+            <p style="font-size: var(--font-size-meta); color: var(--color-text-secondary); margin: 0;">One secure identity. All your goals, habits, and tasks everywhere.</p>
+          </div>
+
+          <div class="auth-social-row">
+            <button type="button" class="btn-oauth" data-oauth-provider="google">
+              <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;" aria-hidden="true"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 10.8 0 12.5s.7 2.8 1.9 5.2l3.7-2.9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 17C3.7 20.7 7.5 24 12 24z"/></svg>
+              Google
+            </button>
+            <button type="button" class="btn-oauth" data-oauth-provider="apple">
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-.93.04-2.07.62-2.73 1.39-.58.67-1.09 1.75-.95 2.81 1.04.08 2.11-.5 2.74-1.27z"/></svg>
+              Apple
+            </button>
+          </div>
+
+          <div class="auth-divider">or with email</div>
+          <div class="auth-error-box" id="auth-error-signup"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-signup-name">Preferred Name</label>
+            <input type="text" id="auth-signup-name" class="form-input" placeholder="e.g. Sarthak Chaudhary" autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-signup-email">Email Address</label>
+            <input type="email" id="auth-signup-email" class="form-input" placeholder="you@domain.com" autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-signup-password">Password</label>
+            <input type="password" id="auth-signup-password" class="form-input" placeholder="At least 6 characters" autocomplete="new-password">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-signup-profession">Primary Profession Persona</label>
+            <select id="auth-signup-profession" class="form-select">
+              <option value="engineer" selected>Software Engineer (Code & Architecture)</option>
+              <option value="student">Student & Academic (Courses & Research)</option>
+              <option value="founder">Founder & Executive (Growth & Strategy)</option>
+              <option value="creator">Creator & Designer (Media Pipeline)</option>
+              <option value="freelancer">Freelancer & Consultant (Deliverables)</option>
+              <option value="general">General / Life Balance (Habits & Health)</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" id="btn-submit-signup" style="width: 100%; margin-top: var(--space-3); height: var(--button-height-lg);">
+            Create LifeOS Account
+          </button>
+
+          <div style="margin-top: var(--space-4); text-align: center; font-size: var(--font-size-meta); color: var(--color-text-secondary);">
+            Already have an account? 
+            <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 600;" data-auth-switch="signin">Sign In</a>
+          </div>
+        </div>
+
+        <!-- VIEW 3: PHONE OTP REQUEST -->
+        <div id="auth-view-phone" class="auth-view" style="display: none;">
+          <div style="margin-bottom: var(--space-4);">
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Phone Number Authentication</h3>
+            <p style="font-size: var(--font-size-meta); color: var(--color-text-secondary); margin: 0;">Sign in or register using an SMS one-time verification code.</p>
+          </div>
+
+          <div class="auth-error-box" id="auth-error-phone"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-phone-number">Mobile Phone Number</label>
+            <div style="display: flex; gap: var(--space-2);">
+              <select id="auth-country-code" class="form-select" style="width: 120px; flex-shrink: 0;">
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+91" selected>🇮🇳 +91</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+81">🇯🇵 +81</option>
+                <option value="+86">🇨🇳 +86</option>
+                <option value="+65">🇸🇬 +65</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+55">🇧🇷 +55</option>
+              </select>
+              <input type="tel" id="auth-phone-number" class="form-input" placeholder="98765 43210" autocomplete="tel">
+            </div>
+            <span class="form-hint">Standard international SMS delivery rates may apply.</span>
+          </div>
+
+          <button class="btn btn-primary" id="btn-submit-phone" style="width: 100%; margin-top: var(--space-3); height: var(--button-height-lg);">
+            Send Verification Code
+          </button>
+
+          <div style="margin-top: var(--space-4); text-align: center; font-size: var(--font-size-meta); color: var(--color-text-secondary);">
+            <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 500;" data-auth-switch="signin">
+              &larr; Return to Email Sign In
+            </a>
+          </div>
+        </div>
+
+        <!-- VIEW 4: OTP VERIFICATION -->
+        <div id="auth-view-otp" class="auth-view" style="display: none;">
+          <div style="margin-bottom: var(--space-4); text-align: center;">
+            <div style="width: 44px; height: 44px; margin: 0 auto 12px auto; border-radius: var(--radius-full); background: var(--color-soft-indigo); color: var(--color-primary); display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Enter Verification Code</h3>
+            <p style="font-size: var(--font-size-meta); color: var(--color-text-secondary); margin: 0;">We sent a 6-digit code to <strong id="auth-otp-target-display" style="color: var(--color-text-main);"></strong></p>
+          </div>
+
+          <div class="auth-error-box" id="auth-error-otp"></div>
+
+          <div class="form-group" style="text-align: center;">
+            <input type="text" id="auth-otp-code" class="form-input auth-otp-input" placeholder="000000" maxlength="6" autocomplete="one-time-code">
+          </div>
+
+          <button class="btn btn-primary" id="btn-submit-otp" style="width: 100%; margin-top: var(--space-2); height: var(--button-height-lg);">
+            Verify & Enter LifeOS
+          </button>
+
+          <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-meta);">
+            <button class="btn btn-secondary btn-sm" id="btn-auth-resend-otp">Resend Code</button>
+            <a href="#" style="color: var(--color-text-secondary); text-decoration: none;" data-auth-switch="phone">Change Number</a>
+          </div>
+        </div>
+
+        <!-- VIEW 5: FORGOT PASSWORD -->
+        <div id="auth-view-forgot" class="auth-view" style="display: none;">
+          <div style="margin-bottom: var(--space-4);">
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Reset Account Password</h3>
+            <p style="font-size: var(--font-size-meta); color: var(--color-text-secondary); margin: 0;">Enter your account email to receive a secure recovery link.</p>
+          </div>
+
+          <div class="auth-error-box" id="auth-error-forgot"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-forgot-email">Account Email Address</label>
+            <input type="email" id="auth-forgot-email" class="form-input" placeholder="you@domain.com" autocomplete="email">
+          </div>
+
+          <button class="btn btn-primary" id="btn-submit-forgot" style="width: 100%; margin-top: var(--space-3); height: var(--button-height-lg);">
+            Send Recovery Link
+          </button>
+
+          <div style="margin-top: var(--space-4); text-align: center; font-size: var(--font-size-meta);">
+            <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 500;" data-auth-switch="signin">
+              &larr; Back to Sign In
+            </a>
+          </div>
+        </div>
+
+        <!-- VIEW 6: NEW PASSWORD (RECOVERY) -->
+        <div id="auth-view-reset" class="auth-view" style="display: none;">
+          <div style="margin-bottom: var(--space-4);">
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Set New Password</h3>
+            <p style="font-size: var(--font-size-meta); color: var(--color-text-secondary); margin: 0;">Enter your new password below to regain full workspace access.</p>
+          </div>
+
+          <div class="auth-error-box" id="auth-error-reset"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-reset-pass">New Password</label>
+            <input type="password" id="auth-reset-pass" class="form-input" placeholder="At least 6 characters" autocomplete="new-password">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-reset-pass-confirm">Confirm New Password</label>
+            <input type="password" id="auth-reset-pass-confirm" class="form-input" placeholder="••••••••" autocomplete="new-password">
+          </div>
+
+          <button class="btn btn-primary" id="btn-submit-reset" style="width: 100%; margin-top: var(--space-3); height: var(--button-height-lg);">
+            Save New Password
+          </button>
+        </div>
+
+        <!-- VIEW 7: EMAIL VERIFICATION NOTICE -->
+        <div id="auth-view-verify" class="auth-view" style="display: none; text-align: center;">
+          <div style="width: 52px; height: 52px; margin: 0 auto 16px auto; border-radius: var(--radius-full); background: var(--color-success-bg); color: var(--color-success); display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px;"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><polyline points="22,6 12,13 2,6"/><circle cx="18" cy="18" r="3"/><polyline points="17 18 18 19 20 17"/></svg>
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--color-text-main); margin-bottom: 8px;">Check your Email</h3>
+          <p style="font-size: var(--font-size-body); color: var(--color-text-secondary); line-height: 1.5; margin-bottom: var(--space-4);">
+            A verification link was dispatched to <strong id="auth-verify-target-email" style="color: var(--color-text-main);"></strong>.<br>
+            Please check your inbox (and spam folder) to activate your account.
+          </p>
+          <div style="display: flex; gap: var(--space-3); justify-content: center;">
+            <button class="btn btn-secondary" id="btn-auth-resend-verify">Resend Email</button>
+            <button class="btn btn-primary" data-auth-switch="signin">Back to Sign In</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

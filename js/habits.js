@@ -5,6 +5,13 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+<<<<<<< HEAD
+import { dbSync } from './dbSync.js';
+=======
+import { supabaseService } from './supabase.js';
+
+let unsubscribeState = null;
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 export const habitsModule = {
   /**
@@ -13,6 +20,17 @@ export const habitsModule = {
   init() {
     this.renderHabits();
     this.bindEvents();
+    if (unsubscribeState) unsubscribeState();
+    unsubscribeState = state.subscribe(() => {
+      this.renderHabits();
+    });
+  },
+
+  destroy() {
+    if (unsubscribeState) {
+      unsubscribeState();
+      unsubscribeState = null;
+    }
   },
 
   /**
@@ -125,6 +143,13 @@ export const habitsModule = {
 
           sound.playComplete();
           state.setKey('todayHabits', habits);
+<<<<<<< HEAD
+          dbSync.syncHabit(habit, 'upsert');
+=======
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncHabit(habit).catch(err => console.warn(err));
+          }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           this.renderHabits();
         }
       };
@@ -136,6 +161,13 @@ export const habitsModule = {
         const habits = (state.get('todayHabits') || []).filter(h => h.id !== habitId);
         sound.playClick();
         state.setKey('todayHabits', habits);
+<<<<<<< HEAD
+        dbSync.syncHabit({ id: habitId }, 'delete');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteHabit(habitId).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         this.renderHabits();
       };
     });
@@ -185,6 +217,13 @@ export const habitsModule = {
         habits.push(newHabit);
         sound.playComplete();
         state.setKey('todayHabits', habits);
+<<<<<<< HEAD
+        dbSync.syncHabit(newHabit, 'upsert');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncHabit(newHabit).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

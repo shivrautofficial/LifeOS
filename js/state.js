@@ -66,6 +66,7 @@ const INITIAL_STATE = {
 
 class StateStore {
   constructor() {
+    this.activeUserId = null;
     const saved = storage.get('app_state', null);
     if (saved && saved.profile && saved.profile.name === 'Sarthak') {
       saved.profile.name = 'User';
@@ -76,6 +77,42 @@ class StateStore {
       this.state.profile.name = 'User';
     }
     this.subscribers = new Set();
+  }
+
+  /**
+   * Set the active user ID for user-scoped storage isolation
+   * @param {string|null} userId
+   */
+  setActiveUser(userId) {
+    this.activeUserId = userId;
+    if (userId) {
+      const userCached = storage.get(`user_${userId}_state`, null);
+      if (userCached) {
+        this.state = { ...INITIAL_STATE, ...userCached };
+      } else {
+        // Fresh state for new authenticated user
+        this.state = {
+          ...INITIAL_STATE,
+          todayTasks: [],
+          todayHabits: [],
+          goals: [],
+          projects: [],
+          calendarEvents: [],
+          notes: []
+        };
+      }
+    } else {
+      const guestCached = storage.get('app_state', null);
+      this.state = guestCached ? { ...INITIAL_STATE, ...guestCached } : { ...INITIAL_STATE };
+    }
+    this.notify();
+  }
+
+  /**
+   * Get storage key based on active user
+   */
+  getStorageKey() {
+    return this.activeUserId ? `user_${this.activeUserId}_state` : 'app_state';
   }
 
   /**
@@ -93,7 +130,7 @@ class StateStore {
    */
   set(partialState) {
     this.state = { ...this.state, ...partialState };
-    storage.set('app_state', this.state);
+    storage.set(this.getStorageKey(), this.state);
     this.notify();
   }
 
@@ -104,7 +141,7 @@ class StateStore {
    */
   setKey(key, value) {
     this.state[key] = value;
-    storage.set('app_state', this.state);
+    storage.set(this.getStorageKey(), this.state);
     this.notify();
   }
 
@@ -135,6 +172,7 @@ class StateStore {
    * Reset state to baseline initial state
    */
   reset() {
+    this.activeUserId = null;
     this.state = { ...INITIAL_STATE };
     storage.set('app_state', this.state);
     this.notify();
