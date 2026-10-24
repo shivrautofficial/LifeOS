@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "LifeOS — One Life. One Dashboard.",
   "scripts": {
-    "dev": "npx --yes serve . -p 3000",
-    "start": "npx --yes serve . -p 3000",
-    "serve": "npx --yes serve . -p 3000"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "node server.js"
   },
   "keywords": ["lifeos", "dashboard", "productivity"],
-  "author": "Sarthak",
-  "license": "MIT"
+  "author": "Xoders Group",
+  "license": "GNU General Public License v3.0"
 }

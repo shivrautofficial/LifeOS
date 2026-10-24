@@ -1,0 +1,14 @@
+{
+  "name": "lifeos",
+  "version": "1.0.0",
+  "description": "LifeOS — A Unified, Privacy-First Personal Life Management System",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": ["lifeos", "dashboard", "productivity"],
+  "author": "Sarthak",
+  "license": "MIT"
+}
+
