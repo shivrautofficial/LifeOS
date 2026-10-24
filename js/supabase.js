@@ -18,19 +18,19 @@ class SupabaseService {
   }
 
   /**
-   * Load credentials from storage, window.LIFEOS_CONFIG, or /api/config
+   * Load credentials from window.LIFEOS_CONFIG, storage, or /api/config
    */
   getCredentials() {
+    if (window.LIFEOS_CONFIG?.supabaseUrl && (window.LIFEOS_CONFIG?.supabaseAnonKey || window.LIFEOS_CONFIG?.supabasePublishableKey)) {
+      return {
+        url: window.LIFEOS_CONFIG.supabaseUrl.trim(),
+        key: (window.LIFEOS_CONFIG.supabaseAnonKey || window.LIFEOS_CONFIG.supabasePublishableKey).trim()
+      };
+    }
+
     const saved = storage.get('supabase_config', null);
     if (saved && saved.url && saved.key) {
       return { url: saved.url.trim(), key: saved.key.trim() };
-    }
-
-    if (window.LIFEOS_CONFIG?.supabaseUrl && window.LIFEOS_CONFIG?.supabaseAnonKey) {
-      return {
-        url: window.LIFEOS_CONFIG.supabaseUrl.trim(),
-        key: window.LIFEOS_CONFIG.supabaseAnonKey.trim()
-      };
     }
 
     return { url: '', key: '' };
@@ -60,7 +60,27 @@ class SupabaseService {
    * @returns {Promise<boolean>}
    */
   async init() {
-    const { url, key } = this.getCredentials();
+    let { url, key } = this.getCredentials();
+
+    if (!url || !key) {
+      try {
+        const res = await fetch('/api/config');
+        if (res.ok) {
+          const cfg = await res.json();
+          if (cfg.supabaseUrl && (cfg.supabaseAnonKey || cfg.supabasePublishableKey)) {
+            url = cfg.supabaseUrl.trim();
+            key = (cfg.supabaseAnonKey || cfg.supabasePublishableKey).trim();
+            window.LIFEOS_CONFIG = Object.assign(window.LIFEOS_CONFIG || {}, {
+              supabaseUrl: url,
+              supabaseAnonKey: key
+            });
+          }
+        }
+      } catch (e) {
+        // standalone or offline
+      }
+    }
+
     this.url = url;
     this.key = key;
 
