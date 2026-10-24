@@ -466,6 +466,9 @@ export const dashboardModule = {
           task.done = !task.done;
           task.status = task.done ? 'done' : 'todo';
           state.setKey('todayTasks', [...allTasks]);
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncTask(task).catch(err => console.warn(err));
+          }
           sound.playComplete();
           toast.success(task.done ? 'Deliverable completed!' : 'Deliverable reopened');
           this.renderMetrics();
@@ -509,6 +512,9 @@ export const dashboardModule = {
             sound.playClick();
           }
           state.setKey('todayHabits', [...allHabits]);
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncHabit(habit).catch(err => console.warn(err));
+          }
           this.renderMetrics();
           this.renderHabits();
           this.renderActionableInsights();

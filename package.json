@@ -1,6 +1,7 @@
 {
   "name": "lifeos",
   "version": "1.0.0",
+  "type": "module",
   "description": "LifeOS — One Life. One Dashboard.",
   "main": "server/server.js",
   "scripts": {

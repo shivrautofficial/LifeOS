@@ -6,6 +6,9 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { widgets } from './widgets.js';
+import { supabaseService } from './supabase.js';
+
+let unsubscribeState = null;
 
 export const goalsModule = {
   /**
@@ -14,6 +17,17 @@ export const goalsModule = {
   init() {
     this.renderGoals();
     this.bindEvents();
+    if (unsubscribeState) unsubscribeState();
+    unsubscribeState = state.subscribe(() => {
+      this.renderGoals();
+    });
+  },
+
+  destroy() {
+    if (unsubscribeState) {
+      unsubscribeState();
+      unsubscribeState = null;
+    }
   },
 
   /**
@@ -103,6 +117,9 @@ export const goalsModule = {
           goal.progress = Math.min(100, (goal.progress || 0) + 10);
           sound.playClick();
           state.setKey('goals', goals);
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncGoal(goal).catch(err => console.warn(err));
+          }
           this.renderGoals();
         }
       };
@@ -117,6 +134,9 @@ export const goalsModule = {
           goal.progress = (goal.progress || 0) >= 100 ? 0 : 100;
           sound.playComplete();
           state.setKey('goals', goals);
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncGoal(goal).catch(err => console.warn(err));
+          }
           this.renderGoals();
         }
       };
@@ -130,6 +150,9 @@ export const goalsModule = {
         const goals = (state.get('goals') || []).filter(g => g.id !== goalId);
         sound.playClick();
         state.setKey('goals', goals);
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteGoal(goalId).catch(err => console.warn(err));
+        }
         this.renderGoals();
       };
     });
@@ -171,16 +194,20 @@ export const goalsModule = {
         if (!title) return;
 
         const goals = state.get('goals') || [];
-        goals.push({
+        const newGoal = {
           id: 'g-' + Date.now(),
           title,
           category: catInput.value.trim() || 'Focus',
           targetDate: dateInput?.value.trim() || 'Q4 2026',
           progress: parseInt(progInput.value, 10) || 0
-        });
+        };
 
+        goals.push(newGoal);
         sound.playComplete();
         state.setKey('goals', goals);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncGoal(newGoal).catch(err => console.warn(err));
+        }
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

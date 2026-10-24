@@ -1,6 +1,10 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -26,6 +30,32 @@ const MIME_TYPES = {
   '.webm': 'video/webm',
   '.txt': 'text/plain; charset=utf-8',
 };
+
+// Attempt to load .env file from project root
+try {
+  const envPath = path.join(path.join(__dirname, '..'), '.env');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const eqIdx = trimmed.indexOf('=');
+        if (eqIdx !== -1) {
+          const key = trimmed.slice(0, eqIdx).trim();
+          let val = trimmed.slice(eqIdx + 1).trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1, -1);
+          }
+          if (!process.env[key]) {
+            process.env[key] = val;
+          }
+        }
+      }
+    });
+  }
+} catch (e) {
+  // Ignore env loading errors
+}
 
 // Locate public directory: parent project root, ./public, or cwd
 const candidates = [
@@ -77,6 +107,14 @@ function startServer(port) {
           },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
+        }));
+        return;
+      }
+      if (pathname === '/api/config') {
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          supabaseUrl: process.env.SUPABASE_URL || '',
+          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || ''
         }));
         return;
       }

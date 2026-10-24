@@ -5,6 +5,9 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+import { supabaseService } from './supabase.js';
+
+let unsubscribeState = null;
 
 export const habitsModule = {
   /**
@@ -13,6 +16,17 @@ export const habitsModule = {
   init() {
     this.renderHabits();
     this.bindEvents();
+    if (unsubscribeState) unsubscribeState();
+    unsubscribeState = state.subscribe(() => {
+      this.renderHabits();
+    });
+  },
+
+  destroy() {
+    if (unsubscribeState) {
+      unsubscribeState();
+      unsubscribeState = null;
+    }
   },
 
   /**
@@ -125,6 +139,9 @@ export const habitsModule = {
 
           sound.playComplete();
           state.setKey('todayHabits', habits);
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncHabit(habit).catch(err => console.warn(err));
+          }
           this.renderHabits();
         }
       };
@@ -136,6 +153,9 @@ export const habitsModule = {
         const habits = (state.get('todayHabits') || []).filter(h => h.id !== habitId);
         sound.playClick();
         state.setKey('todayHabits', habits);
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteHabit(habitId).catch(err => console.warn(err));
+        }
         this.renderHabits();
       };
     });
@@ -185,6 +205,9 @@ export const habitsModule = {
         habits.push(newHabit);
         sound.playComplete();
         state.setKey('todayHabits', habits);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncHabit(newHabit).catch(err => console.warn(err));
+        }
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

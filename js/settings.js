@@ -1,6 +1,6 @@
 /* ==========================================================================
-   LifeOS Settings Module
-   User Preferences, Profession Persona, Appearance & Data Portability
+   LifeOS Settings & Account Management Module
+   User Profile, Verified Channels, Security, Cloud Sync & Data Ownership
    ========================================================================== */
 
 import { state } from './state.js';
@@ -9,6 +9,8 @@ import { onboarding, PROFESSIONS } from './onboarding.js';
 import { sound } from './audio.js';
 import { syncBackgroundVideos } from './app.js';
 import { supabaseService } from './supabase.js';
+import { authService } from './auth.js';
+import { authModal } from './authModal.js';
 import { toast } from './toast.js';
 
 export const settingsModule = {
@@ -21,32 +23,92 @@ export const settingsModule = {
   },
 
   /**
-   * Pre-fill inputs with current state
+   * Pre-fill inputs with current state and authentication profile
    */
   populateCurrentValues() {
-    const profile = state.get('profile') || {};
+    const profile = authService.getProfile() || state.get('profile') || {};
+    const user = authService.getUser();
+
+    // Account Identity
+    const avatarEl = document.getElementById('settings-user-avatar');
+    const accountIdEl = document.getElementById('settings-account-id-label');
+    const authStatusBadge = document.getElementById('settings-auth-status-badge');
+    const btnOpenAuth = document.getElementById('btn-settings-open-auth');
+
     const nameInput = document.getElementById('setting-user-name');
+    const usernameInput = document.getElementById('setting-username');
     const professionSelect = document.getElementById('setting-profession');
     const customRoleWrap = document.getElementById('setting-custom-role-wrap');
     const customRoleInput = document.getElementById('setting-custom-role');
+    const timezoneSelect = document.getElementById('setting-timezone');
+    const avatarInput = document.getElementById('setting-avatar-url');
+
+    const emailDisplay = document.getElementById('settings-email-display');
+    const emailBadge = document.getElementById('settings-email-status-badge');
+    const phoneDisplay = document.getElementById('settings-phone-display');
+    const phoneBadge = document.getElementById('settings-phone-status-badge');
+
+    // Populate user profile
+    const displayName = profile.display_name || profile.name || user?.email?.split('@')[0] || 'User';
+    if (nameInput) nameInput.value = displayName;
+    if (usernameInput) usernameInput.value = profile.username || '';
+    if (avatarEl) avatarEl.textContent = displayName.charAt(0).toUpperCase();
+
+    if (professionSelect) {
+      professionSelect.value = profile.profession || 'engineer';
+      if (customRoleWrap) {
+        customRoleWrap.style.display = (profile.profession === 'custom') ? 'block' : 'none';
+      }
+    }
+    if (customRoleInput) {
+      customRoleInput.value = profile.role_title || profile.roleTitle || 'Software Engineer';
+    }
+    if (timezoneSelect && profile.timezone) {
+      timezoneSelect.value = profile.timezone;
+    }
+    if (avatarInput && profile.avatar_url) {
+      avatarInput.value = profile.avatar_url;
+    }
+
+    // Populate auth status
+    if (user) {
+      if (accountIdEl) accountIdEl.textContent = `User ID: ${user.id.slice(0, 8)}...${user.id.slice(-4)}`;
+      if (authStatusBadge) {
+        authStatusBadge.textContent = 'Authenticated (Cloud)';
+        authStatusBadge.className = 'badge badge-success';
+      }
+      if (btnOpenAuth) btnOpenAuth.style.display = 'none';
+
+      // Verified Email Status
+      if (emailDisplay) emailDisplay.textContent = user.email || 'None';
+      if (emailBadge) {
+        const isEmailVerified = Boolean(user.email_confirmed_at || user.confirmed_at);
+        emailBadge.textContent = isEmailVerified ? 'Verified' : 'Pending Verification';
+        emailBadge.className = isEmailVerified ? 'badge badge-success' : 'badge badge-warning';
+      }
+
+      // Verified Phone Status
+      if (phoneDisplay) phoneDisplay.textContent = user.phone || 'None';
+      if (phoneBadge) {
+        const isPhoneVerified = Boolean(user.phone_confirmed_at);
+        phoneBadge.textContent = isPhoneVerified ? 'Verified' : (user.phone ? 'Pending' : 'Not Linked');
+        phoneBadge.className = isPhoneVerified ? 'badge badge-success' : 'badge badge-neutral';
+      }
+    } else {
+      if (accountIdEl) accountIdEl.textContent = 'Local Guest Session • Unauthenticated';
+      if (authStatusBadge) {
+        authStatusBadge.textContent = 'Local Mode';
+        authStatusBadge.className = 'badge badge-neutral';
+      }
+      if (btnOpenAuth) btnOpenAuth.style.display = 'inline-flex';
+      if (emailDisplay) emailDisplay.textContent = 'Not logged in';
+      if (phoneDisplay) phoneDisplay.textContent = 'Not logged in';
+    }
+
+    // Appearance Theme buttons
     const themeLightBtn = document.getElementById('setting-theme-light');
     const themeDarkBtn = document.getElementById('setting-theme-dark');
-
-    if (nameInput && profile.name) {
-      nameInput.value = profile.name;
-    }
-
-    if (professionSelect && profile.profession) {
-      professionSelect.value = profile.profession;
-      if (customRoleWrap) {
-        customRoleWrap.style.display = profile.profession === 'custom' ? 'block' : 'none';
-      }
-      if (customRoleInput && profile.roleTitle) {
-        customRoleInput.value = profile.roleTitle;
-      }
-    }
-
-    const currentTheme = profile.theme || document.documentElement.getAttribute('data-theme') || 'light';
+    const currentTheme = profile.theme || document.documentElement.getAttribute('data-theme') || 'dark';
     if (themeLightBtn && themeDarkBtn) {
       themeLightBtn.classList.toggle('active', currentTheme === 'light');
       themeDarkBtn.classList.toggle('active', currentTheme === 'dark');
@@ -56,14 +118,12 @@ export const settingsModule = {
     const supabaseUrlInput = document.getElementById('setting-supabase-url');
     const supabaseKeyInput = document.getElementById('setting-supabase-key');
     const supabaseBadge = document.getElementById('supabase-status-badge');
+    const realtimeBadge = document.getElementById('supabase-realtime-badge');
     const creds = supabaseService.getCredentials();
 
-    if (supabaseUrlInput && creds.url) {
-      supabaseUrlInput.value = creds.url;
-    }
-    if (supabaseKeyInput && creds.key) {
-      supabaseKeyInput.value = creds.key;
-    }
+    if (supabaseUrlInput && creds.url) supabaseUrlInput.value = creds.url;
+    if (supabaseKeyInput && creds.key) supabaseKeyInput.value = creds.key;
+
     if (supabaseBadge) {
       if (supabaseService.isConfigured()) {
         supabaseBadge.textContent = 'Configured';
@@ -73,17 +133,35 @@ export const settingsModule = {
         supabaseBadge.className = 'badge badge-neutral';
       }
     }
+
+    if (realtimeBadge) {
+      if (supabaseService.realtimeChannel) {
+        realtimeBadge.textContent = 'Real-time Active';
+        realtimeBadge.className = 'badge badge-success';
+      } else {
+        realtimeBadge.textContent = 'Real-time Off';
+        realtimeBadge.className = 'badge badge-neutral';
+      }
+    }
   },
 
   /**
-   * Bind settings actions
+   * Bind settings actions & events
    */
   bindEvents() {
     const btnSave = document.getElementById('btn-save-settings');
     const nameInput = document.getElementById('setting-user-name');
+    const usernameInput = document.getElementById('setting-username');
     const professionSelect = document.getElementById('setting-profession');
     const customRoleWrap = document.getElementById('setting-custom-role-wrap');
     const customRoleInput = document.getElementById('setting-custom-role');
+    const timezoneSelect = document.getElementById('setting-timezone');
+    const avatarInput = document.getElementById('setting-avatar-url');
+
+    const btnOpenAuth = document.getElementById('btn-settings-open-auth');
+    const btnUpdatePassword = document.getElementById('btn-update-password');
+    const btnSignoutCurrent = document.getElementById('btn-signout-current');
+    const btnSignoutAll = document.getElementById('btn-signout-all');
 
     const themeLightBtn = document.getElementById('setting-theme-light');
     const themeDarkBtn = document.getElementById('setting-theme-dark');
@@ -91,7 +169,8 @@ export const settingsModule = {
 
     const btnExport = document.getElementById('btn-export-backup');
     const fileImport = document.getElementById('setting-file-import');
-    const btnReset = document.getElementById('btn-reset-storage');
+    const btnResetStorage = document.getElementById('btn-reset-storage');
+    const btnDeleteAccount = document.getElementById('btn-delete-account');
 
     // Toggle custom role visibility
     if (professionSelect && customRoleWrap) {
@@ -100,38 +179,114 @@ export const settingsModule = {
       };
     }
 
-    // Save Settings
+    // Save Profile & Identity
     if (btnSave && nameInput && professionSelect) {
-      btnSave.onclick = () => {
-        sound.playComplete();
+      btnSave.onclick = async () => {
+        sound.playClick();
+        btnSave.disabled = true;
+        btnSave.textContent = 'Saving...';
+
         const newName = nameInput.value.trim() || 'User';
+        const newUsername = usernameInput?.value.trim().toLowerCase() || '';
         const newProfessionKey = professionSelect.value;
         const customTitle = customRoleInput?.value.trim() || '';
         const prof = PROFESSIONS[newProfessionKey] || PROFESSIONS.general;
         const finalRole = (newProfessionKey === 'custom' && customTitle) ? customTitle : prof.title;
+        const timezone = timezoneSelect?.value || 'UTC';
+        const avatarUrl = avatarInput?.value.trim() || null;
 
-        state.set({
-          profile: {
-            ...state.get('profile'),
-            name: newName,
-            profession: prof.id,
-            roleTitle: finalRole,
-            onboarded: true
-          }
-        });
+        const profileData = {
+          display_name: newName,
+          username: newUsername || undefined,
+          profession: prof.id,
+          role_title: finalRole,
+          timezone,
+          avatar_url: avatarUrl,
+          onboarded: true
+        };
 
-        toast.success('Settings saved successfully!');
+        const res = await authService.updateProfile(profileData);
+        btnSave.disabled = false;
+        btnSave.textContent = 'Save Profile';
+
+        if (res.success) {
+          sound.playComplete();
+          toast.success('Profile and preferences updated successfully!');
+          this.populateCurrentValues();
+        } else {
+          toast.error(res.error || 'Failed to update profile.');
+        }
       };
     }
 
-    // Theme Switchers inside Settings
+    // Open Auth Modal
+    if (btnOpenAuth) {
+      btnOpenAuth.onclick = () => {
+        authModal.open('signin');
+      };
+    }
+
+    // Update Password
+    if (btnUpdatePassword) {
+      btnUpdatePassword.onclick = async () => {
+        const p1 = document.getElementById('setting-new-password')?.value;
+        const p2 = document.getElementById('setting-confirm-password')?.value;
+
+        if (!p1 || p1.length < 6) {
+          toast.warning('Password must be at least 6 characters long.');
+          return;
+        }
+
+        if (p1 !== p2) {
+          toast.warning('New passwords do not match.');
+          return;
+        }
+
+        btnUpdatePassword.disabled = true;
+        btnUpdatePassword.textContent = 'Updating...';
+
+        const res = await authService.updatePassword(p1);
+        btnUpdatePassword.disabled = false;
+        btnUpdatePassword.textContent = 'Update Password';
+
+        if (res.success) {
+          sound.playComplete();
+          toast.success('Your password has been changed successfully.');
+          document.getElementById('setting-new-password').value = '';
+          document.getElementById('setting-confirm-password').value = '';
+        } else {
+          toast.error(res.error || 'Could not update password. Please re-authenticate.');
+        }
+      };
+    }
+
+    // Sign Out Current Device
+    if (btnSignoutCurrent) {
+      btnSignoutCurrent.onclick = async () => {
+        if (confirm('Sign out from this device? Your saved cloud data will remain safe and sound.')) {
+          sound.playClick();
+          await authService.signOut({ scope: 'local' });
+          this.populateCurrentValues();
+        }
+      };
+    }
+
+    // Sign Out All Devices
+    if (btnSignoutAll) {
+      btnSignoutAll.onclick = async () => {
+        if (confirm('Sign out from all devices? This will invalidate all active sessions across phones and laptops.')) {
+          sound.playClick();
+          await authService.signOut({ scope: 'global' });
+          this.populateCurrentValues();
+        }
+      };
+    }
+
+    // Theme Switchers
     const applyThemeSetting = (theme) => {
       sound.playClick();
       document.documentElement.setAttribute('data-theme', theme);
-      state.setKey('profile', {
-        ...state.get('profile'),
-        theme
-      });
+      authService.updateProfile({ theme });
       if (themeLightBtn && themeDarkBtn) {
         themeLightBtn.classList.toggle('active', theme === 'light');
         themeDarkBtn.classList.toggle('active', theme === 'dark');
@@ -148,7 +303,7 @@ export const settingsModule = {
     if (themeLightBtn) themeLightBtn.onclick = () => applyThemeSetting('light');
     if (themeDarkBtn) themeDarkBtn.onclick = () => applyThemeSetting('dark');
 
-    // Re-launch Onboarding Modal
+    // Re-launch Onboarding
     if (btnRelaunchOnboarding) {
       btnRelaunchOnboarding.onclick = () => {
         sound.playClick();
@@ -156,18 +311,31 @@ export const settingsModule = {
       };
     }
 
-    // Export JSON Backup
+    // Export Complete JSON Archive
     if (btnExport) {
-      btnExport.onclick = () => {
+      btnExport.onclick = async () => {
         sound.playClick();
-        const jsonStr = storage.exportData();
+        btnExport.disabled = true;
+        btnExport.textContent = 'Generating archive...';
+
+        const archive = await authService.exportUserData();
+        const jsonStr = JSON.stringify(archive, null, 2);
         const blob = new Blob([jsonStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `lifeos-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `lifeos-backup-${archive.user?.id || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
         a.click();
         URL.revokeObjectURL(url);
+
+        btnExport.disabled = false;
+        btnExport.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+          </svg>
+          Export Complete Data (JSON)
+        `;
+        toast.success('Your complete personal data archive has been exported.');
       };
     }
 
@@ -177,14 +345,32 @@ export const settingsModule = {
         const file = e.target.files[0];
         if (file) {
           const reader = new FileReader();
-          reader.onload = (evt) => {
-            const success = storage.importData(evt.target.result);
-            if (success) {
+          reader.onload = async (evt) => {
+            try {
+              const parsed = JSON.parse(evt.target.result);
+              if (parsed.data) {
+                // Structured LifeOS archive
+                if (parsed.data.tasks) state.setKey('todayTasks', parsed.data.tasks);
+                if (parsed.data.habits) state.setKey('todayHabits', parsed.data.habits);
+                if (parsed.data.goals) state.setKey('goals', parsed.data.goals);
+                if (parsed.data.projects) state.setKey('projects', parsed.data.projects);
+                if (parsed.data.calendarEvents) state.setKey('calendarEvents', parsed.data.calendarEvents);
+                if (parsed.data.notes) state.setKey('notes', parsed.data.notes);
+                if (parsed.user?.profile) state.setKey('profile', parsed.user.profile);
+              } else {
+                storage.importData(parsed);
+              }
+
+              // Also sync to cloud if authenticated
+              if (authService.isAuthenticated()) {
+                await supabaseService.pushAll(state.get());
+              }
+
               sound.playComplete();
-              toast.success('LifeOS data imported successfully. Reloading view...');
+              toast.success('Data imported successfully! Updating workspace...');
               setTimeout(() => window.location.reload(), 600);
-            } else {
-              toast.error('Failed to import data: invalid JSON structure.');
+            } catch (err) {
+              toast.error('Invalid backup file. Could not parse JSON.');
             }
           };
           reader.readAsText(file);
@@ -192,17 +378,43 @@ export const settingsModule = {
       };
     }
 
-    // Reset Storage
-    if (btnReset) {
-      btnReset.onclick = () => {
-        if (confirm('Are you sure you want to reset all LifeOS data back to baseline defaults? This cannot be undone.')) {
+    // Reset Local Storage
+    if (btnResetStorage) {
+      btnResetStorage.onclick = () => {
+        if (confirm('Reset local storage on this browser? Your cloud database records will NOT be deleted.')) {
           storage.clear();
           state.reset();
-          toast.info('LifeOS has been reset to baseline defaults.');
-          setTimeout(() => {
-            window.location.hash = '#dashboard';
-            window.location.reload();
-          }, 600);
+          toast.info('Local storage reset.');
+          setTimeout(() => window.location.reload(), 500);
+        }
+      };
+    }
+
+    // Delete Account Danger Zone
+    if (btnDeleteAccount) {
+      btnDeleteAccount.onclick = async () => {
+        const input = window.prompt(
+          'WARNING: You are about to permanently delete your LifeOS account and all associated tasks, habits, calendar, and notes across all servers.\n\nType "DELETE ACCOUNT" to proceed:'
+        );
+        if (input === 'DELETE ACCOUNT') {
+          sound.playClick();
+          btnDeleteAccount.disabled = true;
+          btnDeleteAccount.textContent = 'Deleting account...';
+
+          const res = await authService.deleteAccount('DELETE ACCOUNT');
+          if (res.success) {
+            toast.success('Your LifeOS account and all associated data have been deleted.');
+            setTimeout(() => {
+              window.location.hash = '#dashboard';
+              window.location.reload();
+            }, 600);
+          } else {
+            btnDeleteAccount.disabled = false;
+            btnDeleteAccount.textContent = 'Delete LifeOS Account';
+            toast.error(res.error || 'Failed to delete account.');
+          }
+        } else if (input !== null) {
+          toast.warning('Account deletion cancelled: confirmation text did not match.');
         }
       };
     }
@@ -257,6 +469,8 @@ export const settingsModule = {
             supabaseBadge.className = 'badge badge-success';
           }
           showFeedback('Supabase credentials saved successfully! Click "Test Connection" to verify access.', 'success');
+          // Re-initialize auth
+          await authService.init();
         } else {
           showFeedback('Could not initialize Supabase. Check the URL and network connectivity.', 'error');
         }
@@ -301,9 +515,9 @@ export const settingsModule = {
 
         btnPushCloud.disabled = true;
         btnPushCloud.textContent = 'Pushing...';
-        showFeedback('Syncing local tasks, habits, goals, and notes to Supabase...', 'info');
+        showFeedback('Syncing local workspace to Supabase Cloud...', 'info');
 
-        const res = await supabaseService.pushAll(state.data);
+        const res = await supabaseService.pushAll(state.get());
         btnPushCloud.disabled = false;
         btnPushCloud.innerHTML = `
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
@@ -329,7 +543,9 @@ export const settingsModule = {
           return;
         }
 
-        if (!confirm('Pulling from cloud will merge remote items into your local workspace. Proceed?')) {
+        const userId = authService.getUserId();
+        if (!userId) {
+          showFeedback('Please sign in first to pull your account-specific data from cloud.', 'error');
           return;
         }
 
@@ -337,7 +553,7 @@ export const settingsModule = {
         btnPullCloud.textContent = 'Pulling...';
         showFeedback('Fetching remote data from Supabase...', 'info');
 
-        const res = await supabaseService.pullAll();
+        const res = await supabaseService.pullUserData(userId);
         btnPullCloud.disabled = false;
         btnPullCloud.innerHTML = `
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
@@ -346,14 +562,8 @@ export const settingsModule = {
           Pull from Cloud
         `;
 
-        if (res.success && res.data) {
+        if (res.success) {
           sound.playComplete();
-          // Merge non-empty pulled data
-          if (res.data.tasks && res.data.tasks.length > 0) state.setKey('tasks', res.data.tasks);
-          if (res.data.habits && res.data.habits.length > 0) state.setKey('habits', res.data.habits);
-          if (res.data.goals && res.data.goals.length > 0) state.setKey('goals', res.data.goals);
-          if (res.data.notes && res.data.notes.length > 0) state.setKey('notes', res.data.notes);
-
           showFeedback('Cloud data synchronized into local workspace successfully!', 'success');
         } else {
           showFeedback(res.message, 'error');

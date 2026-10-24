@@ -8,20 +8,23 @@ import { router } from './router.js';
 import { onboarding } from './onboarding.js';
 import { sound } from './audio.js';
 import { supabaseService } from './supabase.js';
+import { authService } from './auth.js';
+import { authModal } from './authModal.js';
 import { toast } from './toast.js';
 
 window.toast = toast;
+window.authService = authService;
+window.authModal = authModal;
 
 /**
  * Initialize LifeOS Application
  */
-function initLifeOS() {
+async function initLifeOS() {
   console.info('[LifeOS] Initializing One Life. One Dashboard...');
 
-  // Initialize Supabase Cloud Database Client if configured
-  if (supabaseService.isConfigured()) {
-    supabaseService.init().catch(err => console.warn('[LifeOS] Supabase init warning:', err));
-  }
+  // Initialize Authentication & Cloud Database Services
+  authModal.init();
+  authService.init().catch(err => console.warn('[LifeOS Auth] Init error:', err));
 
   const contentContainer = document.getElementById('app-content');
   const breadcrumbContainer = document.getElementById('header-breadcrumb');
@@ -249,6 +252,9 @@ function initQuickAddModal() {
         };
 
         state.setKey('calendarEvents', [...events, newEvent]);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncEvent(newEvent).catch(err => console.warn(err));
+        }
         sound.playComplete();
         toast.success(`Schedule block "${title}" added.`);
         if (titleInput) titleInput.value = '';
@@ -275,6 +281,9 @@ function initQuickAddModal() {
         };
 
         state.setKey('goals', [...goals, newGoal]);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncGoal(newGoal).catch(err => console.warn(err));
+        }
         sound.playComplete();
         toast.success(`Milestone "${title}" established.`);
         if (titleInput) titleInput.value = '';
@@ -301,6 +310,9 @@ function initQuickAddModal() {
         };
 
         state.setKey('notes', [newNote, ...notes]);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncNote(newNote).catch(err => console.warn(err));
+        }
         sound.playComplete();
         toast.success(`Note "${title}" saved to Second Brain.`);
         if (titleInput) titleInput.value = '';
