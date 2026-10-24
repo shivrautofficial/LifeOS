@@ -5,6 +5,7 @@
   "type": "module",
   "description": "LifeOS wellness, habits, and personal goals database module",
   "author": "AuthorX",
+  "license": "GNU General Public License v3.0",
   "scripts": {
     "test": "node --test"
   },

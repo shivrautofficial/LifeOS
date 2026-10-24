@@ -80,4 +80,4 @@ This is a browser-local MVP, not a complete security boundary. Anyone with acces
 
 ## License
 
-MIT. See `LICENSE`.
+GNU General Public License v3.0. See `LICENSE`.
