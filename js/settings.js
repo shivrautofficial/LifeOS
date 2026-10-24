@@ -7,12 +7,9 @@ import { state } from './state.js';
 import { storage } from './storage.js';
 import { onboarding, PROFESSIONS } from './onboarding.js';
 import { sound } from './audio.js';
-<<<<<<< HEAD
 import { syncBackgroundVideos } from './app.js';
-=======
 import { supabaseService } from './supabase.js';
 import { toast } from './toast.js';
->>>>>>> 56ce10e9f97d1336d0b4a5c68b1ba2992f4214d1
 
 export const settingsModule = {
   /**
