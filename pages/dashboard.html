@@ -18,6 +18,46 @@
         <span class="status-dot active" id="dashboard-sync-dot"></span>
         <span id="dashboard-sync-text">Local-First Active</span>
       </span>
+      <button class="btn btn-primary btn-sm" id="btn-dashboard-quick-add" style="margin-left: var(--space-2);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;">
+          <path d="M5 12h14M12 5v14"/>
+        </svg>
+        Quick Add
+      </button>
+    </div>
+  </section>
+
+  <!-- Priority Intelligence Ribbon -->
+  <section class="priority-intelligence-ribbon animate-fade-in stagger-1" id="priority-intelligence-section" aria-label="Priority Intelligence">
+    <div class="priority-intel-left">
+      <div class="priority-intel-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="priority-intel-title">
+          <span>Priority Intelligence</span>
+          <span class="badge badge-primary" style="font-size: 10px; padding: 1px 6px;">Active Focus</span>
+        </div>
+        <div class="priority-intel-desc" id="priority-intel-text">
+          2 high-impact deliverables scheduled for today &bull; Q4 Objectives on track at 85% velocity.
+        </div>
+      </div>
+    </div>
+    <div class="quick-actions-strip">
+      <button class="quick-action-pill" id="qa-pill-focus">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Start Sprint
+      </button>
+      <a href="#tasks" class="quick-action-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;">
+          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+        </svg>
+        View Kanban
+      </a>
     </div>
   </section>
 
@@ -25,7 +65,7 @@
   <section class="stats-strip" aria-label="Key Performance Metrics">
     <div class="stat-card animate-fade-in stagger-1">
       <div class="stat-card-top">
-        <span class="stat-label">Active Tasks</span>
+        <span class="stat-label">Active Deliverables</span>
         <div class="stat-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
@@ -51,7 +91,7 @@
 
     <div class="stat-card animate-fade-in stagger-3">
       <div class="stat-card-top">
-        <span class="stat-label">Goal Milestones</span>
+        <span class="stat-label">Milestone Trajectory</span>
         <div class="stat-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
@@ -59,12 +99,12 @@
         </div>
       </div>
       <div class="stat-value tabular-nums" id="stat-active-goals">4 / 6</div>
-      <div class="stat-delta neutral">Q4 Objectives on track</div>
+      <div class="stat-delta positive">Q4 Objectives on track</div>
     </div>
 
     <div class="stat-card animate-fade-in stagger-4">
       <div class="stat-card-top">
-        <span class="stat-label">Focus Time Today</span>
+        <span class="stat-label">Deep Focus Today</span>
         <div class="stat-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -72,29 +112,64 @@
         </div>
       </div>
       <div class="stat-value tabular-nums" id="stat-focus-time">2.5h</div>
-      <div class="stat-delta positive">Daily Goal: 4.0h (62%)</div>
+      <div class="stat-delta positive">Target: 4.0h (62% achieved)</div>
     </div>
   </section>
 
   <!-- Modular Dashboard Grid -->
   <div class="dashboard-grid">
 
-    <!-- Left Column (8 Columns): Priorities & Dynamic Workspace -->
+    <!-- Left Column (8 Columns): Interactive Charts & Upcoming Timeline -->
     <div class="col-span-8 animate-fade-in stagger-2" style="display: flex; flex-direction: column; gap: var(--space-5);">
 
-      <!-- Today's Top Priorities -->
-      <section class="widget-slot" id="widget-today-tasks" aria-labelledby="widget-tasks-title">
+      <!-- Chart 1: Weekly Momentum & Focus Velocity -->
+      <section class="widget-slot" id="widget-weekly-momentum" aria-labelledby="widget-momentum-title">
         <div class="widget-slot-header">
-          <h2 class="widget-slot-title" id="widget-tasks-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-            </svg>
-            Today's Top Priorities
-          </h2>
-          <a href="#tasks" class="btn btn-outline btn-sm">Open Kanban</a>
+          <div>
+            <h2 class="widget-slot-title" id="widget-momentum-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              Weekly Momentum & Focus Velocity
+            </h2>
+            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: 2px;">
+              Deep work hours and deliverable completion cadence
+            </div>
+          </div>
+          <div class="chart-header-actions">
+            <div class="segmented-control" id="momentum-range-controls" style="margin: 0;">
+              <button class="segmented-btn active" data-range="7">7D</button>
+              <button class="segmented-btn" data-range="14">14D</button>
+              <button class="segmented-btn" data-range="30">30D</button>
+            </div>
+          </div>
         </div>
-        <div id="dashboard-tasks-container" style="display: flex; flex-direction: column; gap: var(--space-2);">
-          <!-- Rendered dynamically by js/dashboard.js -->
+        <div class="chart-canvas-wrap">
+          <canvas id="chart-weekly-momentum"></canvas>
+        </div>
+      </section>
+
+      <!-- Upcoming Chronological Timeline & Priorities -->
+      <section class="widget-slot" id="widget-today-timeline" aria-labelledby="widget-timeline-title">
+        <div class="widget-slot-header">
+          <div>
+            <h2 class="widget-slot-title" id="widget-timeline-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Upcoming Timeline & Critical Path
+            </h2>
+            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: 2px;">
+              Chronological sequence of today's events, focus blocks, and active deliverables
+            </div>
+          </div>
+          <div style="display: flex; gap: var(--space-2); align-items: center;">
+            <a href="#tasks" class="btn btn-outline btn-sm">Tasks</a>
+            <a href="#calendar" class="btn btn-outline btn-sm">Calendar</a>
+          </div>
+        </div>
+        <div class="timeline-stream" id="dashboard-timeline-stream">
+          <!-- Populated dynamically by js/dashboard.js -->
         </div>
       </section>
 
@@ -116,22 +191,33 @@
 
     </div>
 
-    <!-- Right Column (4 Columns): Habits, Focus Timer & Today's Schedule -->
+    <!-- Right Column (4 Columns): Domain Balance, Habits, Pomodoro & Actionable Insights -->
     <div class="col-span-4 animate-fade-in stagger-3" style="display: flex; flex-direction: column; gap: var(--space-5);">
 
-      <!-- Daily Habit Rituals -->
-      <section class="widget-slot" id="widget-habits-tracker" aria-labelledby="widget-habits-title">
+      <!-- Chart 2: Life Domain Allocation / Equilibrium -->
+      <section class="widget-slot" id="widget-domain-allocation" aria-labelledby="widget-balance-title">
         <div class="widget-slot-header">
-          <h2 class="widget-slot-title" id="widget-habits-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-            </svg>
-            Daily Habits
-          </h2>
-          <a href="#habits" class="btn btn-outline btn-sm">Habit Engine</a>
+          <div>
+            <h2 class="widget-slot-title" id="widget-balance-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24"/>
+              </svg>
+              Life Domain Equilibrium
+            </h2>
+            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: 2px;">
+              Effort & time allocation across domains
+            </div>
+          </div>
+          <span class="badge badge-success" style="font-size: 11px;">Balanced</span>
         </div>
-        <div id="dashboard-habits-container" style="display: flex; flex-direction: column; gap: var(--space-2);">
-          <!-- Rendered dynamically by js/dashboard.js -->
+        <div class="chart-canvas-wrap" style="height: 190px;">
+          <canvas id="chart-life-balance"></canvas>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; border-top: 1px solid var(--color-border-subtle); padding-top: 8px;">
+          <span><strong style="color: var(--color-primary);">&bull;</strong> Deep Work 40%</span>
+          <span><strong style="color: var(--color-success);">&bull;</strong> Health 25%</span>
+          <span><strong style="color: #8B5CF6;">&bull;</strong> Learning 20%</span>
+          <span><strong style="color: #F59E0B;">&bull;</strong> Projects 15%</span>
         </div>
       </section>
 
@@ -142,7 +228,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
             </svg>
-            Deep Focus Timer
+            Deep Focus Sprint
           </h2>
           <span class="badge badge-neutral" id="timer-session-count">Session 4</span>
         </div>
@@ -160,19 +246,35 @@
         </div>
       </section>
 
-      <!-- Today's Schedule Overview -->
-      <section class="widget-slot" id="widget-schedule-overview" aria-labelledby="widget-schedule-title">
+      <!-- Daily Habit Rituals -->
+      <section class="widget-slot" id="widget-habits-tracker" aria-labelledby="widget-habits-title">
         <div class="widget-slot-header">
-          <h2 class="widget-slot-title" id="widget-schedule-title">
+          <h2 class="widget-slot-title" id="widget-habits-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
             </svg>
-            Today's Blocks
+            Daily Habits
           </h2>
-          <a href="#calendar" class="btn btn-outline btn-sm">Full Calendar</a>
+          <a href="#habits" class="btn btn-outline btn-sm">Habit Engine</a>
         </div>
-        <div id="dashboard-schedule-container" style="display: flex; flex-direction: column; gap: var(--space-2);">
+        <div id="dashboard-habits-container" style="display: flex; flex-direction: column; gap: var(--space-2);">
           <!-- Rendered dynamically by js/dashboard.js -->
+        </div>
+      </section>
+
+      <!-- Actionable Insights & Observations Panel -->
+      <section class="widget-slot" id="widget-actionable-insights" aria-labelledby="widget-insights-title">
+        <div class="widget-slot-header">
+          <h2 class="widget-slot-title" id="widget-insights-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12h20M2 12l5-5M2 12l5 5"/>
+            </svg>
+            Actionable Observations
+          </h2>
+          <span class="badge badge-indigo">Live Telemetry</span>
+        </div>
+        <div id="dashboard-insights-container" style="display: flex; flex-direction: column; gap: var(--space-2);">
+          <!-- Rendered dynamically by js/dashboard.js based on actual data -->
         </div>
       </section>
 

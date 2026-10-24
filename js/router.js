@@ -12,6 +12,7 @@ import { habitsModule } from './habits.js';
 import { projectsModule } from './projects.js';
 import { notesModule } from './notes.js';
 import { settingsModule } from './settings.js';
+import { insightsModule } from './insights.js';
 
 export const ROUTES = {
   dashboard: {
@@ -52,22 +53,7 @@ export const ROUTES = {
   insights: {
     title: 'Insights',
     file: 'pages/insights.html',
-    module: {
-      init: () => {
-        const tasks = state.get('todayTasks') || [];
-        const completed = tasks.filter(t => t.done).length;
-        const total = tasks.length || 1;
-        const rate = Math.round((completed / total) * 100);
-
-        const rateEl = document.getElementById('insight-completion-rate');
-        const ratioEl = document.getElementById('insight-shipped-ratio');
-        const focusEl = document.getElementById('insight-focus-time');
-
-        if (rateEl) rateEl.textContent = `${rate}%`;
-        if (ratioEl) ratioEl.textContent = `${completed} of ${total} deliverables completed`;
-        if (focusEl) focusEl.textContent = state.get('metrics')?.focusTimeToday || '18.5h';
-      }
-    }
+    module: insightsModule
   },
   settings: {
     title: 'Settings',
@@ -122,6 +108,16 @@ class Router {
     const routeKey = this.getCurrentRoute();
     const route = ROUTES[routeKey];
     state.setKey('activeRoute', routeKey);
+
+    // Clean up previous module lifecycle resources (e.g. Chart.js instances)
+    if (this.currentModule && typeof this.currentModule.destroy === 'function') {
+      try {
+        this.currentModule.destroy();
+      } catch (err) {
+        console.warn('[LifeOS Router] Previous module cleanup warning:', err);
+      }
+    }
+    this.currentModule = route.module;
 
     // Update Header Breadcrumb & Document Title
     if (this.breadcrumbEl) {

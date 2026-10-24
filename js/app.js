@@ -77,23 +77,8 @@ function initLifeOS() {
     }
   }
 
-  // Quick Action in Top Header
-  const quickActionBtn = document.getElementById('btn-quick-action');
-  if (quickActionBtn) {
-    quickActionBtn.addEventListener('click', () => {
-      sound.playClick();
-      router.navigate('tasks');
-      // If add task panel exists, trigger it open
-      setTimeout(() => {
-        const addPanel = document.getElementById('add-task-panel');
-        if (addPanel) {
-          addPanel.style.display = 'block';
-          const titleInput = document.getElementById('input-new-task-title');
-          if (titleInput) titleInput.focus();
-        }
-      }, 100);
-    });
-  }
+  // Universal Quick-Add Modal Engine
+  initQuickAddModal();
 
   // Global Quick Jump / Search Bar (⌘K / Ctrl+K)
   initGlobalSearch();
@@ -132,7 +117,200 @@ function updateSidebarMetrics() {
 }
 
 /**
- * Initialize Global Search & Keyboard Shortcut
+ * Universal Quick Add Modal Engine
+ */
+function initQuickAddModal() {
+  const modal = document.getElementById('quick-add-modal');
+  const closeBtn = document.getElementById('btn-close-quick-add');
+  const cancelBtn = document.getElementById('btn-cancel-quick-add');
+  const submitBtn = document.getElementById('btn-submit-quick-add');
+  const tabsContainer = document.getElementById('quick-add-tabs');
+  const quickActionBtn = document.getElementById('btn-quick-action');
+
+  let activeTab = 'task'; // task, event, goal, note
+
+  const showTab = (tabName) => {
+    activeTab = tabName;
+    if (tabsContainer) {
+      tabsContainer.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+      });
+    }
+
+    const views = ['task', 'event', 'goal', 'note'];
+    views.forEach(v => {
+      const el = document.getElementById(`qa-form-${v}`);
+      if (el) el.style.display = (v === tabName) ? 'block' : 'none';
+    });
+
+    setTimeout(() => {
+      if (tabName === 'task') document.getElementById('qa-task-title')?.focus();
+      else if (tabName === 'event') document.getElementById('qa-event-title')?.focus();
+      else if (tabName === 'goal') document.getElementById('qa-goal-title')?.focus();
+      else if (tabName === 'note') document.getElementById('qa-note-title')?.focus();
+    }, 50);
+  };
+
+  const openModal = (tabName = 'task') => {
+    sound.playClick();
+    showTab(tabName);
+    if (modal) modal.classList.add('active');
+  };
+
+  const closeModal = () => {
+    if (modal) modal.classList.remove('active');
+  };
+
+  window.openQuickAddModal = openModal;
+
+  if (quickActionBtn) {
+    quickActionBtn.onclick = () => openModal('task');
+  }
+
+  if (closeBtn) closeBtn.onclick = closeModal;
+  if (cancelBtn) cancelBtn.onclick = closeModal;
+  if (modal) {
+    modal.onclick = (e) => {
+      if (e.target === modal) closeModal();
+    };
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  if (tabsContainer) {
+    tabsContainer.querySelectorAll('button').forEach(btn => {
+      btn.onclick = () => {
+        sound.playClick();
+        const tab = btn.getAttribute('data-tab');
+        if (tab) showTab(tab);
+      };
+    });
+  }
+
+  if (submitBtn) {
+    submitBtn.onclick = () => {
+      if (activeTab === 'task') {
+        const titleInput = document.getElementById('qa-task-title');
+        const title = titleInput?.value.trim();
+        if (!title) {
+          toast.warning('Please enter a deliverable title.');
+          titleInput?.focus();
+          return;
+        }
+        const priority = document.getElementById('qa-task-priority')?.value || 'high';
+        const due = document.getElementById('qa-task-due')?.value || 'Today';
+
+        const tasks = state.get('todayTasks') || [];
+        const newTask = {
+          id: 't-' + Date.now(),
+          title,
+          priority,
+          due,
+          done: false,
+          status: 'todo',
+          category: 'work'
+        };
+
+        state.setKey('todayTasks', [newTask, ...tasks]);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncTask(newTask).catch(err => console.warn(err));
+        }
+
+        sound.playComplete();
+        toast.success(`Deliverable "${title}" added to active pipeline.`);
+        if (titleInput) titleInput.value = '';
+        closeModal();
+
+      } else if (activeTab === 'event') {
+        const titleInput = document.getElementById('qa-event-title');
+        const title = titleInput?.value.trim();
+        if (!title) {
+          toast.warning('Please enter an event or block title.');
+          titleInput?.focus();
+          return;
+        }
+        const time = document.getElementById('qa-event-time')?.value.trim() || '10:00 AM - 11:30 AM';
+        const tag = document.getElementById('qa-event-tag')?.value || 'Deep Work';
+
+        const events = state.get('calendarEvents') || [];
+        const newEvent = {
+          id: 'e-' + Date.now(),
+          title,
+          time,
+          date: 'Today',
+          tag
+        };
+
+        state.setKey('calendarEvents', [...events, newEvent]);
+        sound.playComplete();
+        toast.success(`Schedule block "${title}" added.`);
+        if (titleInput) titleInput.value = '';
+        closeModal();
+
+      } else if (activeTab === 'goal') {
+        const titleInput = document.getElementById('qa-goal-title');
+        const title = titleInput?.value.trim();
+        if (!title) {
+          toast.warning('Please enter a goal title.');
+          titleInput?.focus();
+          return;
+        }
+        const category = document.getElementById('qa-goal-category')?.value || 'Career';
+        const targetDate = document.getElementById('qa-goal-target')?.value.trim() || 'Q4 2026';
+
+        const goals = state.get('goals') || [];
+        const newGoal = {
+          id: 'g-' + Date.now(),
+          title,
+          category,
+          progress: 10,
+          targetDate
+        };
+
+        state.setKey('goals', [...goals, newGoal]);
+        sound.playComplete();
+        toast.success(`Milestone "${title}" established.`);
+        if (titleInput) titleInput.value = '';
+        closeModal();
+
+      } else if (activeTab === 'note') {
+        const titleInput = document.getElementById('qa-note-title');
+        const title = titleInput?.value.trim();
+        if (!title) {
+          toast.warning('Please enter a note title.');
+          titleInput?.focus();
+          return;
+        }
+        const content = document.getElementById('qa-note-content')?.value.trim() || '';
+
+        const notes = state.get('notes') || [];
+        const newNote = {
+          id: 'n-' + Date.now(),
+          title,
+          content,
+          tags: ['quick-capture'],
+          pinned: false,
+          updatedAt: 'Just now'
+        };
+
+        state.setKey('notes', [newNote, ...notes]);
+        sound.playComplete();
+        toast.success(`Note "${title}" saved to Second Brain.`);
+        if (titleInput) titleInput.value = '';
+        const contentEl = document.getElementById('qa-note-content');
+        if (contentEl) contentEl.value = '';
+        closeModal();
+      }
+    };
+  }
+}
+
+/**
+ * Initialize Global Search & Keyboard Shortcut (⌘K / Ctrl+K)
  */
 function initGlobalSearch() {
   const searchInput = document.getElementById('global-search-input');
@@ -153,6 +331,22 @@ function initGlobalSearch() {
       if (e.key === 'Enter') {
         const query = searchInput.value.toLowerCase().trim();
         if (!query) return;
+
+        // Command triggers: "+", "new", "add", "create"
+        if (query.startsWith('+') || query.startsWith('new') || query.startsWith('add') || query.startsWith('create')) {
+          if (query.includes('event') || query.includes('cal')) {
+            window.openQuickAddModal('event');
+          } else if (query.includes('goal') || query.includes('okr')) {
+            window.openQuickAddModal('goal');
+          } else if (query.includes('note')) {
+            window.openQuickAddModal('note');
+          } else {
+            window.openQuickAddModal('task');
+          }
+          searchInput.value = '';
+          searchInput.blur();
+          return;
+        }
 
         const routeMap = {
           dash: 'dashboard',
