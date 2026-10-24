@@ -101,6 +101,18 @@ vercel --prod
 
 ---
 
+## 🗄️ Supabase Cloud Database
+
+LifeOS includes full, out-of-the-box compatibility with **Supabase**:
+
+1. **SQL Schema**: Run the ready-to-use PostgreSQL migration script in your Supabase SQL editor:
+   [`database/schemas/supabase_schema.sql`](file:///Users/chaudharysarthak1179/Desktop/Code/Life%20OS/LifeOS/database/schemas/supabase_schema.sql)
+2. **Connect in App**: Open **Settings -> Supabase Cloud Database** in LifeOS, enter your **Project URL** and **Anon Key**, and click **Save Credentials**.
+3. **Push & Pull**: Use the built-in **Push to Cloud** and **Pull from Cloud** buttons to synchronize your tasks, habits, goals, and notes across all your devices.
+4. **Environment Variables**: For Vercel or Node environments, you can also set `SUPABASE_URL` and `SUPABASE_ANON_KEY` as documented in [`.env.example`](file:///Users/chaudharysarthak1179/Desktop/Code/Life%20OS/LifeOS/.env.example).
+
+---
+
 ## 🚀 Local Development
 
 The project includes a built-in, zero-dependency Node.js HTTP server. You can run it directly without installing external web servers.

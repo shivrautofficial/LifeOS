@@ -7,12 +7,18 @@ import { state } from './state.js';
 import { router } from './router.js';
 import { onboarding } from './onboarding.js';
 import { sound } from './audio.js';
+import { supabaseService } from './supabase.js';
 
 /**
  * Initialize LifeOS Application
  */
 function initLifeOS() {
   console.info('[LifeOS] Initializing One Life. One Dashboard...');
+
+  // Initialize Supabase Cloud Database Client if configured
+  if (supabaseService.isConfigured()) {
+    supabaseService.init().catch(err => console.warn('[LifeOS] Supabase init warning:', err));
+  }
 
   const contentContainer = document.getElementById('app-content');
   const breadcrumbContainer = document.getElementById('header-breadcrumb');

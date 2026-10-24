@@ -25,12 +25,8 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);">
           <div class="form-group">
             <label class="form-label" for="setting-user-name">Display Name</label>
-<<<<<<< HEAD
-            <input type="text" id="setting-user-name" class="form-input" value="User">
-=======
-            <input type="text" id="setting-user-name" class="form-input" value="Sarthak" placeholder="Your name">
+            <input type="text" id="setting-user-name" class="form-input" value="User" placeholder="Your name">
             <span class="form-hint">Used in dashboard greetings and workspace telemetry.</span>
->>>>>>> 3f786ba978a39d57e26981486663e6bd779dd010
           </div>
 
           <div class="form-group">
@@ -81,6 +77,57 @@
           </div>
           <button class="btn btn-secondary btn-sm" id="btn-relaunch-onboarding">Launch Setup Modal</button>
         </div>
+      </div>
+    </section>
+
+    <!-- Supabase Cloud Database Configuration Card -->
+    <section class="card" aria-labelledby="supabase-settings-title">
+      <div class="card-header">
+        <h2 class="card-title" id="supabase-settings-title">Supabase Cloud Database</h2>
+        <span class="badge badge-neutral" id="supabase-status-badge">Not Connected</span>
+      </div>
+      <div class="card-body">
+        <p style="margin-bottom: var(--space-4);">Connect your Supabase PostgreSQL database to synchronize tasks, habits, goals, notes, and full workspace backups across your devices.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label" for="setting-supabase-url">Supabase Project URL</label>
+            <input type="url" id="setting-supabase-url" class="form-input" placeholder="https://your-project.supabase.co" autocomplete="off">
+            <span class="form-hint">Found in Supabase Dashboard &rarr; Project Settings &rarr; API &rarr; Project URL</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="setting-supabase-key">Supabase Anon Key</label>
+            <input type="password" id="setting-supabase-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." autocomplete="off">
+            <span class="form-hint">Found in Supabase Dashboard &rarr; Project Settings &rarr; API &rarr; Project API keys (anon/public)</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center;">
+          <button class="btn btn-primary btn-sm" id="btn-save-supabase">
+            Save Credentials
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-test-supabase">
+            Test Connection
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-sync-to-cloud">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            Push to Cloud
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-sync-from-cloud">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            Pull from Cloud
+          </button>
+          <button class="btn btn-subtle btn-sm" id="btn-clear-supabase" style="margin-left: auto;">
+            Disconnect
+          </button>
+        </div>
+
+        <div id="supabase-feedback-box" style="display: none; margin-top: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); font-size: var(--font-size-meta);"></div>
       </div>
     </section>
 
