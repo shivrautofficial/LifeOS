@@ -97,13 +97,14 @@ function startServer(port) {
       res.setHeader('Content-Type', 'application/json');
       if (pathname === '/api/health' || pathname === '/api/status') {
         res.writeHead(200);
+        const isConfigured = Boolean(process.env.SUPABASE_URL && (process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY));
         res.end(JSON.stringify({
           status: 'ok',
           service: 'LifeOS API',
           version: '1.0.0',
           database: {
-            type: (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) ? 'Supabase Cloud (PostgreSQL)' : 'Local-First (Client IndexedDB / LocalStorage)',
-            supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY)
+            type: isConfigured ? 'Supabase Cloud (PostgreSQL)' : 'Local-First (Client IndexedDB / LocalStorage)',
+            supabaseConfigured: isConfigured
           },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
@@ -114,7 +115,7 @@ function startServer(port) {
         res.writeHead(200);
         res.end(JSON.stringify({
           supabaseUrl: process.env.SUPABASE_URL || '',
-          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || ''
+          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || ''
         }));
         return;
       }
