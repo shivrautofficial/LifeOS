@@ -6,6 +6,7 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { toast } from './toast.js';
+import { dbSync } from './dbSync.js';
 
 let filterQuery = '';
 let activePriorityFilter = 'all';
@@ -162,6 +163,7 @@ export const tasksModule = {
         };
 
         state.setKey('todayTasks', [newTask, ...tasks]);
+        dbSync.syncTask(newTask, 'upsert');
         sound.playComplete();
         toast.success(`Deliverable "${title}" added.`);
 
@@ -187,6 +189,7 @@ export const tasksModule = {
           task.done = newStatus === 'done';
           sound.playClick();
           state.setKey('todayTasks', tasks);
+          dbSync.syncTask(task, 'upsert');
           this.renderKanban();
         }
       };
@@ -198,6 +201,7 @@ export const tasksModule = {
         const tasks = (state.get('todayTasks') || []).filter(t => t.id !== taskId);
         sound.playClick();
         state.setKey('todayTasks', tasks);
+        dbSync.syncTask({ id: taskId }, 'delete');
         this.renderKanban();
       };
     });

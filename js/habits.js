@@ -5,6 +5,7 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+import { dbSync } from './dbSync.js';
 
 export const habitsModule = {
   /**
@@ -125,6 +126,7 @@ export const habitsModule = {
 
           sound.playComplete();
           state.setKey('todayHabits', habits);
+          dbSync.syncHabit(habit, 'upsert');
           this.renderHabits();
         }
       };
@@ -136,6 +138,7 @@ export const habitsModule = {
         const habits = (state.get('todayHabits') || []).filter(h => h.id !== habitId);
         sound.playClick();
         state.setKey('todayHabits', habits);
+        dbSync.syncHabit({ id: habitId }, 'delete');
         this.renderHabits();
       };
     });
@@ -185,6 +188,7 @@ export const habitsModule = {
         habits.push(newHabit);
         sound.playComplete();
         state.setKey('todayHabits', habits);
+        dbSync.syncHabit(newHabit, 'upsert');
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

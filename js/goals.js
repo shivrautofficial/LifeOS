@@ -6,6 +6,7 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { widgets } from './widgets.js';
+import { dbSync } from './dbSync.js';
 
 export const goalsModule = {
   /**
@@ -103,6 +104,7 @@ export const goalsModule = {
           goal.progress = Math.min(100, (goal.progress || 0) + 10);
           sound.playClick();
           state.setKey('goals', goals);
+          dbSync.syncGoal(goal, 'upsert');
           this.renderGoals();
         }
       };
@@ -117,6 +119,7 @@ export const goalsModule = {
           goal.progress = (goal.progress || 0) >= 100 ? 0 : 100;
           sound.playComplete();
           state.setKey('goals', goals);
+          dbSync.syncGoal(goal, 'upsert');
           this.renderGoals();
         }
       };
@@ -130,6 +133,7 @@ export const goalsModule = {
         const goals = (state.get('goals') || []).filter(g => g.id !== goalId);
         sound.playClick();
         state.setKey('goals', goals);
+        dbSync.syncGoal({ id: goalId }, 'delete');
         this.renderGoals();
       };
     });
@@ -170,17 +174,18 @@ export const goalsModule = {
         const title = titleInput.value.trim();
         if (!title) return;
 
-        const goals = state.get('goals') || [];
-        goals.push({
+        const newGoal = {
           id: 'g-' + Date.now(),
           title,
           category: catInput.value.trim() || 'Focus',
           targetDate: dateInput?.value.trim() || 'Q4 2026',
           progress: parseInt(progInput.value, 10) || 0
-        });
+        };
 
+        goals.push(newGoal);
         sound.playComplete();
         state.setKey('goals', goals);
+        dbSync.syncGoal(newGoal, 'upsert');
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

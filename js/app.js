@@ -8,6 +8,7 @@ import { router } from './router.js';
 import { onboarding } from './onboarding.js';
 import { sound } from './audio.js';
 import { supabaseService } from './supabase.js';
+import { dbSync } from './dbSync.js';
 import { toast } from './toast.js';
 
 window.toast = toast;
@@ -17,6 +18,9 @@ window.toast = toast;
  */
 function initLifeOS() {
   console.info('[LifeOS] Initializing One Life. One Dashboard...');
+
+  // Initialize Unified Database Synchronization (Server DB + Supabase + IndexedDB)
+  dbSync.init().catch(err => console.warn('[LifeOS] Database sync init warning:', err));
 
   // Initialize Supabase Cloud Database Client if configured
   if (supabaseService.isConfigured()) {
@@ -219,9 +223,7 @@ function initQuickAddModal() {
         };
 
         state.setKey('todayTasks', [newTask, ...tasks]);
-        if (supabaseService.isConfigured()) {
-          supabaseService.syncTask(newTask).catch(err => console.warn(err));
-        }
+        dbSync.syncTask(newTask, 'upsert');
 
         sound.playComplete();
         toast.success(`Deliverable "${title}" added to active pipeline.`);
@@ -249,6 +251,7 @@ function initQuickAddModal() {
         };
 
         state.setKey('calendarEvents', [...events, newEvent]);
+        dbSync.syncCalendarEvent(newEvent, 'upsert');
         sound.playComplete();
         toast.success(`Schedule block "${title}" added.`);
         if (titleInput) titleInput.value = '';
@@ -275,6 +278,7 @@ function initQuickAddModal() {
         };
 
         state.setKey('goals', [...goals, newGoal]);
+        dbSync.syncGoal(newGoal, 'upsert');
         sound.playComplete();
         toast.success(`Milestone "${title}" established.`);
         if (titleInput) titleInput.value = '';
@@ -301,6 +305,7 @@ function initQuickAddModal() {
         };
 
         state.setKey('notes', [newNote, ...notes]);
+        dbSync.syncNote(newNote, 'upsert');
         sound.playComplete();
         toast.success(`Note "${title}" saved to Second Brain.`);
         if (titleInput) titleInput.value = '';

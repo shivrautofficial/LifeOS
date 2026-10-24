@@ -7,6 +7,7 @@ import { state } from './state.js';
 import { storage } from './storage.js';
 import { sound } from './audio.js';
 import { toast } from './toast.js';
+import { dbSync } from './dbSync.js';
 
 /**
  * Get current calendar date string in YYYY-MM-DD format based on local time
@@ -228,6 +229,7 @@ export const healthModule = {
   saveProfile(profileData) {
     state.setKey('healthProfile', profileData);
     storage.set('health_profile', profileData);
+    dbSync.syncHealth(profileData, this.getLogs());
   },
 
   saveTodayLog(updatedLog) {
@@ -240,6 +242,7 @@ export const healthModule = {
     };
     state.setKey('healthDailyLogs', logs);
     storage.set('health_logs', logs);
+    dbSync.syncHealth(this.getProfile(), logs);
   },
 
   /**

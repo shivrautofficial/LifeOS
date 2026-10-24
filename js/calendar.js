@@ -5,6 +5,7 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+import { dbSync } from './dbSync.js';
 
 export const calendarModule = {
   /**
@@ -112,6 +113,7 @@ export const calendarModule = {
         const events = (state.get('calendarEvents') || []).filter(e => e.id !== id);
         sound.playClick();
         state.setKey('calendarEvents', events);
+        dbSync.syncCalendarEvent({ id }, 'delete');
         this.renderEvents();
       };
     });
@@ -152,17 +154,20 @@ export const calendarModule = {
         const title = titleInput.value.trim();
         if (!title) return;
 
-        const events = state.get('calendarEvents') || [];
-        events.push({
+        const newEvent = {
           id: 'e-' + Date.now(),
           title,
           time: timeInput?.value.trim() || '10:00 AM - 11:30 AM',
           date: dateInput?.value.trim() || 'Today',
           tag: tagSelect?.value || 'Deep Work'
-        });
+        };
+
+        const events = state.get('calendarEvents') || [];
+        events.push(newEvent);
 
         sound.playComplete();
         state.setKey('calendarEvents', events);
+        dbSync.syncCalendarEvent(newEvent, 'upsert');
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

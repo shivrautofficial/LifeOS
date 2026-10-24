@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const dbController = require('./dbController');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -62,26 +63,41 @@ function startServer(port) {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     let pathname = decodeURIComponent(parsedUrl.pathname);
 
-    // Handle basic API endpoints
+    // Handle database and REST API endpoints
     if (pathname.startsWith('/api/')) {
       res.setHeader('Content-Type', 'application/json');
       if (pathname === '/api/health' || pathname === '/api/status') {
+        const db = dbController.readDb();
         res.writeHead(200);
         res.end(JSON.stringify({
           status: 'ok',
           service: 'LifeOS API',
           version: '1.0.0',
           database: {
-            type: (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) ? 'Supabase Cloud (PostgreSQL)' : 'Local-First (Client IndexedDB / LocalStorage)',
-            supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY)
+            type: (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) ? 'Supabase Cloud (PostgreSQL)' : 'Local File Database (database/lifeos_db.json) + IndexedDB',
+            supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY),
+            localDbAvailable: true,
+            totalTasks: (db.todayTasks || []).length,
+            totalHabits: (db.todayHabits || []).length,
+            totalGoals: (db.goals || []).length,
+            lastDbUpdate: db.updatedAt
           },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
         }));
         return;
       }
-      res.writeHead(404);
-      res.end(JSON.stringify({ error: 'Endpoint not found', path: pathname }));
+
+      dbController.handleApiRequest(req, res, pathname).then(handled => {
+        if (!handled) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ error: 'Endpoint not found', path: pathname }));
+        }
+      }).catch(err => {
+        console.error('[API Error]:', err);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: 'Internal Server Error', message: err.message }));
+      });
       return;
     }
 

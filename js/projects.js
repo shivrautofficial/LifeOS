@@ -6,6 +6,7 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { widgets } from './widgets.js';
+import { dbSync } from './dbSync.js';
 
 export const projectsModule = {
   /**
@@ -74,6 +75,7 @@ export const projectsModule = {
         const projects = (state.get('projects') || []).filter(p => p.id !== id);
         sound.playClick();
         state.setKey('projects', projects);
+        dbSync.syncProject({ id }, 'delete');
         this.renderProjects();
       };
     });
@@ -113,17 +115,20 @@ export const projectsModule = {
         const title = titleInput.value.trim();
         if (!title) return;
 
-        const projects = state.get('projects') || [];
-        projects.push({
+        const newProj = {
           id: 'p-' + Date.now(),
           title,
           status: 'Active',
           deadline: deadInput?.value.trim() || 'Next Month',
           progress: parseInt(progInput.value, 10) || 10
-        });
+        };
+
+        const projects = state.get('projects') || [];
+        projects.push(newProj);
 
         sound.playComplete();
         state.setKey('projects', projects);
+        dbSync.syncProject(newProj, 'upsert');
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

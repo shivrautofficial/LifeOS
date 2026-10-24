@@ -5,6 +5,7 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+import { dbSync } from './dbSync.js';
 
 export const notesModule = {
   /**
@@ -62,6 +63,7 @@ export const notesModule = {
         const notes = (state.get('notes') || []).filter(n => n.id !== id);
         sound.playClick();
         state.setKey('notes', notes);
+        dbSync.syncNote({ id }, 'delete');
         this.renderNotes();
       };
     });
@@ -104,17 +106,20 @@ export const notesModule = {
 
         const tags = tagsInput.value.split(',').map(s => s.trim().replace(/^#/, '')).filter(Boolean);
 
-        const notes = state.get('notes') || [];
-        notes.unshift({
+        const newNote = {
           id: 'n-' + Date.now(),
           title,
           content,
           tags: tags.length ? tags : ['general'],
           updatedAt: 'Just now'
-        });
+        };
+
+        const notes = state.get('notes') || [];
+        notes.unshift(newNote);
 
         sound.playComplete();
         state.setKey('notes', notes);
+        dbSync.syncNote(newNote, 'upsert');
 
         titleInput.value = '';
         contentInput.value = '';
