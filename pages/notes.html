@@ -134,6 +134,64 @@
           </div>
         </div>
 
+        <!-- Card 3: AI Recommended Execution Strategy & Spotlight (Bridges vertical layout gap) -->
+        <div class="ai-chart-card ai-focus-spotlight-card" id="ai-top-focus-card">
+          <div class="ai-chart-header">
+            <div>
+              <div class="ai-chart-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; color: var(--color-primary);" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                Optimal Next Execution Strategy
+              </div>
+              <div class="ai-chart-subtitle">AI-synthesized priority action with highest leverage ratio</div>
+            </div>
+            <span class="badge badge-indigo" id="ai-spotlight-badge" style="font-size: 11px;">#1 High Yield</span>
+          </div>
+
+          <!-- Spotlight Action Highlight Container -->
+          <div class="ai-spotlight-body">
+            <div class="ai-spotlight-header-row">
+              <span class="impact-badge high" id="ai-spotlight-urgency">⚡ Highest Leverage</span>
+              <div style="display: flex; gap: 6px; font-size: 11px;">
+                <span class="badge badge-neutral">Impact: <strong id="ai-spotlight-impact" style="color: var(--color-primary);">94%</strong></span>
+                <span class="badge badge-neutral">⏱️ <span id="ai-spotlight-effort">~30m</span></span>
+              </div>
+            </div>
+
+            <h4 class="ai-spotlight-title" id="ai-spotlight-title">Synthesize Second Brain Architectural Insights</h4>
+            <p class="ai-spotlight-desc" id="ai-spotlight-rationale">Cross-referenced with active projects to maximize daily velocity and reduce context switching.</p>
+
+            <div class="ai-spotlight-metrics-mini">
+              <div class="spotlight-metric-item">
+                <span class="spotlight-metric-k">Goal Alignment</span>
+                <span class="spotlight-metric-v" id="ai-spotlight-goal-align">98% Match</span>
+              </div>
+              <div class="spotlight-metric-item">
+                <span class="spotlight-metric-k">Focus Mode</span>
+                <span class="spotlight-metric-v">Deep Sprint</span>
+              </div>
+              <div class="spotlight-metric-item">
+                <span class="spotlight-metric-k">Leverage Ratio</span>
+                <span class="spotlight-metric-v" style="color: var(--color-success);">High Velocity</span>
+              </div>
+            </div>
+
+            <div class="ai-spotlight-footer">
+              <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); display: flex; align-items: center; gap: 4px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; color: var(--color-primary);">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                <span>Automated Recommendation</span>
+              </div>
+              <button class="btn btn-primary btn-sm" id="btn-add-spotlight-to-tasks" style="gap: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add to Daily Tasks
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- RIGHT: Written Next-Action Suggestions List -->

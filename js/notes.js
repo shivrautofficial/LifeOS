@@ -511,7 +511,56 @@ export const notesModule = {
       `;
     }).join('');
 
+    this.renderSpotlightAction();
     this.bindSuggestionClicks();
+  },
+
+  /**
+   * Render Top Action Spotlight (Bridges left column height to cover gap)
+   */
+  renderSpotlightAction() {
+    const card = document.getElementById('ai-top-focus-card');
+    if (!card) return;
+
+    const top = this.currentSuggestions && this.currentSuggestions[0];
+    if (!top) {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = 'flex';
+
+    const titleEl = document.getElementById('ai-spotlight-title');
+    const descEl = document.getElementById('ai-spotlight-rationale');
+    const impactEl = document.getElementById('ai-spotlight-impact');
+    const effortEl = document.getElementById('ai-spotlight-effort');
+    const urgencyEl = document.getElementById('ai-spotlight-urgency');
+    const alignEl = document.getElementById('ai-spotlight-goal-align');
+    const btn = document.getElementById('btn-add-spotlight-to-tasks');
+
+    if (titleEl) titleEl.textContent = top.title;
+    if (descEl) descEl.textContent = top.rationale;
+    if (impactEl) impactEl.textContent = `${top.impactScore}%`;
+    if (effortEl) effortEl.textContent = `~${top.effortMins}m`;
+    if (urgencyEl) urgencyEl.textContent = `⚡ ${top.urgency || 'High'} Leverage`;
+    if (alignEl) alignEl.textContent = `${top.impactScore}% Match`;
+
+    if (btn) {
+      btn.dataset.addToTasks = top.id;
+      const isAdded = this.addedSuggestionIds.has(top.id);
+      if (isAdded) {
+        btn.classList.add('added');
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;"><polyline points="20 6 9 17 4 12"/></svg>
+          Added to Tasks
+        `;
+      } else {
+        btn.classList.remove('added');
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add to Daily Tasks
+        `;
+      }
+    }
   },
 
   /**
