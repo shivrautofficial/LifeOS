@@ -2,18 +2,23 @@
   "name": "lifeos",
   "version": "1.0.0",
   "description": "LifeOS — One Life. One Dashboard.",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "serve": "node server.js",
-    "test:db": "cd Database && npm test"
+    "test": "npm run test:db",
+    "test:db": "cd Database && npm test",
+    "workflow": "cd Workflow && npm start",
+    "server": "cd Server && npm start"
   },
   "keywords": [
     "lifeos",
     "dashboard",
-    "productivity"
+    "productivity",
+    "wellness",
+    "task-manager"
   ],
   "author": "AuthorX",
   "license": "GNU General Public License v3.0"
 }
-
