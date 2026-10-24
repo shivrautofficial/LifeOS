@@ -25,11 +25,11 @@ const MIME_TYPES = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-// Locate public directory: either ./Frontend, ../Frontend, or ./
+// Locate public directory: parent project root, ./public, or cwd
 const candidates = [
-  path.join(__dirname, 'Frontend'),
-  path.join(__dirname, '..', 'Frontend'),
-  path.join(process.cwd(), 'Frontend'),
+  path.join(__dirname, '..'),
+  path.join(__dirname, '..', 'public'),
+  path.join(process.cwd()),
   __dirname
 ];
 
@@ -39,7 +39,7 @@ const PUBLIC_DIR = candidates.find(dir => {
   } catch (e) {
     return false;
   }
-}) || (fs.existsSync(path.join(__dirname, 'Frontend')) ? path.join(__dirname, 'Frontend') : __dirname);
+}) || path.join(__dirname, '..');
 
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -163,3 +163,4 @@ function startServer(port) {
 }
 
 startServer(DEFAULT_PORT);
+

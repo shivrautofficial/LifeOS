@@ -2,15 +2,13 @@
   "name": "lifeos",
   "version": "1.0.0",
   "description": "LifeOS — One Life. One Dashboard.",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "serve": "node server.js",
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "serve": "node server/server.js",
     "test": "npm run test:db",
-    "test:db": "cd Database && npm test",
-    "workflow": "cd Workflow && npm start",
-    "server": "cd Server && npm start"
+    "test:db": "cd database && npm test"
   },
   "keywords": [
     "lifeos",
