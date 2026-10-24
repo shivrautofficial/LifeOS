@@ -88,7 +88,9 @@ export const habitsModule = {
             <div style="display: flex; gap: 5px;" aria-label="7-day completion strip">
               ${weekCircles}
             </div>
-            <button class="btn btn-icon btn-sm" data-delete-habit="${h.id}" title="Delete Habit" style="color: var(--color-text-muted); margin-left: 4px;" aria-label="Delete habit">✕</button>
+            <button class="btn btn-icon btn-sm" data-delete-habit="${h.id}" title="Delete Habit" style="width: 28px; height: 28px; color: var(--color-text-muted); margin-left: 4px;" aria-label="Delete habit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
           </div>
         </div>
       `;

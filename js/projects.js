@@ -51,7 +51,9 @@ export const projectsModule = {
               <div style="margin-bottom: 6px;">${statusBadge}</div>
               <div style="font-weight: 600; font-size: var(--font-size-card-title); color: var(--color-text-main); line-height: 1.35;">${p.title}</div>
             </div>
-            <button class="btn btn-icon btn-sm" data-delete-project="${p.id}" title="Delete Project" style="color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Project">✕</button>
+            <button class="btn btn-icon btn-sm" data-delete-project="${p.id}" title="Delete Project" style="width: 28px; height: 28px; color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Project">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: auto;">
             <span>Target: <strong style="color: var(--color-text-main); font-weight: 500;">${p.deadline || 'Ongoing'}</strong></span>

@@ -1,90 +1,45 @@
-# LifeOS Wellness Database
+# LifeOS Database & Cloud Storage
 
-A JavaScript database module for the LifeOS Health, Habits & Personal Goals feature.
+LifeOS employs a hybrid architecture:
+1. **Client-Side Storage**: Fast local persistence via IndexedDB (Dexie.js) and LocalStorage for zero-latency, private, offline-first operation.
+2. **Supabase Cloud Database**: PostgreSQL database with real-time replication and Row Level Security (RLS) for multi-device sync and backups.
 
-## Technology
+---
 
-- Dexie.js
-- IndexedDB
-- JSON Schema documentation
-- Node.js test runner
-- fake-indexeddb for automated tests
+## 🗄️ Database Tables (Supabase PostgreSQL)
 
-## Data Tables
+| Table | Purpose | Primary Key |
+|---|---|---|
+| `tasks` | Actionable items, priorities, tags, due dates | `id (TEXT)` |
+| `habits` | Daily & weekly habits, streaks, and check-ins | `id (TEXT)` |
+| `goals` | Long-term objectives, categories, milestones, progress | `id (TEXT)` |
+| `notes` | Pinned and tagged markdown notes | `id (TEXT)` |
+| `user_backups` | Full JSON state snapshots & workspace profile | `id (TEXT)` |
 
-| Table | Purpose |
-|---|---|
-| moodEntries | Daily mood check-ins |
-| sleepEntries | Sleep duration and notes |
-| activityEntries | Exercise and activity logs |
-| habits | User-created habits |
-| habitCompletions | Daily habit completion |
-| goals | Personal goals and progress |
+---
 
-## Project Structure
+## 🚀 Setting Up Supabase
 
-```text
-Database/
-├── package.json
-├── README.md
-├── schemas/
-│   ├── mood.schema.json
-│   ├── sleep.schema.json
-│   ├── activity.schema.json
-│   ├── habit.schema.json
-│   ├── habit-completion.schema.json
-│   └── goal.schema.json
-├── src/
-│   ├── db.js
-│   ├── healthService.js
-│   └── weeklyProgress.js
-└── tests/
-    └── db.test.js
-```
+1. Create a free project at [supabase.com](https://supabase.com).
+2. Open the **SQL Editor** in your Supabase Dashboard.
+3. Paste and run the SQL migration script located at:
+   ```text
+   database/schemas/supabase_schema.sql
+   ```
+4. Copy your **Project URL** and **Anon Key** from `Project Settings -> API`.
+5. Connect in LifeOS:
+   - **In UI**: Go to **Settings -> Supabase Cloud Database**, enter your credentials, and click **Test Connection** & **Save Credentials**.
+   - **Or in `.env` / Vercel**: Set `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
 
-## Installation
+---
 
-From this directory:
+## 🧪 Local IndexedDB & Unit Tests
+
+The offline database uses Dexie.js with JSON Schema validation docs:
 
 ```bash
+cd database
 npm install
-```
-
-## Run Tests
-
-```bash
 npm test
 ```
-
-## Available Operations
-
-Import functions from `src/healthService.js` to save or retrieve:
-
-- Mood check-ins
-- Sleep records
-- Activity records
-- Habits and completions
-- Personal goals and progress
-
-Import `getWeeklyProgress` from `src/weeklyProgress.js` to calculate a summary for a date range.
-
-Example:
-
-```javascript
-import { getWeeklyProgress } from "./src/weeklyProgress.js";
-
-const report = await getWeeklyProgress(
-  "2026-10-19",
-  "2026-10-25"
-);
-
-console.log(report);
-```
-
-## Important Notes
-
-- IndexedDB stores data in the browser.
-- JSON Schema files document the expected record structure; they do not automatically validate database writes.
-- Weekly summaries are calculated from saved records.
-- The database module must be integrated with the main LifeOS app before the app's UI can use it.
-- Test records are isolated using fake-indexeddb.
+All unit tests run in Node.js via `fake-indexeddb`.

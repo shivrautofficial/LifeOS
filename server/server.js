@@ -71,6 +71,10 @@ function startServer(port) {
           status: 'ok',
           service: 'LifeOS API',
           version: '1.0.0',
+          database: {
+            type: (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) ? 'Supabase Cloud (PostgreSQL)' : 'Local-First (Client IndexedDB / LocalStorage)',
+            supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY)
+          },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
         }));

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifeOS â€” One Life. One Dashboard.</title>
+  <title>LifeOS — One Life. One Dashboard.</title>
   <meta name="description" content="LifeOS: A professional personal operating system to organize tasks, schedules, goals, habits, projects, notes, and productivity insights.">
 
   <!-- Inter & JetBrains Mono Fonts -->
@@ -155,8 +155,8 @@
       <div class="sidebar-footer">
         <div class="user-profile-widget" onclick="location.hash='#settings'" title="Account & Persona Settings">
           <div class="user-avatar-wrap">
-            <div class="user-avatar" id="sidebar-user-avatar">S</div>
-            <span class="user-status-dot" title="Local System Active"></span>
+            <div class="user-avatar" id="sidebar-user-avatar">U</div>
+            <span class="user-status-dot" title="System Active"></span>
           </div>
           <div class="user-meta">
             <span class="user-name" id="sidebar-user-name">User</span>
@@ -191,7 +191,7 @@
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           <input type="text" class="header-search-input" id="global-search-input" placeholder="Jump to module or action..." aria-label="Quick jump">
-          <span class="header-search-shortcut">âŒ˜K</span>
+          <span class="header-search-shortcut">⌘K</span>
         </div>
 
         <div class="header-right">
@@ -240,7 +240,9 @@
           </div>
           <h2 class="modal-title" id="onboarding-modal-title">Welcome to LifeOS</h2>
         </div>
-        <button class="btn btn-icon btn-sm" id="btn-close-onboarding" aria-label="Close modal">âœ•</button>
+        <button class="btn btn-icon btn-sm" id="btn-close-onboarding" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
 
       <div class="modal-body">
@@ -272,9 +274,132 @@
     </div>
   </div>
 
+  <!-- Universal Quick-Add Command Modal -->
+  <div class="modal-backdrop" id="quick-add-modal" role="dialog" aria-modal="true" aria-labelledby="quick-add-modal-title">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="brand-icon" style="width: 26px; height: 26px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </div>
+          <h2 class="modal-title" id="quick-add-modal-title">Universal Quick Add</h2>
+        </div>
+        <button class="btn btn-icon btn-sm" id="btn-close-quick-add" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Quick Add Category Tabs -->
+      <div class="segmented-control" style="margin: var(--space-3) var(--space-5) 0 var(--space-5);" id="quick-add-tabs">
+        <button class="segmented-btn active" data-tab="task">Deliverable</button>
+        <button class="segmented-btn" data-tab="event">Schedule Block</button>
+        <button class="segmented-btn" data-tab="goal">Goal Milestone</button>
+        <button class="segmented-btn" data-tab="note">Quick Note</button>
+      </div>
+
+      <div class="modal-body" style="padding-top: var(--space-4);">
+        <!-- Form 1: Deliverable / Task -->
+        <div id="qa-form-task" class="qa-form-view">
+          <div class="form-group">
+            <label class="form-label" for="qa-task-title">Deliverable Title</label>
+            <input type="text" id="qa-task-title" class="form-input" placeholder="e.g. Finalize Q4 architectural review & submit PR">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="qa-task-priority">Priority</label>
+              <select id="qa-task-priority" class="form-select">
+                <option value="urgent">Urgent</option>
+                <option value="high" selected>High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qa-task-due">Due Timeline</label>
+              <select id="qa-task-due" class="form-select">
+                <option value="Today" selected>Due: Today</option>
+                <option value="Tomorrow">Due: Tomorrow</option>
+                <option value="This Week">Due: This Week</option>
+                <option value="Next Week">Due: Next Week</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form 2: Calendar Block -->
+        <div id="qa-form-event" class="qa-form-view" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="qa-event-title">Event or Focus Block Title</label>
+            <input type="text" id="qa-event-title" class="form-input" placeholder="e.g. Deep Work: Algorithm Optimization">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="qa-event-time">Time Range</label>
+              <input type="text" id="qa-event-time" class="form-input" placeholder="e.g. 10:00 AM - 12:00 PM">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qa-event-tag">Category Tag</label>
+              <select id="qa-event-tag" class="form-select">
+                <option value="Deep Work" selected>Deep Work</option>
+                <option value="Sprint Review">Sprint Review</option>
+                <option value="Health & Gym">Health & Gym</option>
+                <option value="Academic">Academic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form 3: Goal Milestone -->
+        <div id="qa-form-goal" class="qa-form-view" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="qa-goal-title">Goal / Objective</label>
+            <input type="text" id="qa-goal-title" class="form-input" placeholder="e.g. Ship 1.0 Production Release">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="qa-goal-category">Domain</label>
+              <select id="qa-goal-category" class="form-select">
+                <option value="Career" selected>Career</option>
+                <option value="Learning">Learning</option>
+                <option value="Health">Health</option>
+                <option value="Finance">Finance</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="qa-goal-target">Target Date</label>
+              <input type="text" id="qa-goal-target" class="form-input" placeholder="e.g. Nov 2026">
+            </div>
+          </div>
+        </div>
+
+        <!-- Form 4: Quick Note -->
+        <div id="qa-form-note" class="qa-form-view" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="qa-note-title">Note Title</label>
+            <input type="text" id="qa-note-title" class="form-input" placeholder="e.g. Systems Architecture Memo">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="qa-note-content">Note Content</label>
+            <textarea id="qa-note-content" class="form-textarea" rows="3" placeholder="Key insights, meeting decisions, or brainstorms..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-cancel-quick-add">Cancel</button>
+        <button class="btn btn-primary" id="btn-submit-quick-add">Create Item</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Environment & AI Provider Config (Fallback-safe) -->
     <script src="js/config.local.js" onerror="window.LIFEOS_CONFIG = window.LIFEOS_CONFIG || {}"></script>
     <script>window.LIFEOS_CONFIG = window.LIFEOS_CONFIG || {};</script>
+
+    <!-- Chart.js Engine (Local Vendor Bundle, Zero-Network Fallback Safe) -->
+    <script src="js/vendor/chart.umd.min.js"></script>
 
     <!-- Main Application Bootstrap -->
     <script type="module" src="js/app.js"></script>

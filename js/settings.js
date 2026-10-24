@@ -7,7 +7,12 @@ import { state } from './state.js';
 import { storage } from './storage.js';
 import { onboarding, PROFESSIONS } from './onboarding.js';
 import { sound } from './audio.js';
+<<<<<<< HEAD
 import { syncBackgroundVideos } from './app.js';
+=======
+import { supabaseService } from './supabase.js';
+import { toast } from './toast.js';
+>>>>>>> 56ce10e9f97d1336d0b4a5c68b1ba2992f4214d1
 
 export const settingsModule = {
   /**
@@ -48,6 +53,28 @@ export const settingsModule = {
     if (themeLightBtn && themeDarkBtn) {
       themeLightBtn.classList.toggle('active', currentTheme === 'light');
       themeDarkBtn.classList.toggle('active', currentTheme === 'dark');
+    }
+
+    // Supabase inputs and status
+    const supabaseUrlInput = document.getElementById('setting-supabase-url');
+    const supabaseKeyInput = document.getElementById('setting-supabase-key');
+    const supabaseBadge = document.getElementById('supabase-status-badge');
+    const creds = supabaseService.getCredentials();
+
+    if (supabaseUrlInput && creds.url) {
+      supabaseUrlInput.value = creds.url;
+    }
+    if (supabaseKeyInput && creds.key) {
+      supabaseKeyInput.value = creds.key;
+    }
+    if (supabaseBadge) {
+      if (supabaseService.isConfigured()) {
+        supabaseBadge.textContent = 'Configured';
+        supabaseBadge.className = 'badge badge-success';
+      } else {
+        supabaseBadge.textContent = 'Not Connected';
+        supabaseBadge.className = 'badge badge-neutral';
+      }
     }
   },
 
@@ -96,7 +123,7 @@ export const settingsModule = {
           }
         });
 
-        alert('Settings saved successfully!');
+        toast.success('Settings saved successfully!');
       };
     }
 
@@ -157,10 +184,10 @@ export const settingsModule = {
             const success = storage.importData(evt.target.result);
             if (success) {
               sound.playComplete();
-              alert('LifeOS data imported successfully. Reloading view...');
-              window.location.reload();
+              toast.success('LifeOS data imported successfully. Reloading view...');
+              setTimeout(() => window.location.reload(), 600);
             } else {
-              alert('Failed to import data: invalid JSON structure.');
+              toast.error('Failed to import data: invalid JSON structure.');
             }
           };
           reader.readAsText(file);
@@ -174,9 +201,181 @@ export const settingsModule = {
         if (confirm('Are you sure you want to reset all LifeOS data back to baseline defaults? This cannot be undone.')) {
           storage.clear();
           state.reset();
-          alert('LifeOS has been reset to baseline defaults.');
-          window.location.hash = '#dashboard';
-          window.location.reload();
+          toast.info('LifeOS has been reset to baseline defaults.');
+          setTimeout(() => {
+            window.location.hash = '#dashboard';
+            window.location.reload();
+          }, 600);
+        }
+      };
+    }
+
+    // Supabase Cloud Controls
+    const btnSaveSupabase = document.getElementById('btn-save-supabase');
+    const btnTestSupabase = document.getElementById('btn-test-supabase');
+    const btnPushCloud = document.getElementById('btn-sync-to-cloud');
+    const btnPullCloud = document.getElementById('btn-sync-from-cloud');
+    const btnClearSupabase = document.getElementById('btn-clear-supabase');
+    const supabaseUrlInput = document.getElementById('setting-supabase-url');
+    const supabaseKeyInput = document.getElementById('setting-supabase-key');
+    const supabaseBadge = document.getElementById('supabase-status-badge');
+    const feedbackBox = document.getElementById('supabase-feedback-box');
+
+    const showFeedback = (text, type = 'info') => {
+      if (!feedbackBox) return;
+      feedbackBox.style.display = 'block';
+      feedbackBox.textContent = text;
+      if (type === 'success') {
+        feedbackBox.style.backgroundColor = 'var(--color-success-bg, #dcfce7)';
+        feedbackBox.style.color = 'var(--color-success-text, #15803d)';
+        feedbackBox.style.border = '1px solid var(--color-success-border, #bbf7d0)';
+      } else if (type === 'error') {
+        feedbackBox.style.backgroundColor = 'var(--color-danger-bg, #fee2e2)';
+        feedbackBox.style.color = 'var(--color-danger-text, #b91c1c)';
+        feedbackBox.style.border = '1px solid var(--color-danger-border, #fecaca)';
+      } else {
+        feedbackBox.style.backgroundColor = 'var(--color-info-bg, #e0f2fe)';
+        feedbackBox.style.color = 'var(--color-info-text, #0369a1)';
+        feedbackBox.style.border = '1px solid var(--color-info-border, #bae6fd)';
+      }
+    };
+
+    if (btnSaveSupabase && supabaseUrlInput && supabaseKeyInput) {
+      btnSaveSupabase.onclick = async () => {
+        sound.playClick();
+        const url = supabaseUrlInput.value.trim();
+        const key = supabaseKeyInput.value.trim();
+
+        if (!url || !key) {
+          showFeedback('Please provide both a valid Project URL and Anon Key.', 'error');
+          return;
+        }
+
+        showFeedback('Initializing Supabase client...', 'info');
+        const ok = await supabaseService.saveConfig(url, key);
+        if (ok) {
+          sound.playComplete();
+          if (supabaseBadge) {
+            supabaseBadge.textContent = 'Configured';
+            supabaseBadge.className = 'badge badge-success';
+          }
+          showFeedback('Supabase credentials saved successfully! Click "Test Connection" to verify access.', 'success');
+        } else {
+          showFeedback('Could not initialize Supabase. Check the URL and network connectivity.', 'error');
+        }
+      };
+    }
+
+    if (btnTestSupabase) {
+      btnTestSupabase.onclick = async () => {
+        sound.playClick();
+        btnTestSupabase.disabled = true;
+        btnTestSupabase.textContent = 'Testing...';
+        showFeedback('Connecting to Supabase database...', 'info');
+
+        const res = await supabaseService.testConnection();
+        btnTestSupabase.disabled = false;
+        btnTestSupabase.textContent = 'Test Connection';
+
+        if (res.success) {
+          sound.playComplete();
+          if (supabaseBadge) {
+            supabaseBadge.textContent = 'Connected';
+            supabaseBadge.className = 'badge badge-success';
+          }
+          showFeedback(res.message, res.warning ? 'info' : 'success');
+        } else {
+          if (supabaseBadge) {
+            supabaseBadge.textContent = 'Error';
+            supabaseBadge.className = 'badge badge-danger';
+          }
+          showFeedback(res.message, 'error');
+        }
+      };
+    }
+
+    if (btnPushCloud) {
+      btnPushCloud.onclick = async () => {
+        sound.playClick();
+        if (!supabaseService.isConfigured()) {
+          showFeedback('Please save valid Supabase credentials first before pushing data.', 'error');
+          return;
+        }
+
+        btnPushCloud.disabled = true;
+        btnPushCloud.textContent = 'Pushing...';
+        showFeedback('Syncing local tasks, habits, goals, and notes to Supabase...', 'info');
+
+        const res = await supabaseService.pushAll(state.data);
+        btnPushCloud.disabled = false;
+        btnPushCloud.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+          </svg>
+          Push to Cloud
+        `;
+
+        if (res.success) {
+          sound.playComplete();
+          showFeedback(res.message, 'success');
+        } else {
+          showFeedback(res.message, 'error');
+        }
+      };
+    }
+
+    if (btnPullCloud) {
+      btnPullCloud.onclick = async () => {
+        sound.playClick();
+        if (!supabaseService.isConfigured()) {
+          showFeedback('Please save valid Supabase credentials first before pulling data.', 'error');
+          return;
+        }
+
+        if (!confirm('Pulling from cloud will merge remote items into your local workspace. Proceed?')) {
+          return;
+        }
+
+        btnPullCloud.disabled = true;
+        btnPullCloud.textContent = 'Pulling...';
+        showFeedback('Fetching remote data from Supabase...', 'info');
+
+        const res = await supabaseService.pullAll();
+        btnPullCloud.disabled = false;
+        btnPullCloud.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/>
+          </svg>
+          Pull from Cloud
+        `;
+
+        if (res.success && res.data) {
+          sound.playComplete();
+          // Merge non-empty pulled data
+          if (res.data.tasks && res.data.tasks.length > 0) state.setKey('tasks', res.data.tasks);
+          if (res.data.habits && res.data.habits.length > 0) state.setKey('habits', res.data.habits);
+          if (res.data.goals && res.data.goals.length > 0) state.setKey('goals', res.data.goals);
+          if (res.data.notes && res.data.notes.length > 0) state.setKey('notes', res.data.notes);
+
+          showFeedback('Cloud data synchronized into local workspace successfully!', 'success');
+        } else {
+          showFeedback(res.message, 'error');
+        }
+      };
+    }
+
+    if (btnClearSupabase) {
+      btnClearSupabase.onclick = () => {
+        sound.playClick();
+        if (confirm('Disconnect Supabase credentials? Your data will remain stored locally.')) {
+          supabaseService.clearConfig();
+          if (supabaseUrlInput) supabaseUrlInput.value = '';
+          if (supabaseKeyInput) supabaseKeyInput.value = '';
+          if (supabaseBadge) {
+            supabaseBadge.textContent = 'Not Connected';
+            supabaseBadge.className = 'badge badge-neutral';
+          }
+          showFeedback('Supabase credentials removed. Running in offline/local-first mode.', 'info');
         }
       };
     }
