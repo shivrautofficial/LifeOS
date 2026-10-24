@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    LifeOS Storage Module
    Centralized Local Persistence Abstraction (LocalStorage wrapper)
    ========================================================================== */
@@ -77,7 +77,20 @@ export const storage = {
     const keys = Object.keys(localStorage).filter(k => k.startsWith(STORAGE_PREFIX));
     keys.forEach(k => {
       const cleanKey = k.replace(STORAGE_PREFIX, '');
-      data[cleanKey] = this.get(cleanKey);
+      // Never export standalone API keys or OAuth tokens
+      if (cleanKey.toLowerCase().includes('api_key') || cleanKey.toLowerCase().includes('token')) {
+        return;
+      }
+      let val = this.get(cleanKey);
+      // Strip any nested apiKey properties
+      if (val && typeof val === 'object') {
+        val = JSON.parse(JSON.stringify(val));
+        if (val.apiKey) delete val.apiKey;
+        if (val.aiApiKey) delete val.aiApiKey;
+        if (val.settings && val.settings.apiKey) delete val.settings.apiKey;
+        if (val.ambientSettings && val.ambientSettings.apiKey) delete val.ambientSettings.apiKey;
+      }
+      data[cleanKey] = val;
     });
     return JSON.stringify(data, null, 2);
   },
@@ -102,3 +115,4 @@ export const storage = {
     }
   }
 };
+

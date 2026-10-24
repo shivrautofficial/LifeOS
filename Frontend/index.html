@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifeOS — One Life. One Dashboard.</title>
+  <title>LifeOS â€” One Life. One Dashboard.</title>
   <meta name="description" content="LifeOS: A professional personal operating system to organize tasks, schedules, goals, habits, projects, notes, and productivity insights.">
 
   <!-- Inter & JetBrains Mono Fonts -->
@@ -188,7 +188,7 @@
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           <input type="text" class="header-search-input" id="global-search-input" placeholder="Jump to module or action..." aria-label="Quick jump">
-          <span class="header-search-shortcut">⌘K</span>
+          <span class="header-search-shortcut">âŒ˜K</span>
         </div>
 
         <div class="header-right">
@@ -237,7 +237,7 @@
           </div>
           <h2 class="modal-title" id="onboarding-modal-title">Welcome to LifeOS</h2>
         </div>
-        <button class="btn btn-icon btn-sm" id="btn-close-onboarding" aria-label="Close modal">✕</button>
+        <button class="btn btn-icon btn-sm" id="btn-close-onboarding" aria-label="Close modal">âœ•</button>
       </div>
 
       <div class="modal-body">
@@ -269,7 +269,12 @@
     </div>
   </div>
 
-  <!-- Main Application Bootstrap -->
-  <script type="module" src="js/app.js"></script>
+  <!-- Environment & AI Provider Config (Fallback-safe) -->
+    <script src="js/config.local.js" onerror="window.LIFEOS_CONFIG = window.LIFEOS_CONFIG || {}"></script>
+    <script>window.LIFEOS_CONFIG = window.LIFEOS_CONFIG || {};</script>
+
+    <!-- Main Application Bootstrap -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
+
