@@ -1,75 +1,119 @@
 <div class="page-container" id="tasks-page">
-  <div class="page-header">
-    <div>
+
+  <!-- Page Header -->
+  <header class="page-header animate-fade-in">
+    <div class="page-header-text">
       <h1 class="page-title">Tasks & Priority Matrix</h1>
-      <p class="page-description">Organize, schedule, and execute your high-impact deliverables across workflow stages.</p>
+      <p class="page-description">Organize, schedule, and execute high-impact deliverables across workflow stages.</p>
     </div>
     <div class="page-actions">
-      <button class="btn btn-primary" id="btn-show-add-task">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      <!-- Search Filter -->
+      <div style="position: relative; display: flex; align-items: center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; position: absolute; left: 10px; color: var(--color-text-muted);" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="tasks-search-filter" class="form-input" placeholder="Filter tasks..." style="height: 34px; padding-left: 30px; width: 180px; font-size: 13px;">
+      </div>
+
+      <button class="btn btn-primary btn-sm" id="btn-show-add-task">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
         New Task
       </button>
     </div>
+  </header>
+
+  <!-- Filter Pills Bar -->
+  <div class="segmented-control animate-fade-in stagger-1" style="margin-bottom: var(--space-4); max-width: fit-content;" id="tasks-priority-filters">
+    <button class="segmented-btn active" data-filter-priority="all">All Priorities</button>
+    <button class="segmented-btn" data-filter-priority="urgent">Urgent</button>
+    <button class="segmented-btn" data-filter-priority="high">High</button>
+    <button class="segmented-btn" data-filter-priority="medium">Medium</button>
+    <button class="segmented-btn" data-filter-priority="low">Low</button>
   </div>
 
-  <!-- Quick Add Task Bar -->
-  <div id="add-task-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
-    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Create New Deliverable</div>
-    <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
-      <input type="text" id="input-new-task-title" class="form-input" placeholder="Task title / description..." style="flex: 2; min-width: 200px;">
-      <select id="select-new-task-priority" class="form-select" style="flex: 1; min-width: 130px;">
+  <!-- Quick Add Task Panel -->
+  <div id="add-task-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary); background: var(--color-bg-card);">
+    <div style="font-weight: 600; font-size: var(--font-size-card-title); margin-bottom: var(--space-3); color: var(--color-text-main);">Create New Task</div>
+    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+      <input type="text" id="input-new-task-title" class="form-input" placeholder="Task title or deliverable..." style="flex: 2; min-width: 220px;" aria-label="Task title">
+      <select id="select-new-task-priority" class="form-select" style="flex: 1; min-width: 120px;" aria-label="Task priority">
         <option value="urgent">Urgent</option>
         <option value="high" selected>High</option>
         <option value="medium">Medium</option>
         <option value="low">Low</option>
       </select>
-      <select id="select-new-task-status" class="form-select" style="flex: 1; min-width: 130px;">
+      <select id="select-new-task-due" class="form-select" style="flex: 1; min-width: 120px;" aria-label="Task due date">
+        <option value="Today" selected>Due: Today</option>
+        <option value="Tomorrow">Due: Tomorrow</option>
+        <option value="This Week">Due: This Week</option>
+        <option value="Next Week">Due: Next Week</option>
+      </select>
+      <select id="select-new-task-status" class="form-select" style="flex: 1; min-width: 120px;" aria-label="Task status">
         <option value="todo" selected>To Do</option>
         <option value="in_progress">In Progress</option>
         <option value="review">In Review</option>
         <option value="done">Done</option>
       </select>
-      <button class="btn btn-primary" id="btn-submit-new-task">Add</button>
-      <button class="btn btn-secondary" id="btn-cancel-add-task">Cancel</button>
+      <div style="display: flex; gap: var(--space-2);">
+        <button class="btn btn-primary" id="btn-submit-new-task">Add Task</button>
+        <button class="btn btn-secondary" id="btn-cancel-add-task">Cancel</button>
+      </div>
     </div>
   </div>
 
   <!-- 4-Column Kanban Pipeline -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-md);" id="kanban-columns-container">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);" id="kanban-columns-container">
+
     <!-- To Do -->
-    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 8px; border-bottom: 2px solid var(--color-border);">
-        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase;">To Do</span>
+    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="status-dot"></span>
+          <span style="font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-main);">To Do</span>
+        </div>
         <span class="nav-badge" id="count-todo">0</span>
       </div>
-      <div class="kanban-cards-list" id="list-todo" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      <div class="kanban-cards-list" id="list-todo" style="display: flex; flex-direction: column; gap: var(--space-2);"></div>
     </div>
 
     <!-- In Progress -->
-    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 2px; border-bottom: 2px solid var(--color-electric-indigo);">
-        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase; color: var(--color-electric-indigo);">In Progress</span>
-        <span class="nav-badge" id="count-in_progress" style="background: var(--color-electric-indigo); color: #fff;">0</span>
+    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="status-dot" style="background-color: var(--color-primary);"></span>
+          <span style="font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-primary);">In Progress</span>
+        </div>
+        <span class="nav-badge" id="count-in_progress" style="background: var(--color-primary); color: #FFFFFF;">0</span>
       </div>
-      <div class="kanban-cards-list" id="list-in_progress" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      <div class="kanban-cards-list" id="list-in_progress" style="display: flex; flex-direction: column; gap: var(--space-2);"></div>
     </div>
 
     <!-- In Review -->
-    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 2px; border-bottom: 2px solid var(--color-warning);">
-        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase; color: var(--color-warning);">In Review</span>
+    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="status-dot" style="background-color: var(--color-warning);"></span>
+          <span style="font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-warning);">In Review</span>
+        </div>
         <span class="nav-badge" id="count-review">0</span>
       </div>
-      <div class="kanban-cards-list" id="list-review" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      <div class="kanban-cards-list" id="list-review" style="display: flex; flex-direction: column; gap: var(--space-2);"></div>
     </div>
 
     <!-- Completed -->
-    <div class="card" style="padding: 14px; background: var(--color-cloud-grey); min-height: 400px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); padding-bottom: 2px; border-bottom: 2px solid var(--color-success);">
-        <span style="font-weight: 700; font-size: var(--font-size-sm); text-transform: uppercase; color: var(--color-success);">Completed</span>
-        <span class="nav-badge" id="count-done" style="background: var(--color-success); color: #fff;">0</span>
+    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="status-dot active"></span>
+          <span style="font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-success);">Completed</span>
+        </div>
+        <span class="nav-badge" id="count-done" style="background: var(--color-success); color: #FFFFFF;">0</span>
       </div>
-      <div class="kanban-cards-list" id="list-done" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      <div class="kanban-cards-list" id="list-done" style="display: flex; flex-direction: column; gap: var(--space-2);"></div>
     </div>
+
   </div>
+
 </div>

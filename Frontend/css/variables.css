@@ -1,128 +1,249 @@
 /* ==========================================================================
-   LifeOS Design System Tokens
-   Variables, Shared Palette, Typography, and Metrics
+   LifeOS Design System Tokens & Motion Physics
+   Variables, Shared Palette, Typography Hierarchy, Glass Surfaces & Ambient Lighting
+   Inspired by Linear, Notion, Apple, and High-Performance Dashboards
    ========================================================================== */
 
 :root {
-  /* Brand Palette - Midnight Navy + Electric Indigo Identity */
-  --color-midnight-navy: #111827;
-  --color-electric-indigo: #6366F1;
-  --color-indigo-hover: #4F46E5;
-  --color-soft-lavender: #EEF2FF;
-  --color-soft-violet: #8B5CF6;
-  --color-cloud-grey: #F6F7FB;
-  --color-white-surface: #FFFFFF;
+  /* --------------------------------------------------------------------------
+     Core Color Palette (Light Mode Foundation)
+     -------------------------------------------------------------------------- */
+  --color-primary: #6366F1;             /* Electric Indigo */
+  --color-primary-hover: #4F46E5;       /* Saturated Hover */
+  --color-primary-active: #4338CA;
+  --color-primary-glow: rgba(99, 102, 241, 0.35);
+  --color-soft-indigo: #EEF2FF;         /* Soft Indigo Background */
+  --color-soft-indigo-hover: #E0E7FF;
 
-  /* Typography Colors */
-  --color-text-primary: #111827;
-  --color-text-secondary: #6B7280;
-  --color-text-muted: #9CA3AF;
-  --color-text-white: #FFFFFF;
+  --color-text-main: #111827;           /* Deep Charcoal / Near Black */
+  --color-text-secondary: #6B7280;      /* Muted Slate */
+  --color-text-muted: #9CA3AF;          /* Tertiary / Captions */
+  --color-text-inverse: #FFFFFF;        /* Contrast Light */
 
-  /* Borders & Dividers */
-  --color-border: #E5E7EB;
-  --color-border-hover: #D1D5DB;
-  --color-border-subtle: #F3F4F6;
+  --color-bg-main: #F6F7FB;             /* Base Canvas */
+  --color-bg-card: #FFFFFF;             /* Crisp White Surface */
+  --color-bg-card-glass: rgba(255, 255, 255, 0.85);
+  --color-bg-subtle: #F3F4F6;           /* Subtle Inputs / Recessed Areas */
+  --color-bg-hover: #F9FAFB;            /* Row / Item Hover */
 
-  /* Feedback & Status Accents */
+  --color-border: #E5E7EB;              /* Base Border */
+  --color-border-hover: #D1D5DB;        /* Hover Border */
+  --color-border-subtle: #F3F4F6;       /* Dividers */
+  --color-border-focus: #6366F1;        /* Focus Indicator */
+
+  /* Semantic Feedback & Status */
   --color-success: #16A34A;
-  --color-success-bg: rgba(22, 163, 74, 0.1);
+  --color-success-bg: #DCFCE7;
+  --color-success-text: #15803D;
+
   --color-warning: #D97706;
-  --color-warning-bg: rgba(217, 119, 6, 0.1);
+  --color-warning-bg: #FEF3C7;
+  --color-warning-text: #B45309;
+
   --color-error: #DC2626;
-  --color-error-bg: rgba(220, 38, 38, 0.1);
+  --color-error-bg: #FEE2E2;
+  --color-error-text: #B91C1C;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-  --gradient-dark: linear-gradient(180deg, #111827 0%, #1F2937 100%);
-  --gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%);
+  --color-info: #2563EB;
+  --color-info-bg: #EFF6FF;
+  --color-info-text: #1D4ED8;
 
-  /* Typography Standards */
-  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-family-mono: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+  /* Ambient Orb Lighting (Light Mode) */
+  --orb-color-1: rgba(99, 102, 241, 0.12); /* Indigo */
+  --orb-color-2: rgba(139, 92, 246, 0.10); /* Soft Violet */
+  --orb-color-3: rgba(56, 189, 248, 0.08); /* Cyan Light */
+  --ambient-grid-opacity: 0.025;
+  --spotlight-glow: rgba(99, 102, 241, 0.05);
 
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-md: 1.125rem;   /* 18px */
-  --font-size-lg: 1.25rem;    /* 20px */
-  --font-size-xl: 1.5rem;     /* 24px */
-  --font-size-2xl: 1.875rem;  /* 30px */
-  --font-size-3xl: 2.25rem;   /* 36px */
+  /* Sidebar Theme (Light Mode) */
+  --color-sidebar-bg: #FFFFFF;
+  --color-sidebar-border: #E5E7EB;
+  --color-sidebar-text: #374151;
+  --color-sidebar-text-active: #6366F1;
+  --color-sidebar-item-active: #EEF2FF;
+  --color-sidebar-item-hover: #F3F4F6;
+  --color-sidebar-heading: #9CA3AF;
+
+  /* Legacy aliases for backward compatibility */
+  --color-electric-indigo: var(--color-primary);
+  --color-indigo-hover: var(--color-primary-hover);
+  --color-midnight-navy: var(--color-text-main);
+  --color-cloud-grey: var(--color-bg-main);
+  --color-white-surface: var(--color-bg-card);
+  --color-text-primary: var(--color-text-main);
+  --color-soft-lavender: var(--color-soft-indigo);
+  --color-soft-violet: #8B5CF6;
+
+  /* --------------------------------------------------------------------------
+     Typography Hierarchy
+     -------------------------------------------------------------------------- */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* Hierarchy Scale */
+  --font-size-page-title: 1.625rem;   /* ~26px */
+  --font-size-section-title: 1.125rem; /* ~18px */
+  --font-size-card-title: 0.9375rem;   /* ~15px */
+  --font-size-body: 0.875rem;          /* ~14px */
+  --font-size-meta: 0.8125rem;         /* ~13px */
+  --font-size-xs: 0.75rem;             /* ~12px */
+
+  --font-size-sm: 0.875rem;
+  --font-size-base: 0.9375rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: 2rem;
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
 
   --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
   --line-height-base: 1.5;
   --line-height-relaxed: 1.625;
 
-  /* Spacing Scale */
-  --space-2xs: 0.25rem;  /* 4px */
-  --space-xs: 0.5rem;    /* 8px */
-  --space-sm: 0.75rem;   /* 12px */
-  --space-md: 1rem;      /* 16px */
-  --space-lg: 1.25rem;   /* 20px */
-  --space-xl: 1.5rem;    /* 24px */
-  --space-2xl: 2rem;     /* 32px */
-  --space-3xl: 3rem;     /* 48px */
+  /* --------------------------------------------------------------------------
+     Spacing Scale (4px increments)
+     -------------------------------------------------------------------------- */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-12: 3rem;    /* 48px */
 
-  /* Border Radii */
+  --space-2xs: var(--space-1);
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-3);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-6);
+  --space-2xl: var(--space-8);
+  --space-3xl: var(--space-12);
+
+  /* --------------------------------------------------------------------------
+     Geometry & Radii (Moderate 8-12px, clean architectural edges)
+     -------------------------------------------------------------------------- */
+  --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
-  --radius-2xl: 24px;
-  --radius-full: 9999px;
+  --radius-md: 8px;     /* Buttons, inputs, small tags */
+  --radius-lg: 10px;    /* Cards, panels */
+  --radius-xl: 12px;    /* Modals, outer containers */
+  --radius-full: 9999px; /* Status dots, pill tags only */
 
-  /* Elevation & Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.09), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
+  /* Component Sizing Standards */
+  --input-height-sm: 32px;
+  --input-height-md: 38px;
+  --input-height-lg: 42px;
 
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  --button-height-sm: 32px;
+  --button-height-md: 38px;
+  --button-height-lg: 42px;
 
-  /* Shell Layout Dimensions */
-  --sidebar-width: 260px;
-  --sidebar-collapsed-width: 72px;
-  --header-height: 68px;
+  /* --------------------------------------------------------------------------
+     Elevation, Shadows & Glass Surfaces
+     -------------------------------------------------------------------------- */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.2);
 
-  /* Responsive Breakpoints */
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
+  /* Glassmorphism Surface Tokens */
+  --glass-blur: 16px;
+  --glass-saturate: 180%;
+  --card-border-glow: rgba(99, 102, 241, 0.2);
+
+  /* --------------------------------------------------------------------------
+     Motion Physics & Animation Timings
+     -------------------------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  --transition-fast: 140ms var(--ease-in-out);
+  --transition-normal: 220ms var(--ease-out-expo);
+  --transition-smooth: 320ms var(--ease-out-expo);
+
+  /* Shell Dimensions */
+  --sidebar-width: 256px;
+  --header-height: 60px;
+  --max-content-width: 1380px;
 
   /* Z-Index Hierarchy */
   --z-base: 1;
-  --z-sticky: 100;
-  --z-drawer: 200;
-  --z-modal: 500;
-  --z-toast: 1000;
+  --z-header: 40;
+  --z-sidebar: 50;
+  --z-drawer-backdrop: 60;
+  --z-drawer: 70;
+  --z-modal-backdrop: 90;
+  --z-modal: 100;
+  --z-toast: 110;
 }
 
-/* Dark Theme Overrides */
+/* ==========================================================================
+   Dark Theme (Obsidian & Deep Midnight SaaS Aesthetic)
+   Designed to match the elite visual feel of Linear & Raycast
+   ========================================================================== */
 [data-theme="dark"] {
-  --color-cloud-grey: #0F172A;
-  --color-white-surface: #1E293B;
-  --color-midnight-navy: #FFFFFF;
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-  --color-border: #334155;
-  --color-border-hover: #475569;
-  --color-border-subtle: #1E293B;
-  --color-soft-lavender: rgba(99, 102, 241, 0.15);
-  --gradient-surface: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-}
+  --color-primary: #818CF8;
+  --color-primary-hover: #6366F1;
+  --color-primary-active: #4F46E5;
+  --color-primary-glow: rgba(129, 140, 248, 0.35);
+  --color-soft-indigo: rgba(99, 102, 241, 0.15);
+  --color-soft-indigo-hover: rgba(99, 102, 241, 0.25);
 
+  --color-text-main: #F9FAFB;           /* Crisp White */
+  --color-text-secondary: #94A3B8;      /* Cool Slate */
+  --color-text-muted: #64748B;          /* Muted Tertiary */
+  --color-text-inverse: #0B0F19;
+
+  --color-bg-main: #090D16;             /* Deep Obsidian Midnight */
+  --color-bg-card: #111726;             /* Elevated Obsidian Card Surface */
+  --color-bg-card-glass: rgba(17, 23, 38, 0.82);
+  --color-bg-subtle: #161E31;           /* Recessed Slate Input/Pill */
+  --color-bg-hover: #1A243B;
+
+  --color-border: #1E2738;              /* Hairline Precision Border */
+  --color-border-hover: #2D3B54;
+  --color-border-subtle: #151D2C;
+  --color-border-focus: #818CF8;
+
+  --color-success-bg: rgba(22, 163, 74, 0.2);
+  --color-success-text: #4ADE80;
+  --color-warning-bg: rgba(217, 119, 6, 0.2);
+  --color-warning-text: #FBBF24;
+  --color-error-bg: rgba(220, 38, 38, 0.2);
+  --color-error-text: #F87171;
+  --color-info-bg: rgba(37, 99, 235, 0.2);
+  --color-info-text: #60A5FA;
+
+  /* Ambient Glowing Orbs (Dark Mode) */
+  --orb-color-1: rgba(99, 102, 241, 0.22); /* Electric Indigo Ambient Glow */
+  --orb-color-2: rgba(139, 92, 246, 0.18); /* Deep Violet Ambient Glow */
+  --orb-color-3: rgba(14, 165, 233, 0.14); /* Cyber Cyan Ambient Glow */
+  --ambient-grid-opacity: 0.045;
+  --spotlight-glow: rgba(129, 140, 248, 0.08);
+
+  --color-sidebar-bg: #0C111C;
+  --color-sidebar-border: #1E2738;
+  --color-sidebar-text: #94A3B8;
+  --color-sidebar-text-active: #818CF8;
+  --color-sidebar-item-active: rgba(99, 102, 241, 0.16);
+  --color-sidebar-item-hover: rgba(255, 255, 255, 0.04);
+  --color-sidebar-heading: #64748B;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.6);
+  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.3);
+  --card-border-glow: rgba(129, 140, 248, 0.35);
+}

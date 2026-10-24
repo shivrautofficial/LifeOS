@@ -23,26 +23,44 @@ export const projectsModule = {
     const projects = state.get('projects') || [];
 
     if (projects.length === 0) {
-      container.innerHTML = `<div class="placeholder-state"><h3 class="placeholder-title">No projects active</h3><p class="placeholder-text">Click "New Initiative" above to structure high-impact projects.</p></div>`;
+      container.innerHTML = `
+        <div class="placeholder-state" style="grid-column: 1 / -1;">
+          <div class="placeholder-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h3 class="placeholder-title">No projects active</h3>
+          <p class="placeholder-text">Click "New Initiative" above to structure high-impact projects and roadmaps.</p>
+        </div>
+      `;
       return;
     }
 
-    container.innerHTML = projects.map(p => `
-      <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <span class="badge ${p.status === 'Active' ? 'badge-indigo' : 'badge-neutral'}" style="margin-bottom: 6px;">${p.status || 'Active'}</span>
-            <div style="font-weight: 700; font-size: var(--font-size-base); color: var(--color-midnight-navy);">${p.title}</div>
+    container.innerHTML = projects.map(p => {
+      const statusBadge = p.status === 'Active'
+        ? '<span class="badge badge-indigo">Active</span>'
+        : p.status === 'Completed'
+          ? '<span class="badge badge-success">Completed</span>'
+          : '<span class="badge badge-warning">In Review</span>';
+
+      return `
+        <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius-lg);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+            <div>
+              <div style="margin-bottom: 6px;">${statusBadge}</div>
+              <div style="font-weight: 600; font-size: var(--font-size-card-title); color: var(--color-text-main); line-height: 1.35;">${p.title}</div>
+            </div>
+            <button class="btn btn-icon btn-sm" data-delete-project="${p.id}" title="Delete Project" style="color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Project">✕</button>
           </div>
-          <button class="btn btn-sm btn-icon" data-delete-project="${p.id}" title="Delete Project">✕</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: auto;">
+            <span>Target: <strong style="color: var(--color-text-main); font-weight: 500;">${p.deadline || 'Ongoing'}</strong></span>
+            <span style="font-weight: 700; color: var(--color-primary); font-variant-numeric: tabular-nums;">${p.progress || 0}%</span>
+          </div>
+          ${widgets.renderProgressBar(p.progress || 0, p.progress >= 80 ? 'var(--color-success)' : 'var(--color-primary)')}
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: 4px;">
-          <span>Target: ${p.deadline || 'Ongoing'}</span>
-          <span style="font-weight: 700; color: var(--color-electric-indigo);">${p.progress || 0}%</span>
-        </div>
-        ${widgets.renderProgressBar(p.progress || 0)}
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     this.bindDeletes();
   },
@@ -68,7 +86,12 @@ export const projectsModule = {
     if (btnShow && panel) {
       btnShow.onclick = () => {
         sound.playClick();
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        const isOpen = panel.style.display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen) {
+          const titleInput = document.getElementById('input-new-project-title');
+          if (titleInput) titleInput.focus();
+        }
       };
     }
 
@@ -93,7 +116,7 @@ export const projectsModule = {
           id: 'p-' + Date.now(),
           title,
           status: 'Active',
-          deadline: deadInput.value.trim() || 'Next Month',
+          deadline: deadInput?.value.trim() || 'Next Month',
           progress: parseInt(progInput.value, 10) || 10
         });
 
@@ -101,7 +124,7 @@ export const projectsModule = {
         state.setKey('projects', projects);
 
         titleInput.value = '';
-        panel.style.display = 'none';
+        if (panel) panel.style.display = 'none';
         this.renderProjects();
       };
     }

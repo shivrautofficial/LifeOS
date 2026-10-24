@@ -26,8 +26,40 @@ export const habitsModule = {
     const daysShort = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
     const todayIndex = (new Date().getDay() + 6) % 7; // 0=Mon, 6=Sun
 
+    // Update KPI Strip
+    const totalEl = document.getElementById('stat-total-habits');
+    const consistencyEl = document.getElementById('stat-habit-consistency');
+    const doneTodayEl = document.getElementById('stat-habits-done-today');
+
+    if (totalEl) totalEl.textContent = habits.length;
+    if (doneTodayEl) {
+      const doneCount = habits.filter(h => h.done || (h.history && h.history[todayIndex])).length;
+      doneTodayEl.textContent = `${doneCount} / ${habits.length}`;
+    }
+    if (consistencyEl) {
+      let totalSlots = 0;
+      let completedSlots = 0;
+      habits.forEach(h => {
+        const hist = h.history || [];
+        totalSlots += hist.length || 7;
+        completedSlots += hist.filter(Boolean).length;
+      });
+      const pct = totalSlots > 0 ? Math.round((completedSlots / totalSlots) * 100) : 90;
+      consistencyEl.textContent = `${pct}%`;
+    }
+
     if (habits.length === 0) {
-      container.innerHTML = `<div class="placeholder-state"><h3 class="placeholder-title">No habits created</h3><p class="placeholder-text">Click "New Habit" above to create your first compounding daily ritual.</p></div>`;
+      container.innerHTML = `
+        <div class="placeholder-state">
+          <div class="placeholder-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+            </svg>
+          </div>
+          <h3 class="placeholder-title">No habits created</h3>
+          <p class="placeholder-text">Click "New Habit" above to create your first compounding daily ritual.</p>
+        </div>
+      `;
       return;
     }
 
@@ -37,24 +69,26 @@ export const habitsModule = {
         <button class="btn btn-sm ${done ? 'btn-primary' : 'btn-secondary'}" 
                 data-habit-toggle="${h.id}" 
                 data-day="${idx}" 
-                style="width: 32px; height: 32px; padding: 0; border-radius: var(--radius-full); ${idx === todayIndex ? 'border: 2px solid var(--color-electric-indigo);' : ''}">
+                title="${daysShort[idx]} - Click to toggle"
+                style="width: 32px; height: 32px; padding: 0; font-size: 11px; font-weight: 600; border-radius: var(--radius-full); transition: transform var(--transition-fast), background var(--transition-fast); ${idx === todayIndex ? 'box-shadow: 0 0 0 2px var(--color-primary);' : ''}">
           ${daysShort[idx]}
         </button>
       `).join('');
 
       return `
-        <div class="card" style="padding: 16px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-md);">
+        <div class="card animate-fade-in" style="padding: 14px 18px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); border-radius: var(--radius-lg); transition: transform var(--transition-fast), box-shadow var(--transition-fast);">
           <div>
-            <div style="font-weight: 700; font-size: var(--font-size-base); color: var(--color-midnight-navy);">${h.title}</div>
-            <div style="font-size: var(--font-size-xs); color: var(--color-warning); font-weight: 600; margin-top: 2px;">
-              🔥 ${h.streak || 0} day streak <span style="color: var(--color-text-secondary); margin-left: 6px;">(best: ${h.bestStreak || h.streak || 0})</span>
+            <div style="font-weight: 600; font-size: var(--font-size-card-title); color: var(--color-text-main);">${h.title}</div>
+            <div style="font-size: var(--font-size-xs); color: var(--color-warning); font-weight: 600; margin-top: 3px; display: flex; align-items: center; gap: 6px;">
+              <span>🔥 ${h.streak || 0} day streak</span>
+              <span style="color: var(--color-text-muted); font-weight: 400;">(best: ${h.bestStreak || h.streak || 0})</span>
             </div>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="display: flex; gap: 6px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; gap: 5px;" aria-label="7-day completion strip">
               ${weekCircles}
             </div>
-            <button class="btn btn-secondary btn-sm btn-icon" data-delete-habit="${h.id}" title="Delete Habit" style="margin-left: 8px;">✕</button>
+            <button class="btn btn-icon btn-sm" data-delete-habit="${h.id}" title="Delete Habit" style="color: var(--color-text-muted); margin-left: 4px;" aria-label="Delete habit">✕</button>
           </div>
         </div>
       `;
@@ -118,7 +152,9 @@ export const habitsModule = {
     if (btnShow && panel) {
       btnShow.onclick = () => {
         sound.playClick();
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        const isOpen = panel.style.display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen && titleInput) titleInput.focus();
       };
     }
 
@@ -149,7 +185,7 @@ export const habitsModule = {
         state.setKey('todayHabits', habits);
 
         titleInput.value = '';
-        panel.style.display = 'none';
+        if (panel) panel.style.display = 'none';
         this.renderHabits();
       };
     }

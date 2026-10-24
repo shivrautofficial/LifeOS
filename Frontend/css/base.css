@@ -1,6 +1,6 @@
 /* ==========================================================================
-   LifeOS Base Styles
-   CSS Reset, Typography, and Foundational Element Defaults
+   LifeOS Base Styles & Ambient Background Engine
+   Modern Reset, Typography Hierarchy, Ambient Canvas, and Motion Physics
    ========================================================================== */
 
 *, *::before, *::after {
@@ -13,67 +13,197 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  color-scheme: dark light;
 }
 
 body {
   font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-base);
-  color: var(--color-text-primary);
-  background-color: var(--color-cloud-grey);
+  color: var(--color-text-main);
+  background-color: var(--color-bg-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Typography Defaults */
+/* ==========================================================================
+   Ambient Background Layer & Atmospheric Canvas
+   Lightweight, CSS-accelerated ambient glowing orbs & geometric mesh
+   ========================================================================== */
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--color-bg-main);
+  transition: background-color var(--transition-normal);
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: var(--radius-full);
+  filter: blur(95px);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* Top-Right Electric Indigo Orb */
+.orb-primary {
+  width: 520px;
+  height: 520px;
+  top: -120px;
+  right: -80px;
+  background: radial-gradient(circle, var(--orb-color-1) 0%, transparent 70%);
+  animation: floatOrbPrimary 22s ease-in-out infinite alternate;
+}
+
+/* Bottom-Left Violet Orb */
+.orb-violet {
+  width: 480px;
+  height: 480px;
+  bottom: -100px;
+  left: 120px;
+  background: radial-gradient(circle, var(--orb-color-2) 0%, transparent 70%);
+  animation: floatOrbViolet 26s ease-in-out infinite alternate;
+}
+
+/* Center-Right Ambient Cyan Filament */
+.orb-cyan {
+  width: 420px;
+  height: 420px;
+  top: 35%;
+  right: 25%;
+  background: radial-gradient(circle, var(--orb-color-3) 0%, transparent 70%);
+  animation: floatOrbCyan 20s ease-in-out infinite alternate;
+}
+
+/* Geometric Dot Mesh for Architectural Texture */
+.ambient-mesh {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: var(--ambient-grid-opacity);
+  color: var(--color-text-main);
+}
+
+/* Pointer-Responsive Desktop Spotlight */
+.ambient-spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 480px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(99, 102, 241, 0.09), transparent 75%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: background;
+}
+
+[data-theme="light"] .ambient-spotlight {
+  background: radial-gradient(circle 420px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(99, 102, 241, 0.05), transparent 70%);
+}
+
+.ambient-spotlight.active {
+  opacity: 1;
+}
+
+@keyframes floatOrbPrimary {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-50px, 40px, 0) scale(1.12); }
+  100% { transform: translate3d(30px, 60px, 0) scale(0.95); }
+}
+
+@keyframes floatOrbViolet {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(60px, -45px, 0) scale(1.08); }
+  100% { transform: translate3d(-30px, -20px, 0) scale(0.92); }
+}
+
+@keyframes floatOrbCyan {
+  0% { transform: translate3d(0, 0, 0) scale(0.95); }
+  50% { transform: translate3d(-40px, -50px, 0) scale(1.1); }
+  100% { transform: translate3d(50px, 30px, 0) scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   Typography Hierarchy (Calm, Restrained, Scaled)
+   -------------------------------------------------------------------------- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-base);
-  color: var(--color-midnight-navy);
-  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
+  letter-spacing: -0.015em;
 }
 
-h1 { font-size: var(--font-size-2xl); }
-h2 { font-size: var(--font-size-xl); }
-h3 { font-size: var(--font-size-lg); }
-h4 { font-size: var(--font-size-md); }
-h5 { font-size: var(--font-size-base); }
-h6 { font-size: var(--font-size-sm); }
+h1 {
+  font-size: var(--font-size-page-title);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.015em;
+}
+
+h3 {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+h4 {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
 
 p {
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-base);
+  margin-bottom: var(--space-2);
 }
 
 p:last-child {
   margin-bottom: 0;
 }
 
+small {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
 a {
-  color: var(--color-electric-indigo);
+  color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-indigo-hover);
+  color: var(--color-primary-hover);
 }
 
 button {
   font-family: inherit;
   font-size: inherit;
+  color: inherit;
   cursor: pointer;
   border: none;
   background: none;
+  padding: 0;
+  user-select: none;
 }
 
 input, select, textarea {
   font-family: inherit;
-  font-size: inherit;
-  color: inherit;
+  font-size: var(--font-size-body);
+  color: var(--color-text-main);
 }
 
 img, svg {
@@ -87,11 +217,78 @@ ul, ol {
 
 code, kbd, pre {
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-meta);
 }
 
-/* Accessibility Focus Ring */
+/* Tabular figures for data metrics */
+.tabular-nums, .stat-value {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   Accessibility Focus Ring
+   -------------------------------------------------------------------------- */
 :focus-visible {
-  outline: 2px solid var(--color-electric-indigo);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Custom Scrollbar (Subtle & Themed)
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Staggered Entrance Micro-Animations
+   -------------------------------------------------------------------------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.28s var(--ease-out-expo) both;
+}
+
+.stagger-1 { animation-delay: 40ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 120ms; }
+.stagger-4 { animation-delay: 160ms; }
+
+/* --------------------------------------------------------------------------
+   Prefers Reduced Motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ambient-orb {
+    animation: none !important;
+  }
 }

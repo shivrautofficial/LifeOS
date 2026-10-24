@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     name: 'User',
     roleTitle: 'Software Engineer',
     profession: 'engineer',
-    theme: 'light',
+    theme: 'dark',
     onboarded: true
   },
   metrics: {

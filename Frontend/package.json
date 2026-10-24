@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "LifeOS — One Life. One Dashboard.",
   "scripts": {
+<<<<<<< HEAD
     "dev": "node server.js",
     "start": "node server.js",
     "serve": "node server.js"
@@ -10,4 +11,13 @@
   "keywords": ["lifeos", "dashboard", "productivity"],
   "author": "AuthorX",
   "license": "GNU General Public License v3.0"
+=======
+    "dev": "npx --yes serve . -p 3000 || python3 -m http.server 3000",
+    "start": "npx --yes serve . -p 3000 || python3 -m http.server 3000",
+    "serve": "npx --yes serve . -p 3000 || python3 -m http.server 3000"
+  },
+  "keywords": ["lifeos", "dashboard", "productivity", "saas"],
+  "author": "Sarthak",
+  "license": "MIT"
+>>>>>>> 3f786ba978a39d57e26981486663e6bd779dd010
 }
