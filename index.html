@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -21,17 +21,25 @@
 </head>
 <body>
 
-  <!-- Ambient Atmospheric Canvas (Floating Glowing Orbs & Architectural Mesh) -->
+  <!-- Dynamic Atmospheric Background Video Engine (Dark & White modes) -->
+  <div class="video-bg-container" id="video-bg-container" aria-hidden="true">
+    <video id="video-bg-dark" class="video-bg video-bg-dark" autoplay muted loop playsinline preload="auto">
+      <source src="video/Dark_back.mp4" type="video/mp4">
+    </video>
+    <video id="video-bg-light" class="video-bg video-bg-light" autoplay muted loop playsinline preload="auto">
+      <source src="video/White1_back.mp4" type="video/mp4">
+    </video>
+    <div class="video-bg-overlay"></div>
+  </div>
+
+  <!-- Ambient Atmospheric Canvas (Pointer Spotlight & Architectural Texture) -->
   <div class="ambient-canvas" aria-hidden="true">
-    <div class="ambient-orb orb-primary"></div>
-    <div class="ambient-orb orb-violet"></div>
-    <div class="ambient-orb orb-cyan"></div>
     <div class="ambient-mesh"></div>
     <div class="ambient-spotlight" id="ambient-spotlight"></div>
   </div>
 
   <!-- Main Application Shell -->
-  <div class="app-shell">
+  <div class="app-shell" id="app-shell">
 
     <!-- Mobile Drawer Backdrop -->
     <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
@@ -145,16 +153,11 @@
 
       <!-- Sidebar User Profile Footer -->
       <div class="sidebar-footer">
-<<<<<<< HEAD
-        <div class="user-profile-widget" onclick="location.hash='#settings'">
-          <div class="user-avatar" id="sidebar-user-avatar">U</div>
-=======
         <div class="user-profile-widget" onclick="location.hash='#settings'" title="Account & Persona Settings">
           <div class="user-avatar-wrap">
             <div class="user-avatar" id="sidebar-user-avatar">S</div>
             <span class="user-status-dot" title="Local System Active"></span>
           </div>
->>>>>>> 3f786ba978a39d57e26981486663e6bd779dd010
           <div class="user-meta">
             <span class="user-name" id="sidebar-user-name">User</span>
             <span class="user-role-badge" id="sidebar-user-role">Software Engineer</span>

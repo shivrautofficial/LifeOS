@@ -22,6 +22,8 @@ const MIME_TYPES = {
   '.otf': 'font/otf',
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
   '.txt': 'text/plain; charset=utf-8',
 };
 
@@ -117,6 +119,27 @@ function startServer(port) {
         filePath = path.join(filePath, 'index.html');
       }
 
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+      const range = req.headers.range;
+
+      if (range && (ext === '.mp4' || ext === '.webm' || ext === '.mp3' || ext === '.wav')) {
+        const parts = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
+        const chunksize = (end - start) + 1;
+        const fileStream = fs.createReadStream(filePath, { start, end });
+
+        res.writeHead(206, {
+          'Content-Range': `bytes ${start}-${end}/${stats.size}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize,
+          'Content-Type': contentType,
+        });
+        fileStream.pipe(res);
+        return;
+      }
+
       fs.readFile(filePath, (readErr, content) => {
         if (readErr) {
           res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -124,12 +147,10 @@ function startServer(port) {
           return;
         }
 
-        const ext = path.extname(filePath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-
         res.writeHead(200, {
           'Content-Type': contentType,
           'Content-Length': Buffer.byteLength(content),
+          'Accept-Ranges': 'bytes',
           'Cache-Control': 'no-cache',
         });
         if (req.method === 'HEAD') {

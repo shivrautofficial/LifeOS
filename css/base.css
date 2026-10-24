@@ -22,7 +22,7 @@ body {
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-base);
   color: var(--color-text-main);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -32,17 +32,83 @@ body {
 }
 
 /* ==========================================================================
+   Full-Screen Background Video Engine
+   Seamless loop & cross-fade transition between White and Dark video backgrounds
+   ========================================================================== */
+.video-bg-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -2;
+  pointer-events: none;
+  background-color: #090D16; /* Fallback before video loads */
+}
+
+[data-theme="light"] .video-bg-container {
+  background-color: #F6F7FB;
+}
+
+.video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Dark mode video is active by default in dark theme */
+[data-theme="dark"] .video-bg-dark {
+  opacity: 1;
+}
+
+[data-theme="dark"] .video-bg-light {
+  opacity: 0;
+}
+
+/* Light mode video is active in light theme */
+[data-theme="light"] .video-bg-light {
+  opacity: 1;
+}
+
+[data-theme="light"] .video-bg-dark {
+  opacity: 0;
+}
+
+/* Atmospheric Overlay: Enhances text contrast while preserving video motion */
+.video-bg-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.6s ease;
+}
+
+[data-theme="dark"] .video-bg-overlay {
+  background: radial-gradient(circle at 50% 30%, rgba(9, 13, 22, 0.25) 0%, rgba(9, 13, 22, 0.65) 100%);
+}
+
+[data-theme="light"] .video-bg-overlay {
+  background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(246, 247, 251, 0.45) 100%);
+}
+
+/* ==========================================================================
    Ambient Background Layer & Atmospheric Canvas
-   Lightweight, CSS-accelerated ambient glowing orbs & geometric mesh
+   Lightweight, pointer spotlight & subtle geometric texture
    ========================================================================== */
 .ambient-canvas {
   position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  z-index: 0;
-  background-color: var(--color-bg-main);
-  transition: background-color var(--transition-normal);
+  z-index: -1;
+  background-color: transparent;
 }
 
 .ambient-orb {

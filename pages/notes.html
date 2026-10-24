@@ -1,3 +1,8 @@
+<script>
+  if (!document.getElementById('app-shell')) {
+    window.location.replace('../index.html#notes');
+  }
+</script>
 <div class="page-container" id="notes-page">
 
   <!-- Page Header -->
@@ -17,7 +22,7 @@
   </header>
 
   <!-- Add Note Panel -->
-  <div id="add-note-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary); background: var(--color-bg-card);">
+  <div id="add-note-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary);">
     <div style="font-weight: 600; font-size: var(--font-size-card-title); margin-bottom: var(--space-3); color: var(--color-text-main);">Capture to Second Brain</div>
     <div style="display: flex; flex-direction: column; gap: var(--space-3);">
       <input type="text" id="input-new-note-title" class="form-input" placeholder="Note title or core concept..." aria-label="Note title">

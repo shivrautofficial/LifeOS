@@ -20,49 +20,49 @@
   --color-text-muted: #9CA3AF;          /* Tertiary / Captions */
   --color-text-inverse: #FFFFFF;        /* Contrast Light */
 
-  --color-bg-main: #F6F7FB;             /* Base Canvas */
-  --color-bg-card: #FFFFFF;             /* Crisp White Surface */
-  --color-bg-card-glass: rgba(255, 255, 255, 0.85);
-  --color-bg-subtle: #F3F4F6;           /* Subtle Inputs / Recessed Areas */
-  --color-bg-hover: #F9FAFB;            /* Row / Item Hover */
+  --color-bg-main: transparent;             /* Base Canvas transparent to show video */
+  --color-bg-card: rgba(255, 255, 255, 0.62); /* Frosted Glass Surface */
+  --color-bg-card-glass: rgba(255, 255, 255, 0.70);
+  --color-bg-subtle: rgba(255, 255, 255, 0.40); /* Translucent Inputs / Chips */
+  --color-bg-hover: rgba(255, 255, 255, 0.85);  /* Hover State */
 
-  --color-border: #E5E7EB;              /* Base Border */
-  --color-border-hover: #D1D5DB;        /* Hover Border */
-  --color-border-subtle: #F3F4F6;       /* Dividers */
-  --color-border-focus: #6366F1;        /* Focus Indicator */
+  --color-border: rgba(255, 255, 255, 0.65);    /* Crisp Frosted Border */
+  --color-border-hover: rgba(99, 102, 241, 0.40);
+  --color-border-subtle: rgba(255, 255, 255, 0.45);
+  --color-border-focus: #6366F1;
 
   /* Semantic Feedback & Status */
   --color-success: #16A34A;
-  --color-success-bg: #DCFCE7;
+  --color-success-bg: rgba(220, 252, 231, 0.75);
   --color-success-text: #15803D;
 
   --color-warning: #D97706;
-  --color-warning-bg: #FEF3C7;
+  --color-warning-bg: rgba(254, 243, 199, 0.75);
   --color-warning-text: #B45309;
 
   --color-error: #DC2626;
-  --color-error-bg: #FEE2E2;
+  --color-error-bg: rgba(254, 226, 226, 0.75);
   --color-error-text: #B91C1C;
 
   --color-info: #2563EB;
-  --color-info-bg: #EFF6FF;
+  --color-info-bg: rgba(239, 246, 255, 0.75);
   --color-info-text: #1D4ED8;
 
-  /* Ambient Orb Lighting (Light Mode) */
-  --orb-color-1: rgba(99, 102, 241, 0.12); /* Indigo */
-  --orb-color-2: rgba(139, 92, 246, 0.10); /* Soft Violet */
-  --orb-color-3: rgba(56, 189, 248, 0.08); /* Cyan Light */
-  --ambient-grid-opacity: 0.025;
-  --spotlight-glow: rgba(99, 102, 241, 0.05);
+  /* Ambient Lighting Overlay (Light Mode) */
+  --orb-color-1: rgba(99, 102, 241, 0.05);
+  --orb-color-2: rgba(139, 92, 246, 0.04);
+  --orb-color-3: rgba(56, 189, 248, 0.03);
+  --ambient-grid-opacity: 0.015;
+  --spotlight-glow: rgba(99, 102, 241, 0.06);
 
   /* Sidebar Theme (Light Mode) */
-  --color-sidebar-bg: #FFFFFF;
-  --color-sidebar-border: #E5E7EB;
+  --color-sidebar-bg: rgba(255, 255, 255, 0.68);
+  --color-sidebar-border: rgba(255, 255, 255, 0.60);
   --color-sidebar-text: #374151;
   --color-sidebar-text-active: #6366F1;
-  --color-sidebar-item-active: #EEF2FF;
-  --color-sidebar-item-hover: #F3F4F6;
-  --color-sidebar-heading: #9CA3AF;
+  --color-sidebar-item-active: rgba(99, 102, 241, 0.14);
+  --color-sidebar-item-hover: rgba(255, 255, 255, 0.50);
+  --color-sidebar-heading: #6B7280;
 
   /* Legacy aliases for backward compatibility */
   --color-electric-indigo: var(--color-primary);
@@ -206,39 +206,39 @@
   --color-text-muted: #64748B;          /* Muted Tertiary */
   --color-text-inverse: #0B0F19;
 
-  --color-bg-main: #090D16;             /* Deep Obsidian Midnight */
-  --color-bg-card: #111726;             /* Elevated Obsidian Card Surface */
-  --color-bg-card-glass: rgba(17, 23, 38, 0.82);
-  --color-bg-subtle: #161E31;           /* Recessed Slate Input/Pill */
-  --color-bg-hover: #1A243B;
+  --color-bg-main: transparent;             /* Deep Canvas transparent to show video */
+  --color-bg-card: rgba(13, 18, 32, 0.52);  /* Elevated Frosted Glass Card Surface */
+  --color-bg-card-glass: rgba(13, 18, 32, 0.60);
+  --color-bg-subtle: rgba(255, 255, 255, 0.06); /* Translucent Inputs / Pills */
+  --color-bg-hover: rgba(255, 255, 255, 0.10);  /* Translucent Hover */
 
-  --color-border: #1E2738;              /* Hairline Precision Border */
-  --color-border-hover: #2D3B54;
-  --color-border-subtle: #151D2C;
+  --color-border: rgba(255, 255, 255, 0.10); /* Hairline Precision Glass Border */
+  --color-border-hover: rgba(129, 140, 248, 0.35);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
   --color-border-focus: #818CF8;
 
-  --color-success-bg: rgba(22, 163, 74, 0.2);
+  --color-success-bg: rgba(22, 163, 74, 0.25);
   --color-success-text: #4ADE80;
-  --color-warning-bg: rgba(217, 119, 6, 0.2);
+  --color-warning-bg: rgba(217, 119, 6, 0.25);
   --color-warning-text: #FBBF24;
-  --color-error-bg: rgba(220, 38, 38, 0.2);
+  --color-error-bg: rgba(220, 38, 38, 0.25);
   --color-error-text: #F87171;
-  --color-info-bg: rgba(37, 99, 235, 0.2);
+  --color-info-bg: rgba(37, 99, 235, 0.25);
   --color-info-text: #60A5FA;
 
-  /* Ambient Glowing Orbs (Dark Mode) */
-  --orb-color-1: rgba(99, 102, 241, 0.22); /* Electric Indigo Ambient Glow */
-  --orb-color-2: rgba(139, 92, 246, 0.18); /* Deep Violet Ambient Glow */
-  --orb-color-3: rgba(14, 165, 233, 0.14); /* Cyber Cyan Ambient Glow */
-  --ambient-grid-opacity: 0.045;
+  /* Ambient Lighting Overlay (Dark Mode) */
+  --orb-color-1: rgba(99, 102, 241, 0.08);
+  --orb-color-2: rgba(139, 92, 246, 0.06);
+  --orb-color-3: rgba(14, 165, 233, 0.05);
+  --ambient-grid-opacity: 0.015;
   --spotlight-glow: rgba(129, 140, 248, 0.08);
 
-  --color-sidebar-bg: #0C111C;
-  --color-sidebar-border: #1E2738;
+  --color-sidebar-bg: rgba(10, 14, 25, 0.65);
+  --color-sidebar-border: rgba(255, 255, 255, 0.08);
   --color-sidebar-text: #94A3B8;
   --color-sidebar-text-active: #818CF8;
-  --color-sidebar-item-active: rgba(99, 102, 241, 0.16);
-  --color-sidebar-item-hover: rgba(255, 255, 255, 0.04);
+  --color-sidebar-item-active: rgba(99, 102, 241, 0.22);
+  --color-sidebar-item-hover: rgba(255, 255, 255, 0.06);
   --color-sidebar-heading: #64748B;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);

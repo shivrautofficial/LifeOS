@@ -1,3 +1,8 @@
+<script>
+  if (!document.getElementById('app-shell')) {
+    window.location.replace('../index.html#calendar');
+  }
+</script>
 <div class="page-container" id="calendar-page">
 
   <!-- Page Header -->
@@ -17,7 +22,7 @@
   </header>
 
   <!-- Add Event Panel -->
-  <div id="add-event-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary); background: var(--color-bg-card);">
+  <div id="add-event-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary);">
     <div style="font-weight: 600; font-size: var(--font-size-card-title); margin-bottom: var(--space-3); color: var(--color-text-main);">Schedule Deep Focus Block</div>
     <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
       <input type="text" id="input-new-event-title" class="form-input" placeholder="Block title or sprint focus..." style="flex: 2; min-width: 220px;" aria-label="Block title">

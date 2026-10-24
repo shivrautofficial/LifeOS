@@ -1,3 +1,8 @@
+<script>
+  if (!document.getElementById('app-shell')) {
+    window.location.replace('../index.html#tasks');
+  }
+</script>
 <div class="page-container" id="tasks-page">
 
   <!-- Page Header -->
@@ -34,7 +39,7 @@
   </div>
 
   <!-- Quick Add Task Panel -->
-  <div id="add-task-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary); background: var(--color-bg-card);">
+  <div id="add-task-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary);">
     <div style="font-weight: 600; font-size: var(--font-size-card-title); margin-bottom: var(--space-3); color: var(--color-text-main);">Create New Task</div>
     <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
       <input type="text" id="input-new-task-title" class="form-input" placeholder="Task title or deliverable..." style="flex: 2; min-width: 220px;" aria-label="Task title">
@@ -67,7 +72,7 @@
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);" id="kanban-columns-container">
 
     <!-- To Do -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card" style="padding: var(--space-3); min-height: 440px; border-radius: var(--radius-lg);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot"></span>
@@ -79,7 +84,7 @@
     </div>
 
     <!-- In Progress -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card" style="padding: var(--space-3); min-height: 440px; border-radius: var(--radius-lg);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot" style="background-color: var(--color-primary);"></span>
@@ -91,7 +96,7 @@
     </div>
 
     <!-- In Review -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card" style="padding: var(--space-3); min-height: 440px; border-radius: var(--radius-lg);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot" style="background-color: var(--color-warning);"></span>
@@ -103,7 +108,7 @@
     </div>
 
     <!-- Completed -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card" style="padding: var(--space-3); min-height: 440px; border-radius: var(--radius-lg);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot active"></span>

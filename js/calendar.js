@@ -86,7 +86,7 @@ export const calendarModule = {
       }[e.tag] || 'badge-neutral';
 
       return `
-        <div class="card animate-fade-in" style="padding: 12px 16px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; border-left: 3px solid ${tagBorderColor}; border-radius: var(--radius-md); transition: transform var(--transition-fast), box-shadow var(--transition-fast);">
+        <div class="list-item-glass animate-fade-in" style="padding: 12px 16px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; border-left: 3px solid ${tagBorderColor}; border-radius: var(--radius-md); transition: transform var(--transition-fast), box-shadow var(--transition-fast);">
           <div style="display: flex; flex-direction: column; gap: 2px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="badge ${tagBadgeClass}" style="font-size: 11px;">${e.tag || 'Focus Block'}</span>

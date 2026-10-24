@@ -54,7 +54,7 @@ export const tasksModule = {
         const dueDate = t.dueDate || 'Today';
 
         return `
-          <div class="card animate-fade-in" style="padding: 12px; background: var(--color-bg-card); border-left: 3px solid ${priorityColor}; border-radius: var(--radius-md); transition: transform var(--transition-fast), box-shadow var(--transition-fast);" data-task-id="${t.id}">
+          <div class="list-item-glass animate-fade-in" style="padding: 12px; border-left: 3px solid ${priorityColor}; border-radius: var(--radius-md); transition: transform var(--transition-fast), box-shadow var(--transition-fast);" data-task-id="${t.id}">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
               <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); line-height: 1.35; ${t.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : 'color: var(--color-text-main);'}">
                 ${t.title}

@@ -18,7 +18,7 @@ export const widgets = {
     }[task.priority] || '<span class="badge badge-neutral">Normal</span>';
 
     return `
-      <div class="card" style="padding: 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
+      <div class="list-item-glass" style="padding: 10px 14px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; min-width: 0;">
           <input type="checkbox" ${task.done ? 'checked' : ''} data-task-id="${task.id}" aria-label="Mark task done">
           <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); line-height: 1.35; ${task.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : 'color: var(--color-text-main);'}">
@@ -39,7 +39,7 @@ export const widgets = {
    */
   renderHabitRow(habit) {
     return `
-      <div class="card" style="padding: 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
+      <div class="list-item-glass" style="padding: 10px 14px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
         <div style="display: flex; flex-direction: column; gap: 2px;">
           <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); color: var(--color-text-main);">${habit.title}</span>
           <span style="font-size: var(--font-size-xs); color: var(--color-warning); font-weight: var(--font-weight-semibold);">
@@ -60,7 +60,7 @@ export const widgets = {
    */
   renderScheduleItem(event) {
     return `
-      <div class="card" style="padding: 10px 14px; border-left: 3px solid var(--color-primary); flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
+      <div class="list-item-glass" style="padding: 10px 14px; border-left: 3px solid var(--color-primary); display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
         <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
           <span style="font-size: var(--font-size-meta); font-weight: var(--font-weight-semibold); color: var(--color-text-main);">${event.title}</span>
           <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">${event.time}</span>

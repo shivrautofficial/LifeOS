@@ -126,11 +126,11 @@
 .card {
   position: relative;
   background-color: var(--color-bg-card);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
@@ -138,8 +138,15 @@
 }
 
 [data-theme="dark"] .card {
-  background-color: var(--color-bg-card-glass);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background-color: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme="light"] .card {
+  background-color: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 24px -2px rgba(31, 38, 135, 0.06);
 }
 
 /* Interactive spotlight & hover glow */
@@ -151,7 +158,7 @@
 
 [data-theme="dark"] .card:hover {
   border-color: var(--card-border-glow);
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 12px rgba(129, 140, 248, 0.12);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(129, 140, 248, 0.14);
 }
 
 .card-header {
@@ -161,6 +168,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+  background-color: transparent;
 }
 
 .card-title {
@@ -183,11 +191,27 @@
 .card-footer {
   padding: var(--space-3) var(--space-4);
   border-top: 1px solid var(--color-border-subtle);
-  background-color: var(--color-bg-subtle);
+  background-color: transparent;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* Sleek Translucent List Item Row (removes nested card-in-card boxes) */
+.list-item-glass {
+  background: var(--color-bg-subtle);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.list-item-glass:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border);
+  transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -514,8 +538,10 @@ input[type="checkbox"]:focus-visible {
 
 .modal-box {
   background-color: var(--color-bg-card);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl), 0 0 20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-xl), 0 0 30px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 520px;
   max-height: 90vh;
@@ -550,7 +576,7 @@ input[type="checkbox"]:focus-visible {
 .modal-footer {
   padding: var(--space-3) var(--space-5);
   border-top: 1px solid var(--color-border-subtle);
-  background-color: var(--color-bg-subtle);
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: flex-end;
