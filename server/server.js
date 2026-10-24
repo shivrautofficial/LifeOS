@@ -1,17 +1,11 @@
-<<<<<<< HEAD
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const dbController = require('./dbController');
-=======
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dbController from './dbController.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -111,25 +105,27 @@ function startServer(port) {
           service: 'LifeOS API',
           version: '1.0.0',
           database: {
-<<<<<<< HEAD
-            type: (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) ? 'Supabase Cloud (PostgreSQL)' : 'Local File Database (database/lifeos_db.json) + IndexedDB',
-            supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY),
+            type: isConfigured ? 'Supabase Cloud (PostgreSQL)' : 'Local File Database (database/lifeos_db.json) + IndexedDB',
+            supabaseConfigured: isConfigured,
             localDbAvailable: true,
             totalTasks: (db.todayTasks || []).length,
             totalHabits: (db.todayHabits || []).length,
             totalGoals: (db.goals || []).length,
             lastDbUpdate: db.updatedAt
-=======
-            type: isConfigured ? 'Supabase Cloud (PostgreSQL)' : 'Local-First (Client IndexedDB / LocalStorage)',
-            supabaseConfigured: isConfigured
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
         }));
         return;
       }
-<<<<<<< HEAD
+      if (pathname === '/api/config') {
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          supabaseUrl: process.env.SUPABASE_URL || '',
+          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || ''
+        }));
+        return;
+      }
 
       dbController.handleApiRequest(req, res, pathname).then(handled => {
         if (!handled) {
@@ -141,18 +137,6 @@ function startServer(port) {
         res.writeHead(500);
         res.end(JSON.stringify({ error: 'Internal Server Error', message: err.message }));
       });
-=======
-      if (pathname === '/api/config') {
-        res.writeHead(200);
-        res.end(JSON.stringify({
-          supabaseUrl: process.env.SUPABASE_URL || '',
-          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || ''
-        }));
-        return;
-      }
-      res.writeHead(404);
-      res.end(JSON.stringify({ error: 'Endpoint not found', path: pathname }));
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
       return;
     }
 

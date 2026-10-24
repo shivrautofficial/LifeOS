@@ -9,12 +9,9 @@ import { onboarding, PROFESSIONS } from './onboarding.js';
 import { sound } from './audio.js';
 import { syncBackgroundVideos } from './app.js';
 import { supabaseService } from './supabase.js';
-<<<<<<< HEAD
 import { dbSync } from './dbSync.js';
-=======
 import { authService } from './auth.js';
 import { authModal } from './authModal.js';
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 import { toast } from './toast.js';
 
 export const settingsModule = {
@@ -138,7 +135,6 @@ export const settingsModule = {
       }
     }
 
-<<<<<<< HEAD
     // Database Engine Status
     const serverDbBadge = document.getElementById('server-db-status-badge');
     const dbTimestamp = document.getElementById('db-sync-timestamp');
@@ -157,7 +153,7 @@ export const settingsModule = {
     if (dbTimestamp && status.lastSyncTime) {
       dbTimestamp.textContent = `Last synced: ${new Date(status.lastSyncTime).toLocaleTimeString()}`;
     }
-=======
+
     if (realtimeBadge) {
       if (supabaseService.realtimeChannel) {
         realtimeBadge.textContent = 'Real-time Active';
@@ -167,7 +163,6 @@ export const settingsModule = {
         realtimeBadge.className = 'badge badge-neutral';
       }
     }
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
   },
 
   /**
