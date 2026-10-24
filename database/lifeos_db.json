@@ -3,8 +3,8 @@
     "name": "User",
     "roleTitle": "Software Engineer",
     "profession": "engineer",
-    "theme": "dark",
-    "onboarded": true
+    "onboarded": true,
+    "theme": "dark"
   },
   "metrics": {
     "activeTasksCount": 8,
@@ -276,5 +276,5 @@
       "lastUpdated": "2026-10-24T22:37:19.808Z"
     }
   },
-  "updatedAt": "2026-10-24T23:37:26.236Z"
+  "updatedAt": "2026-10-24T23:50:56.874Z"
 }
