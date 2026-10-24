@@ -5,22 +5,11 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 import { toast } from './toast.js';
-=======
-<<<<<<< HEAD
->>>>>>> f9088d048200facff4ed67d0734745c4acdf1e9a
 import { dbSync } from './dbSync.js';
 import { supabaseService } from './supabase.js';
 
 let unsubscribeState = null;
-<<<<<<< HEAD
-=======
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
->>>>>>> 31057d2c811d082f7003d61135ace5b5af9b93e5
->>>>>>> f9088d048200facff4ed67d0734745c4acdf1e9a
 
 export const notesModule = {
   domainChart: null,
@@ -712,9 +701,10 @@ export const notesModule = {
         const notes = (state.get('notes') || []).filter(n => n.id !== id);
         sound.playClick();
         state.setKey('notes', notes);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
+        dbSync.syncNote({ id }, 'delete');
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteNote(id).catch(err => console.warn(err));
+        }
         toast.info('Note removed from Second Brain');
         this.runAiAnalysis(false);
         this.renderNotes();
@@ -764,18 +754,6 @@ export const notesModule = {
       btn.onclick = () => {
         this.activeTagFilter = btn.dataset.tagFilter;
         sound.playClick();
-=======
-<<<<<<< HEAD
->>>>>>> f9088d048200facff4ed67d0734745c4acdf1e9a
-        dbSync.syncNote({ id }, 'delete');
-        if (supabaseService.isConfigured()) {
-          supabaseService.deleteNote(id).catch(err => console.warn(err));
-        }
-<<<<<<< HEAD
-=======
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
->>>>>>> 31057d2c811d082f7003d61135ace5b5af9b93e5
->>>>>>> f9088d048200facff4ed67d0734745c4acdf1e9a
         this.renderNotes();
       };
     });
@@ -910,13 +888,6 @@ export const notesModule = {
           .filter(Boolean);
 
         const notes = state.get('notes') || [];
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
->>>>>>> 31057d2c811d082f7003d61135ace5b5af9b93e5
->>>>>>> f9088d048200facff4ed67d0734745c4acdf1e9a
         const newNote = {
           id: 'n-' + Date.now(),
           title,
@@ -925,23 +896,8 @@ export const notesModule = {
           pinned: pinInput ? pinInput.checked : false,
           updatedAt: 'Just now'
         };
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-
-        notes.unshift(newNote);
-=======
-<<<<<<< HEAD
-
-        const notes = state.get('notes') || [];
-        notes.unshift(newNote);
-=======
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
->>>>>>> f9088d048200facff4ed67d0734745c4acdf1e9a
-
         notes.unshift(newNote);
         sound.playComplete();
->>>>>>> 31057d2c811d082f7003d61135ace5b5af9b93e5
         state.setKey('notes', notes);
         dbSync.syncNote(newNote, 'upsert');
         if (supabaseService.isConfigured()) {

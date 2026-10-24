@@ -215,6 +215,13 @@ class SupabaseService {
         message: 'Successfully connected to Supabase database!'
       };
     } catch (err) {
+      const msg = err?.message || String(err || '');
+      if (/failed to fetch/i.test(msg)) {
+        return {
+          success: false,
+          message: 'Connection failed: "Failed to fetch". Your ISP (e.g. ACT Fibernet/Airtel/Jio) is blocking supabase.co via DNS interception. Fix: In Chrome Settings → Privacy & Security → Security → Turn on "Use secure DNS" (select Cloudflare 1.1.1.1).'
+        };
+      }
       return {
         success: false,
         message: `Connection failed: ${err.message}`

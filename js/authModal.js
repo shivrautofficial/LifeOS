@@ -90,7 +90,7 @@ class AuthModalController {
   showError(message) {
     const errorBox = document.getElementById(`auth-error-${this.currentView}`);
     if (errorBox) {
-      errorBox.textContent = message;
+      errorBox.innerHTML = message;
       errorBox.style.display = 'block';
     } else {
       toast.error(message);
@@ -394,11 +394,32 @@ class AuthModalController {
       btn.onclick = async () => {
         sound.playClick();
         const provider = btn.dataset.oauthProvider;
-        const res = await authService.signInWithOAuth(provider);
-        if (!res.success) {
-          this.showError(res.error || `Could not sign in with ${provider}.`);
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span style="opacity: 0.7;">Connecting...</span>`;
+        this.clearErrors();
+        try {
+          const res = await authService.signInWithOAuth(provider);
+          if (!res.success) {
+            this.showError(res.error || `Could not sign in with ${provider}.`);
+          }
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
         }
       };
+    });
+
+    // Continue as Guest buttons
+    ['btn-auth-guest-signin', 'btn-auth-guest-signup'].forEach(btnId => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.onclick = () => {
+          sound.playClick();
+          this.close();
+          toast.info('Entered Local Guest Mode. All features are active and stored locally on your device.');
+        };
+      }
     });
   }
 
