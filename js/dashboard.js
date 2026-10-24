@@ -6,6 +6,8 @@
 import { state } from './state.js';
 import { widgets } from './widgets.js';
 import { sound } from './audio.js';
+import { toast } from './toast.js';
+import { supabaseService } from './supabase.js';
 
 let timerInterval = null;
 let currentTimerSeconds = 25 * 60;
@@ -50,6 +52,24 @@ export const dashboardModule = {
     if (dateEl) {
       const options = { weekday: 'short', month: 'short', day: 'numeric' };
       dateEl.textContent = new Intl.DateTimeFormat('en-US', options).format(new Date());
+    }
+
+    const syncTextEl = document.getElementById('dashboard-sync-text');
+    const syncDotEl = document.getElementById('dashboard-sync-dot');
+    if (syncTextEl) {
+      if (supabaseService.isConfigured()) {
+        syncTextEl.textContent = 'Cloud Synced (Supabase)';
+        if (syncDotEl) {
+          syncDotEl.classList.add('active');
+          syncDotEl.style.backgroundColor = 'var(--color-success)';
+        }
+      } else {
+        syncTextEl.textContent = 'Local-First Active';
+        if (syncDotEl) {
+          syncDotEl.classList.add('active');
+          syncDotEl.style.backgroundColor = 'var(--color-primary)';
+        }
+      }
     }
   },
 
@@ -285,7 +305,7 @@ export const dashboardModule = {
           } else {
             stopTimer();
             sound.playComplete();
-            alert('🎉 Deep focus sprint completed! Take a short restorative break.');
+            toast.success('🎉 Deep focus sprint completed! Take a short restorative break.');
           }
         }, 1000);
       }

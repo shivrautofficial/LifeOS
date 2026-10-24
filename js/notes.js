@@ -40,7 +40,9 @@ export const notesModule = {
       <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 10px; border-radius: var(--radius-lg);">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
           <div style="font-weight: 600; font-size: var(--font-size-card-title); color: var(--color-text-main); line-height: 1.35;">${n.title}</div>
-          <button class="btn btn-icon btn-sm" data-delete-note="${n.id}" title="Delete Note" style="color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Note">✕</button>
+          <button class="btn btn-icon btn-sm" data-delete-note="${n.id}" title="Delete Note" style="width: 28px; height: 28px; color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </div>
         <p style="font-size: var(--font-size-body); color: var(--color-text-secondary); line-height: 1.55; white-space: pre-wrap; margin: 0;">${n.content}</p>
         <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-top: auto; padding-top: 6px;">

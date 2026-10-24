@@ -95,7 +95,9 @@ export const calendarModule = {
             </div>
             <div style="font-weight: 600; font-size: var(--font-size-body); color: var(--color-text-main); margin-top: 4px;">${e.title}</div>
           </div>
-          <button class="btn btn-icon btn-sm" data-delete-event="${e.id}" title="Remove Block" style="color: var(--color-text-muted);" aria-label="Remove block">✕</button>
+          <button class="btn btn-icon btn-sm" data-delete-event="${e.id}" title="Remove Block" style="width: 28px; height: 28px; color: var(--color-text-muted);" aria-label="Remove block">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </div>
       `;
     }).join('');

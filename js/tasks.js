@@ -59,7 +59,9 @@ export const tasksModule = {
               <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); line-height: 1.35; ${t.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : 'color: var(--color-text-main);'}">
                 ${t.title}
               </span>
-              <button class="btn btn-icon btn-sm" data-delete-task="${t.id}" title="Delete Task" style="width: 24px; height: 24px; color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Task">✕</button>
+              <button class="btn btn-icon btn-sm" data-delete-task="${t.id}" title="Delete Task" style="width: 24px; height: 24px; color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Task">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-xs); gap: 6px;">
               <div style="display: flex; align-items: center; gap: 6px;">

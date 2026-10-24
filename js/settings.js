@@ -8,6 +8,7 @@ import { storage } from './storage.js';
 import { onboarding, PROFESSIONS } from './onboarding.js';
 import { sound } from './audio.js';
 import { supabaseService } from './supabase.js';
+import { toast } from './toast.js';
 
 export const settingsModule = {
   /**
@@ -118,7 +119,7 @@ export const settingsModule = {
           }
         });
 
-        alert('Settings saved successfully!');
+        toast.success('Settings saved successfully!');
       };
     }
 
@@ -178,10 +179,10 @@ export const settingsModule = {
             const success = storage.importData(evt.target.result);
             if (success) {
               sound.playComplete();
-              alert('LifeOS data imported successfully. Reloading view...');
-              window.location.reload();
+              toast.success('LifeOS data imported successfully. Reloading view...');
+              setTimeout(() => window.location.reload(), 600);
             } else {
-              alert('Failed to import data: invalid JSON structure.');
+              toast.error('Failed to import data: invalid JSON structure.');
             }
           };
           reader.readAsText(file);
@@ -195,9 +196,11 @@ export const settingsModule = {
         if (confirm('Are you sure you want to reset all LifeOS data back to baseline defaults? This cannot be undone.')) {
           storage.clear();
           state.reset();
-          alert('LifeOS has been reset to baseline defaults.');
-          window.location.hash = '#dashboard';
-          window.location.reload();
+          toast.info('LifeOS has been reset to baseline defaults.');
+          setTimeout(() => {
+            window.location.hash = '#dashboard';
+            window.location.reload();
+          }, 600);
         }
       };
     }

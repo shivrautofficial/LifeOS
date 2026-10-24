@@ -8,6 +8,9 @@ import { router } from './router.js';
 import { onboarding } from './onboarding.js';
 import { sound } from './audio.js';
 import { supabaseService } from './supabase.js';
+import { toast } from './toast.js';
+
+window.toast = toast;
 
 /**
  * Initialize LifeOS Application

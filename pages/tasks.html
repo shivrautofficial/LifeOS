@@ -64,10 +64,10 @@
   </div>
 
   <!-- 4-Column Kanban Pipeline -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);" id="kanban-columns-container">
+  <div class="kanban-board-grid" id="kanban-columns-container">
 
     <!-- To Do -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card kanban-column">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot"></span>
@@ -79,7 +79,7 @@
     </div>
 
     <!-- In Progress -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card kanban-column">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot" style="background-color: var(--color-primary);"></span>
@@ -91,7 +91,7 @@
     </div>
 
     <!-- In Review -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card kanban-column">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot" style="background-color: var(--color-warning);"></span>
@@ -103,7 +103,7 @@
     </div>
 
     <!-- Completed -->
-    <div class="card" style="padding: var(--space-3); background: var(--color-bg-subtle); min-height: 440px; border-radius: var(--radius-lg);">
+    <div class="card kanban-column">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
         <div style="display: flex; align-items: center; gap: 6px;">
           <span class="status-dot active"></span>
