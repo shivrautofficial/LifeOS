@@ -114,13 +114,22 @@ function startServer(port) {
       if (pathname === '/api/config') {
         res.writeHead(200);
         res.end(JSON.stringify({
-          supabaseUrl: process.env.SUPABASE_URL || '',
-          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || ''
+          supabaseUrl: process.env.SUPABASE_URL || 'https://datfcopzrkwffdecxoll.supabase.co',
+          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_CKZkfZMH2uX4_eZfYZTzxw_1nE4Fryn'
         }));
         return;
       }
       res.writeHead(404);
       res.end(JSON.stringify({ error: 'Endpoint not found', path: pathname }));
+      return;
+    }
+
+    if (pathname === '/js/config.local.js') {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      const url = process.env.SUPABASE_URL || 'https://datfcopzrkwffdecxoll.supabase.co';
+      const key = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_CKZkfZMH2uX4_eZfYZTzxw_1nE4Fryn';
+      res.writeHead(200);
+      res.end(`window.LIFEOS_CONFIG = Object.assign(window.LIFEOS_CONFIG || {}, { supabaseUrl: ${JSON.stringify(url)}, supabaseAnonKey: ${JSON.stringify(key)} });\n`);
       return;
     }
 

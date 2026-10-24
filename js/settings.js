@@ -17,9 +17,13 @@ export const settingsModule = {
   /**
    * Initialize settings module view
    */
-  init() {
+  async init() {
     this.populateCurrentValues();
     this.bindEvents();
+    if (!supabaseService.isConfigured()) {
+      await supabaseService.init();
+      this.updateSupabaseUI();
+    }
   },
 
   /**
@@ -126,7 +130,7 @@ export const settingsModule = {
 
     if (supabaseBadge) {
       if (supabaseService.isConfigured()) {
-        supabaseBadge.textContent = 'Configured';
+        supabaseBadge.textContent = 'Connected';
         supabaseBadge.className = 'badge badge-success';
       } else {
         supabaseBadge.textContent = 'Not Connected';
