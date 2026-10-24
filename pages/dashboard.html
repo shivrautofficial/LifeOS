@@ -235,15 +235,45 @@
             </svg>
             Deep Focus Sprint
           </h2>
-          <span class="badge badge-neutral" id="timer-session-count">Session 4</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button class="btn btn-icon btn-sm" id="btn-timer-custom-toggle" title="Set Custom Time" aria-label="Set Custom Time" style="width: 26px; height: 26px; color: var(--color-text-secondary);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </button>
+            <span class="badge badge-neutral" id="timer-session-count">Session 4</span>
+          </div>
         </div>
         <div class="pomodoro-card">
-          <div class="timer-digits" id="timer-digits">25:00</div>
+          <div class="timer-digits" id="timer-digits" title="Click to customize duration" style="cursor: pointer;">25:00</div>
           <div class="segmented-control timer-modes">
             <button class="segmented-btn active" id="btn-timer-focus">25m Focus</button>
             <button class="segmented-btn" id="btn-timer-short">5m Break</button>
             <button class="segmented-btn" id="btn-timer-long">15m Rest</button>
+            <button class="segmented-btn" id="btn-timer-custom">Custom</button>
           </div>
+
+          <!-- Custom Timer Duration Input Bar -->
+          <div class="timer-custom-bar" id="timer-custom-bar" style="display: none; flex-direction: column; align-items: center; gap: 8px; margin-bottom: var(--space-4); width: 100%; max-width: 320px; padding: 10px 14px; background: var(--color-bg-subtle); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px;">
+              <label for="input-custom-minutes" style="font-size: var(--font-size-xs); font-weight: 600; color: var(--color-text-main);">Custom Duration:</label>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" id="input-custom-minutes" class="form-input" min="1" max="360" value="45" style="width: 65px; height: 30px; text-align: center; font-weight: 700; font-family: var(--font-family-mono); padding: 2px 4px;" aria-label="Custom timer duration in minutes">
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary); font-weight: 500;">min</span>
+                <button class="btn btn-primary btn-sm" id="btn-apply-custom-timer" style="height: 30px; padding: 0 10px; font-size: 11px;">Set</button>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; flex-wrap: wrap;">
+              <span style="font-size: 10px; color: var(--color-text-muted); text-transform: uppercase; font-weight: 600;">Presets:</span>
+              <button type="button" class="badge badge-neutral timer-preset-chip" data-min="10" style="cursor: pointer; border: 1px solid var(--color-border);">10m</button>
+              <button type="button" class="badge badge-neutral timer-preset-chip" data-min="20" style="cursor: pointer; border: 1px solid var(--color-border);">20m</button>
+              <button type="button" class="badge badge-neutral timer-preset-chip" data-min="30" style="cursor: pointer; border: 1px solid var(--color-border);">30m</button>
+              <button type="button" class="badge badge-neutral timer-preset-chip" data-min="45" style="cursor: pointer; border: 1px solid var(--color-border);">45m</button>
+              <button type="button" class="badge badge-neutral timer-preset-chip" data-min="60" style="cursor: pointer; border: 1px solid var(--color-border);">60m</button>
+              <button type="button" class="badge badge-neutral timer-preset-chip" data-min="90" style="cursor: pointer; border: 1px solid var(--color-border);">90m</button>
+            </div>
+          </div>
+
           <div class="timer-controls">
             <button class="btn btn-primary" id="btn-timer-toggle">Start Focus</button>
             <button class="btn btn-secondary" id="btn-timer-reset">Reset</button>

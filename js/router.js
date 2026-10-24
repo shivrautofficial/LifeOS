@@ -171,7 +171,10 @@ class Router {
     }
 
     try {
-      const response = await fetch(route.file);
+      let response = await fetch(route.file);
+      if (!response.ok && !route.file.startsWith('/')) {
+        response = await fetch(`/${route.file}`);
+      }
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const html = await response.text();
       this.templateCache.set(route.file, html);

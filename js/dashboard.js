@@ -12,7 +12,8 @@ import { supabaseService } from './supabase.js';
 let timerInterval = null;
 let currentTimerSeconds = 25 * 60;
 let isTimerRunning = false;
-let currentTimerMode = 'focus'; // focus, short, long
+let currentTimerMode = 'focus'; // focus, short, long, custom
+let customDurationSeconds = parseInt(localStorage.getItem('lifeos_custom_timer_sec'), 10) || (45 * 60);
 
 export const dashboardModule = {
   momentumChart: null,
@@ -39,6 +40,11 @@ export const dashboardModule = {
    * Clean up resources before view unload
    */
   destroy() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isTimerRunning = false;
+    }
     if (this.momentumChart) {
       this.momentumChart.destroy();
       this.momentumChart = null;
@@ -697,8 +703,23 @@ export const dashboardModule = {
     const focusBtn = document.getElementById('btn-timer-focus');
     const shortBtn = document.getElementById('btn-timer-short');
     const longBtn = document.getElementById('btn-timer-long');
+    const customBtn = document.getElementById('btn-timer-custom');
+    const customBar = document.getElementById('timer-custom-bar');
+    const customToggleBtn = document.getElementById('btn-timer-custom-toggle');
+    const customInput = document.getElementById('input-custom-minutes');
+    const applyCustomBtn = document.getElementById('btn-apply-custom-timer');
+    const presetChips = document.querySelectorAll('.timer-preset-chip');
 
     if (!toggleBtn) return;
+
+    // Initialize custom input with saved preference
+    if (customInput && customDurationSeconds) {
+      customInput.value = Math.round(customDurationSeconds / 60);
+    }
+    if (customBtn && customDurationSeconds) {
+      const savedMins = Math.round(customDurationSeconds / 60);
+      customBtn.textContent = `${savedMins}m Custom`;
+    }
 
     const updateDisplay = () => {
       const min = Math.floor(currentTimerSeconds / 60);
@@ -708,6 +729,7 @@ export const dashboardModule = {
 
     const stopTimer = () => {
       clearInterval(timerInterval);
+      timerInterval = null;
       isTimerRunning = false;
       if (pomodoroCard) pomodoroCard.classList.remove('running');
       if (toggleBtn) {
@@ -734,7 +756,11 @@ export const dashboardModule = {
         } else {
           stopTimer();
           sound.playComplete();
-          toast.success('Focus sprint complete! Time for a short rest.');
+          if (currentTimerMode === 'custom') {
+            toast.success('Custom focus sprint complete! Great work.');
+          } else {
+            toast.success('Focus sprint complete! Time for a short rest.');
+          }
         }
       }, 1000);
     };
@@ -750,7 +776,8 @@ export const dashboardModule = {
         stopTimer();
         if (currentTimerMode === 'focus') currentTimerSeconds = 25 * 60;
         else if (currentTimerMode === 'short') currentTimerSeconds = 5 * 60;
-        else currentTimerSeconds = 15 * 60;
+        else if (currentTimerMode === 'long') currentTimerSeconds = 15 * 60;
+        else if (currentTimerMode === 'custom') currentTimerSeconds = customDurationSeconds;
         updateDisplay();
       };
     }
@@ -762,13 +789,107 @@ export const dashboardModule = {
       currentTimerSeconds = seconds;
       updateDisplay();
 
-      [focusBtn, shortBtn, longBtn].forEach(b => b?.classList.remove('active'));
+      [focusBtn, shortBtn, longBtn, customBtn].forEach(b => b?.classList.remove('active'));
       activeBtn?.classList.add('active');
     };
 
-    if (focusBtn) focusBtn.onclick = () => setMode('focus', 25 * 60, focusBtn);
-    if (shortBtn) shortBtn.onclick = () => setMode('short', 5 * 60, shortBtn);
-    if (longBtn) longBtn.onclick = () => setMode('long', 15 * 60, longBtn);
+    if (focusBtn) {
+      focusBtn.onclick = () => {
+        if (customBar) customBar.style.display = 'none';
+        setMode('focus', 25 * 60, focusBtn);
+      };
+    }
+    if (shortBtn) {
+      shortBtn.onclick = () => {
+        if (customBar) customBar.style.display = 'none';
+        setMode('short', 5 * 60, shortBtn);
+      };
+    }
+    if (longBtn) {
+      longBtn.onclick = () => {
+        if (customBar) customBar.style.display = 'none';
+        setMode('long', 15 * 60, longBtn);
+      };
+    }
+
+    const applyCustomMinutes = (mins) => {
+      let parsed = parseInt(mins, 10);
+      if (isNaN(parsed) || parsed < 1) parsed = 1;
+      if (parsed > 360) parsed = 360; // Max 6 hours
+
+      customDurationSeconds = parsed * 60;
+      try {
+        localStorage.setItem('lifeos_custom_timer_sec', String(customDurationSeconds));
+      } catch (e) {
+        // LocalStorage fallback
+      }
+
+      if (customInput) customInput.value = parsed;
+      if (customBtn) customBtn.textContent = `${parsed}m Custom`;
+
+      setMode('custom', customDurationSeconds, customBtn);
+      toast.info(`Timer set to ${parsed} minutes`);
+    };
+
+    const toggleCustomBar = () => {
+      if (!customBar) return;
+      const isOpen = customBar.style.display !== 'none';
+      if (isOpen) {
+        customBar.style.display = 'none';
+      } else {
+        customBar.style.display = 'flex';
+        if (customInput) {
+          customInput.focus();
+          customInput.select();
+        }
+      }
+    };
+
+    if (customBtn) {
+      customBtn.onclick = () => {
+        const isCurrentlyClosed = !customBar || customBar.style.display === 'none';
+        if (isCurrentlyClosed) {
+          toggleCustomBar();
+        }
+        const mins = customInput ? parseInt(customInput.value, 10) : Math.round(customDurationSeconds / 60);
+        applyCustomMinutes(mins || 45);
+      };
+    }
+
+    if (customToggleBtn) {
+      customToggleBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleCustomBar();
+      };
+    }
+
+    if (digitsEl) {
+      digitsEl.onclick = () => {
+        toggleCustomBar();
+      };
+    }
+
+    if (applyCustomBtn && customInput) {
+      applyCustomBtn.onclick = () => {
+        applyCustomMinutes(customInput.value);
+      };
+
+      customInput.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          applyCustomMinutes(customInput.value);
+        }
+      };
+    }
+
+    presetChips.forEach(chip => {
+      chip.onclick = () => {
+        const minVal = chip.getAttribute('data-min');
+        if (minVal) {
+          applyCustomMinutes(minVal);
+        }
+      };
+    });
 
     updateDisplay();
   },

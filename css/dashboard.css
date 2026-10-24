@@ -243,7 +243,14 @@
   margin-bottom: var(--space-3);
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition-fast), transform var(--transition-fast), text-shadow var(--transition-fast);
+}
+
+.timer-digits:hover {
+  transform: scale(1.04);
+  text-shadow: 0 0 16px var(--color-primary-glow);
 }
 
 .pomodoro-card.running .timer-digits {
@@ -254,12 +261,30 @@
 .timer-modes {
   display: flex;
   gap: var(--space-1);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .timer-modes .segmented-btn.active {
   background-color: var(--color-primary);
   color: #FFFFFF;
+}
+
+.timer-custom-bar {
+  animation: fadeIn 0.2s var(--ease-out-expo);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.15);
+}
+
+.timer-preset-chip {
+  transition: all var(--transition-fast);
+}
+
+.timer-preset-chip:hover {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
 .timer-controls {

@@ -109,6 +109,13 @@ function startServer(port) {
           const indexHtml = path.join(PUBLIC_DIR, 'index.html');
           if (fs.existsSync(indexHtml)) {
             filePath = indexHtml;
+            try {
+              stats = fs.statSync(indexHtml);
+            } catch (e) {
+              res.writeHead(404, { 'Content-Type': 'text/plain' });
+              res.end('404 Not Found');
+              return;
+            }
           } else {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('404 Not Found');
@@ -121,6 +128,13 @@ function startServer(port) {
         }
       } else if (stats.isDirectory()) {
         filePath = path.join(filePath, 'index.html');
+        try {
+          stats = fs.statSync(filePath);
+        } catch (e) {
+          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.end('404 Not Found');
+          return;
+        }
       }
 
       const ext = path.extname(filePath).toLowerCase();

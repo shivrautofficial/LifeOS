@@ -5,6 +5,7 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+import { toast } from './toast.js';
 
 let filterQuery = '';
 let activePriorityFilter = 'all';
@@ -142,25 +143,29 @@ export const tasksModule = {
         const statusSelect = document.getElementById('select-new-task-status');
         const dueSelect = document.getElementById('select-new-task-due');
 
-        const title = titleInput.value.trim();
-        if (!title) return;
+        const title = titleInput ? titleInput.value.trim() : '';
+        if (!title) {
+          toast.warning('Please enter a deliverable title.');
+          titleInput?.focus();
+          return;
+        }
 
         const tasks = state.get('todayTasks') || [];
         const newTask = {
           id: 't-' + Date.now(),
           title,
-          priority: prioritySelect.value,
-          status: statusSelect.value,
+          priority: prioritySelect ? prioritySelect.value : 'medium',
+          status: statusSelect ? statusSelect.value : 'todo',
           dueDate: dueSelect ? dueSelect.value : 'Today',
-          done: statusSelect.value === 'done',
+          done: statusSelect ? statusSelect.value === 'done' : false,
           category: 'work'
         };
 
-        tasks.unshift(newTask);
+        state.setKey('todayTasks', [newTask, ...tasks]);
         sound.playComplete();
-        state.setKey('todayTasks', tasks);
+        toast.success(`Deliverable "${title}" added.`);
 
-        titleInput.value = '';
+        if (titleInput) titleInput.value = '';
         if (panel) panel.style.display = 'none';
         this.renderKanban();
       };
