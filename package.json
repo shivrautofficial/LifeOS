@@ -18,5 +18,8 @@
     "task-manager"
   ],
   "author": "AuthorX",
-  "license": "GNU General Public License v3.0"
+  "license": "GNU General Public License v3.0",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0"
+  }
 }
