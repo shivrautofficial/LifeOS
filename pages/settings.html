@@ -8,32 +8,50 @@
   <!-- Page Header -->
   <header class="page-header animate-fade-in">
     <div class="page-header-text">
-      <h1 class="page-title">Settings & Preferences</h1>
-      <p class="page-description">Manage your LifeOS profile, profession persona, visual appearance, and local data persistence.</p>
+      <h1 class="page-title">Account & System Settings</h1>
+      <p class="page-description">Manage your LifeOS persistent identity, security, verified contact channels, cross-device cloud sync, and data ownership.</p>
     </div>
     <div class="page-actions">
-      <button class="btn btn-primary btn-sm" id="btn-save-settings">Save Changes</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-settings">Save Profile</button>
     </div>
   </header>
 
   <div id="settings-content-area" class="animate-fade-in stagger-1" style="display: flex; flex-direction: column; gap: var(--space-5);">
 
-    <!-- Profile & Profession Preference Card -->
-    <section class="card" aria-labelledby="profile-settings-title">
+    <!-- 1. Primary Account & Identity Card -->
+    <section class="card" aria-labelledby="account-settings-title">
       <div class="card-header">
-        <h2 class="card-title" id="profile-settings-title">User Profile & Active Persona</h2>
-        <span class="badge badge-indigo">Role Setup</span>
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <div class="user-avatar" id="settings-user-avatar" style="width: 38px; height: 38px; font-size: 15px;">U</div>
+          <div>
+            <h2 class="card-title" id="account-settings-title">Account & Identity</h2>
+            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary);" id="settings-account-id-label">Local Guest Session</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: var(--space-2); align-items: center;">
+          <span class="badge badge-neutral" id="settings-auth-status-badge">Guest Mode</span>
+          <button class="btn btn-secondary btn-sm" id="btn-settings-open-auth" style="display: none;">Sign In / Link Account</button>
+        </div>
       </div>
       <div class="card-body">
-        <p style="margin-bottom: var(--space-4);">Select your primary profession to customize the dashboard telemetry widgets, or provide your own custom profession title.</p>
+        <p style="margin-bottom: var(--space-4);">Your persistent LifeOS identity synchronizes your workspace seamlessly across laptop, tablet, and mobile browsers.</p>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);">
+          <!-- Display Name -->
           <div class="form-group">
             <label class="form-label" for="setting-user-name">Display Name</label>
-            <input type="text" id="setting-user-name" class="form-input" value="Sarthak" placeholder="Your name">
-            <span class="form-hint">Used in dashboard greetings and workspace telemetry.</span>
+            <input type="text" id="setting-user-name" class="form-input" placeholder="Your full name">
+            <span class="form-hint">Used in workspace headers and daily telemetry.</span>
           </div>
 
+          <!-- Username -->
+          <div class="form-group">
+            <label class="form-label" for="setting-username">Username</label>
+            <input type="text" id="setting-username" class="form-input" placeholder="e.g. sarthak_dev">
+            <span class="form-hint">Unique handle for your LifeOS account.</span>
+          </div>
+
+          <!-- Profession Persona -->
           <div class="form-group">
             <label class="form-label" for="setting-profession">Profession Persona</label>
             <select id="setting-profession" class="form-select">
@@ -45,19 +63,164 @@
               <option value="general">General / Life Balance (Habits & Health)</option>
               <option value="custom">Custom Profession (Specify Below)</option>
             </select>
-            <span class="form-hint">Controls the specialized command widgets on your dashboard.</span>
+            <span class="form-hint">Tailors specialized command widgets on your dashboard.</span>
+          </div>
+
+          <!-- Custom Role Title -->
+          <div class="form-group" id="setting-custom-role-wrap" style="display: none;">
+            <label class="form-label" for="setting-custom-role">Custom Profession Title</label>
+            <input type="text" id="setting-custom-role" class="form-input" placeholder="e.g. Distributed Systems Architect">
+            <span class="form-hint">Displayed under your name in the sidebar.</span>
+          </div>
+
+          <!-- Timezone -->
+          <div class="form-group">
+            <label class="form-label" for="setting-timezone">Timezone</label>
+            <select id="setting-timezone" class="form-select">
+              <option value="UTC">UTC (Coordinated Universal Time)</option>
+              <option value="America/New_York">Eastern Time (US / New York)</option>
+              <option value="America/Chicago">Central Time (US / Chicago)</option>
+              <option value="America/Denver">Mountain Time (US / Denver)</option>
+              <option value="America/Los_Angeles">Pacific Time (US / Los Angeles)</option>
+              <option value="Europe/London">London / GMT</option>
+              <option value="Europe/Paris">Central Europe (Paris / Berlin)</option>
+              <option value="Asia/Kolkata">India Standard Time (IST / Asia/Kolkata)</option>
+              <option value="Asia/Singapore">Singapore / Hong Kong (SGT)</option>
+              <option value="Asia/Tokyo">Japan Standard Time (JST / Tokyo)</option>
+              <option value="Australia/Sydney">Australia Eastern (AEST / Sydney)</option>
+            </select>
+            <span class="form-hint">Ensures calendar and habit deadlines match your local day.</span>
+          </div>
+
+          <!-- Avatar Image URL -->
+          <div class="form-group">
+            <label class="form-label" for="setting-avatar-url">Avatar Image URL (Optional)</label>
+            <input type="url" id="setting-avatar-url" class="form-input" placeholder="https://example.com/avatar.jpg">
+            <span class="form-hint">Direct link to profile picture or gravatar.</span>
           </div>
         </div>
 
-        <!-- Custom Role Title Input (Revealed if custom selected) -->
-        <div class="form-group" id="setting-custom-role-wrap" style="display: none; margin-top: var(--space-2);">
-          <label class="form-label" for="setting-custom-role">Custom Profession Title</label>
-          <input type="text" id="setting-custom-role" class="form-input" placeholder="e.g. Chief Product Officer, ML Researcher, Architect">
+        <!-- Verified Contact Channels Strip -->
+        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border-subtle); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4);">
+          <!-- Email Channel -->
+          <div style="background: var(--color-bg-subtle); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary);">Primary Email</span>
+              <span class="badge badge-neutral" id="settings-email-status-badge">Not Linked</span>
+            </div>
+            <div style="font-weight: 500; font-size: var(--font-size-body); color: var(--color-text-main);" id="settings-email-display">None</div>
+          </div>
+
+          <!-- Phone Channel -->
+          <div style="background: var(--color-bg-subtle); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; color: var(--color-text-secondary);">Verified Phone (SMS OTP)</span>
+              <span class="badge badge-neutral" id="settings-phone-status-badge">Not Linked</span>
+            </div>
+            <div style="font-weight: 500; font-size: var(--font-size-body); color: var(--color-text-main);" id="settings-phone-display">None</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. Security, Password & Active Sessions Card -->
+    <section class="card" aria-labelledby="security-settings-title">
+      <div class="card-header">
+        <h2 class="card-title" id="security-settings-title">Security & Active Sessions</h2>
+        <span class="badge badge-indigo">Protection</span>
+      </div>
+      <div class="card-body">
+        <!-- Password Update -->
+        <div id="settings-password-section" style="margin-bottom: var(--space-5);">
+          <div style="font-weight: 600; font-size: var(--font-size-body); color: var(--color-text-main); margin-bottom: 4px;">Change Account Password</div>
+          <p style="font-size: var(--font-size-meta); margin-bottom: var(--space-3);">Choose a strong password with at least 6 characters.</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3); max-width: 600px;">
+            <div class="form-group">
+              <label class="form-label" for="setting-new-password">New Password</label>
+              <input type="password" id="setting-new-password" class="form-input" placeholder="••••••••" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="setting-confirm-password">Confirm New Password</label>
+              <input type="password" id="setting-confirm-password" class="form-input" placeholder="••••••••" autocomplete="new-password">
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-update-password" style="margin-top: var(--space-2);">Update Password</button>
+        </div>
+
+        <!-- Session Controls -->
+        <div style="border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-4);">
+          <div style="font-weight: 600; font-size: var(--font-size-body); color: var(--color-text-main); margin-bottom: 4px;">Device & Session Management</div>
+          <p style="font-size: var(--font-size-meta); margin-bottom: var(--space-3);">Control active sessions across your laptop, desktop, and mobile devices.</p>
+
+          <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" id="btn-signout-current">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+              </svg>
+              Sign Out This Device
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-signout-all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" x2="12" y1="2" y2="12"/>
+              </svg>
+              Sign Out All Devices (Global Revoke)
+            </button>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Visual Appearance & Onboarding Card -->
+    <!-- 3. Supabase Cloud Database & Synchronization Card -->
+    <section class="card" aria-labelledby="supabase-settings-title">
+      <div class="card-header">
+        <h2 class="card-title" id="supabase-settings-title">Supabase Cloud Database & Synchronisation</h2>
+        <div style="display: flex; gap: var(--space-2); align-items: center;">
+          <span class="badge badge-neutral" id="supabase-status-badge">Not Connected</span>
+          <span class="badge badge-neutral" id="supabase-realtime-badge">Real-time Off</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p style="margin-bottom: var(--space-4);">Connect your Supabase PostgreSQL database to synchronize tasks, habits, goals, notes, and calendar events across all your devices in real-time with strict Row-Level-Security (RLS).</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label" for="setting-supabase-url">Supabase Project URL</label>
+            <input type="url" id="setting-supabase-url" class="form-input" placeholder="https://your-project.supabase.co" autocomplete="off">
+            <span class="form-hint">Found in Supabase Dashboard &rarr; Project Settings &rarr; API &rarr; Project URL</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="setting-supabase-key">Supabase Anon Key</label>
+            <input type="password" id="setting-supabase-key" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." autocomplete="off">
+            <span class="form-hint">Found in Supabase Dashboard &rarr; Project Settings &rarr; API &rarr; Project API keys (anon/public)</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center;">
+          <button class="btn btn-primary btn-sm" id="btn-save-supabase">Save Credentials</button>
+          <button class="btn btn-secondary btn-sm" id="btn-test-supabase">Test Connection</button>
+          <button class="btn btn-secondary btn-sm" id="btn-sync-to-cloud">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            Push to Cloud
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-sync-from-cloud">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            Pull from Cloud
+          </button>
+          <button class="btn btn-subtle btn-sm" id="btn-clear-supabase" style="margin-left: auto;">Disconnect</button>
+        </div>
+
+        <div id="supabase-feedback-box" style="display: none; margin-top: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); font-size: var(--font-size-meta);"></div>
+      </div>
+    </section>
+
+    <!-- 4. Visual Appearance & Onboarding Card -->
     <section class="card" aria-labelledby="appearance-settings-title">
       <div class="card-header">
         <h2 class="card-title" id="appearance-settings-title">Appearance & Workspace Setup</h2>
@@ -80,11 +243,12 @@
             <div style="font-weight: 600; font-size: var(--font-size-body); color: var(--color-text-main); margin-bottom: 2px;">Guided Setup Tour</div>
             <p style="font-size: var(--font-size-meta); margin: 0;">Re-run the initial persona setup experience.</p>
           </div>
-          <button class="btn btn-secondary btn-sm" id="btn-relaunch-onboarding">Launch Setup Modal</button>
+          <button class="btn btn-secondary btn-sm" id="btn-relaunch-onboarding">Launch Setup Wizard</button>
         </div>
       </div>
     </section>
 
+<<<<<<< HEAD
     <!-- LifeOS Database Engine Status Card -->
     <section class="card" aria-labelledby="database-engine-title">
       <div class="card-header">
@@ -185,19 +349,22 @@
     </section>
 
     <!-- Data Portability & Local Persistence Card -->
+=======
+    <!-- 5. Data Ownership, Portability & Backups Card -->
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
     <section class="card" aria-labelledby="data-settings-title">
       <div class="card-header">
-        <h2 class="card-title" id="data-settings-title">Local Persistence & Data Ownership</h2>
-        <span class="badge badge-success">Client-Side Only</span>
+        <h2 class="card-title" id="data-settings-title">Data Ownership & Portability</h2>
+        <span class="badge badge-success">Permanent Storage</span>
       </div>
       <div class="card-body">
-        <p style="margin-bottom: var(--space-4);">LifeOS is completely private and runs inside your browser. Your data is stored locally in your browser's persistent storage. You can backup your data to a JSON file or restore from a previous backup at any time.</p>
+        <p style="margin-bottom: var(--space-4);">You own your data completely. Export your entire LifeOS workspace as a clean JSON package anytime, or restore from a previous backup.</p>
         <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
           <button class="btn btn-secondary btn-sm" id="btn-export-backup">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
             </svg>
-            Export JSON Backup
+            Export Complete Data (JSON)
           </button>
           <label class="btn btn-secondary btn-sm" style="cursor: pointer;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
@@ -206,9 +373,21 @@
             Import JSON Backup
             <input type="file" id="setting-file-import" accept=".json" style="display: none;">
           </label>
-          <button class="btn btn-danger btn-sm" id="btn-reset-storage" style="margin-left: auto;">
-            Reset All Data
-          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Danger Zone Card -->
+    <section class="card" style="border-color: rgba(220, 38, 38, 0.35);" aria-labelledby="danger-settings-title">
+      <div class="card-header" style="background: rgba(220, 38, 38, 0.05);">
+        <h2 class="card-title" id="danger-settings-title" style="color: var(--color-error);">Danger Zone</h2>
+        <span class="badge badge-error">Irreversible</span>
+      </div>
+      <div class="card-body">
+        <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">Permanent account deletion will immediately purge your profile, tasks, habits, goals, notes, and cloud backups across all servers. This action cannot be undone.</p>
+        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+          <button class="btn btn-danger btn-sm" id="btn-reset-storage">Reset Local Storage</button>
+          <button class="btn btn-danger btn-sm" id="btn-delete-account" style="background: var(--color-error); color: #fff; border-color: var(--color-error);">Delete LifeOS Account</button>
         </div>
       </div>
     </section>

@@ -5,7 +5,13 @@
 
 import { state } from './state.js';
 import { sound } from './audio.js';
+<<<<<<< HEAD
 import { dbSync } from './dbSync.js';
+=======
+import { supabaseService } from './supabase.js';
+
+let unsubscribeState = null;
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 export const notesModule = {
   /**
@@ -14,6 +20,17 @@ export const notesModule = {
   init() {
     this.renderNotes();
     this.bindEvents();
+    if (unsubscribeState) unsubscribeState();
+    unsubscribeState = state.subscribe(() => {
+      this.renderNotes();
+    });
+  },
+
+  destroy() {
+    if (unsubscribeState) {
+      unsubscribeState();
+      unsubscribeState = null;
+    }
   },
 
   renderNotes() {
@@ -63,7 +80,13 @@ export const notesModule = {
         const notes = (state.get('notes') || []).filter(n => n.id !== id);
         sound.playClick();
         state.setKey('notes', notes);
+<<<<<<< HEAD
         dbSync.syncNote({ id }, 'delete');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteNote(id).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         this.renderNotes();
       };
     });
@@ -106,6 +129,10 @@ export const notesModule = {
 
         const tags = tagsInput.value.split(',').map(s => s.trim().replace(/^#/, '')).filter(Boolean);
 
+<<<<<<< HEAD
+=======
+        const notes = state.get('notes') || [];
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         const newNote = {
           id: 'n-' + Date.now(),
           title,
@@ -113,13 +140,23 @@ export const notesModule = {
           tags: tags.length ? tags : ['general'],
           updatedAt: 'Just now'
         };
+<<<<<<< HEAD
 
         const notes = state.get('notes') || [];
         notes.unshift(newNote);
+=======
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
+        notes.unshift(newNote);
         sound.playComplete();
         state.setKey('notes', notes);
+<<<<<<< HEAD
         dbSync.syncNote(newNote, 'upsert');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncNote(newNote).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
         titleInput.value = '';
         contentInput.value = '';

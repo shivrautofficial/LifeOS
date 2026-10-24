@@ -1,7 +1,17 @@
+<<<<<<< HEAD
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const dbController = require('./dbController');
+=======
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -27,6 +37,32 @@ const MIME_TYPES = {
   '.webm': 'video/webm',
   '.txt': 'text/plain; charset=utf-8',
 };
+
+// Attempt to load .env file from project root
+try {
+  const envPath = path.join(path.join(__dirname, '..'), '.env');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const eqIdx = trimmed.indexOf('=');
+        if (eqIdx !== -1) {
+          const key = trimmed.slice(0, eqIdx).trim();
+          let val = trimmed.slice(eqIdx + 1).trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1, -1);
+          }
+          if (!process.env[key]) {
+            process.env[key] = val;
+          }
+        }
+      }
+    });
+  }
+} catch (e) {
+  // Ignore env loading errors
+}
 
 // Locate public directory: parent project root, ./public, or cwd
 const candidates = [
@@ -69,11 +105,13 @@ function startServer(port) {
       if (pathname === '/api/health' || pathname === '/api/status') {
         const db = dbController.readDb();
         res.writeHead(200);
+        const isConfigured = Boolean(process.env.SUPABASE_URL && (process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY));
         res.end(JSON.stringify({
           status: 'ok',
           service: 'LifeOS API',
           version: '1.0.0',
           database: {
+<<<<<<< HEAD
             type: (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) ? 'Supabase Cloud (PostgreSQL)' : 'Local File Database (database/lifeos_db.json) + IndexedDB',
             supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY),
             localDbAvailable: true,
@@ -81,12 +119,17 @@ function startServer(port) {
             totalHabits: (db.todayHabits || []).length,
             totalGoals: (db.goals || []).length,
             lastDbUpdate: db.updatedAt
+=======
+            type: isConfigured ? 'Supabase Cloud (PostgreSQL)' : 'Local-First (Client IndexedDB / LocalStorage)',
+            supabaseConfigured: isConfigured
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           },
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
         }));
         return;
       }
+<<<<<<< HEAD
 
       dbController.handleApiRequest(req, res, pathname).then(handled => {
         if (!handled) {
@@ -98,6 +141,18 @@ function startServer(port) {
         res.writeHead(500);
         res.end(JSON.stringify({ error: 'Internal Server Error', message: err.message }));
       });
+=======
+      if (pathname === '/api/config') {
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          supabaseUrl: process.env.SUPABASE_URL || '',
+          supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || ''
+        }));
+        return;
+      }
+      res.writeHead(404);
+      res.end(JSON.stringify({ error: 'Endpoint not found', path: pathname }));
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
       return;
     }
 

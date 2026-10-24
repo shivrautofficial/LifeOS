@@ -6,10 +6,15 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { toast } from './toast.js';
+<<<<<<< HEAD
 import { dbSync } from './dbSync.js';
+=======
+import { supabaseService } from './supabase.js';
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 let filterQuery = '';
 let activePriorityFilter = 'all';
+let unsubscribeState = null;
 
 export const tasksModule = {
   /**
@@ -18,6 +23,17 @@ export const tasksModule = {
   init() {
     this.renderKanban();
     this.bindEvents();
+    if (unsubscribeState) unsubscribeState();
+    unsubscribeState = state.subscribe(() => {
+      this.renderKanban();
+    });
+  },
+
+  destroy() {
+    if (unsubscribeState) {
+      unsubscribeState();
+      unsubscribeState = null;
+    }
   },
 
   /**
@@ -166,6 +182,9 @@ export const tasksModule = {
         dbSync.syncTask(newTask, 'upsert');
         sound.playComplete();
         toast.success(`Deliverable "${title}" added.`);
+        if (supabaseService.isConfigured()) {
+          supabaseService.syncTask(newTask).catch(err => console.warn(err));
+        }
 
         if (titleInput) titleInput.value = '';
         if (panel) panel.style.display = 'none';
@@ -189,7 +208,13 @@ export const tasksModule = {
           task.done = newStatus === 'done';
           sound.playClick();
           state.setKey('todayTasks', tasks);
+<<<<<<< HEAD
           dbSync.syncTask(task, 'upsert');
+=======
+          if (supabaseService.isConfigured()) {
+            supabaseService.syncTask(task).catch(err => console.warn(err));
+          }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           this.renderKanban();
         }
       };
@@ -201,7 +226,13 @@ export const tasksModule = {
         const tasks = (state.get('todayTasks') || []).filter(t => t.id !== taskId);
         sound.playClick();
         state.setKey('todayTasks', tasks);
+<<<<<<< HEAD
         dbSync.syncTask({ id: taskId }, 'delete');
+=======
+        if (supabaseService.isConfigured()) {
+          supabaseService.deleteTask(taskId).catch(err => console.warn(err));
+        }
+>>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         this.renderKanban();
       };
     });
