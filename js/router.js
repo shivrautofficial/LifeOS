@@ -8,6 +8,7 @@ import { dashboardModule } from './dashboard.js';
 import { tasksModule } from './tasks.js';
 import { calendarModule } from './calendar.js';
 import { goalsModule } from './goals.js';
+import { healthModule } from './health.js';
 import { habitsModule } from './habits.js';
 import { projectsModule } from './projects.js';
 import { notesModule } from './notes.js';
@@ -34,6 +35,11 @@ export const ROUTES = {
     title: 'Goals',
     file: 'pages/goals.html',
     module: goalsModule
+  },
+  health: {
+    title: 'Health Manager',
+    file: 'pages/health.html',
+    module: healthModule
   },
   habits: {
     title: 'Habits',

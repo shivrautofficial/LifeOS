@@ -1,0 +1,657 @@
+<script>
+  if (!document.getElementById('app-shell')) {
+    window.location.replace('../index.html#health');
+  }
+</script>
+<div class="page-container" id="health-page">
+
+  <!-- Page Header -->
+  <header class="page-header animate-fade-in">
+    <div class="page-header-text">
+      <h1 class="page-title">Health Manager</h1>
+      <p class="page-description">Track vital measurements, daily movement velocity, hydration habits, and holistic well-being.</p>
+    </div>
+    <div class="page-actions" id="health-header-actions" style="display: none;">
+      <button class="btn btn-secondary btn-sm" id="btn-open-health-profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Edit Profile
+      </button>
+      <button class="btn btn-primary btn-sm" id="btn-open-steps-modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        </svg>
+        Update Steps
+      </button>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       1. First-Time Health Profile Setup (Shown if healthProfile is empty)
+       ======================================================================= -->
+  <div id="health-onboarding-panel" class="animate-fade-in" style="display: none;">
+    <div class="health-setup-card">
+      <div class="health-setup-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;" aria-hidden="true">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <h2 style="font-size: var(--font-size-card-title); font-weight: var(--font-weight-bold); color: var(--color-text-main); margin-bottom: var(--space-2);">
+        Welcome to Health Manager
+      </h2>
+      <p style="font-size: var(--font-size-body); color: var(--color-text-secondary); line-height: 1.5; margin-bottom: var(--space-4);">
+        Set up your baseline physical measurements to unlock personalized BMI screening, hydration pacing, and daily movement velocity. All data is kept <strong>100% private and on-device</strong> in your browser's persistent storage.
+      </p>
+
+      <form id="form-health-onboarding" novalidate onsubmit="return false;">
+        <!-- Unit Selection -->
+        <div class="form-group" style="margin-bottom: var(--space-4);">
+          <label class="form-label" style="font-weight: 600;">Measurement Units</label>
+          <div class="segmented-control" id="onboarding-unit-toggle">
+            <button type="button" class="segmented-btn active" data-unit="metric">Metric (cm, kg, ml)</button>
+            <button type="button" class="segmented-btn" data-unit="imperial">Imperial (ft/in, lbs, fl oz)</button>
+          </div>
+          <span class="form-hint">You can change your unit preferences anytime.</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+          <!-- Height Input (Metric) -->
+          <div class="form-group" id="group-onboarding-height-cm">
+            <label class="form-label" for="input-ob-height-cm">Height (cm) <span style="color: var(--color-error);">*</span></label>
+            <input type="number" id="input-ob-height-cm" class="form-input" min="50" max="260" step="0.5" placeholder="e.g. 175" required>
+            <span class="form-hint">Standard adult range: 120–220 cm</span>
+          </div>
+
+          <!-- Height Input (Imperial) -->
+          <div class="form-group" id="group-onboarding-height-ft" style="display: none;">
+            <label class="form-label">Height (ft & in) <span style="color: var(--color-error);">*</span></label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="input-ob-height-ft" class="form-input" min="2" max="8" placeholder="Feet (5)" style="flex: 1;">
+              <input type="number" id="input-ob-height-in" class="form-input" min="0" max="11" placeholder="Inches (9)" style="flex: 1;">
+            </div>
+            <span class="form-hint">e.g. 5 feet 9 inches</span>
+          </div>
+
+          <!-- Weight Input (Metric) -->
+          <div class="form-group" id="group-onboarding-weight-kg">
+            <label class="form-label" for="input-ob-weight-kg">Weight (kg) <span style="color: var(--color-error);">*</span></label>
+            <input type="number" id="input-ob-weight-kg" class="form-input" min="20" max="300" step="0.1" placeholder="e.g. 70.0" required>
+            <span class="form-hint">Screening reference: 30–200 kg</span>
+          </div>
+
+          <!-- Weight Input (Imperial) -->
+          <div class="form-group" id="group-onboarding-weight-lbs" style="display: none;">
+            <label class="form-label" for="input-ob-weight-lbs">Weight (lbs) <span style="color: var(--color-error);">*</span></label>
+            <input type="number" id="input-ob-weight-lbs" class="form-input" min="44" max="660" step="0.1" placeholder="e.g. 154.3">
+            <span class="form-hint">Screening reference: 65–450 lbs</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+          <!-- Age (Optional) -->
+          <div class="form-group">
+            <label class="form-label" for="input-ob-age">Age <span style="font-weight: 400; color: var(--color-text-secondary);">(Optional)</span></label>
+            <input type="number" id="input-ob-age" class="form-input" min="1" max="120" placeholder="e.g. 26">
+            <span class="form-hint">Used to verify adult BMI screening applicability</span>
+          </div>
+
+          <!-- Daily Step Goal -->
+          <div class="form-group">
+            <label class="form-label" for="input-ob-step-goal">Daily Step Goal</label>
+            <input type="number" id="input-ob-step-goal" class="form-input" min="1000" max="50000" step="500" value="8000" required>
+            <span class="form-hint">Recommended baseline: 8,000 steps</span>
+          </div>
+
+          <!-- Daily Water Goal -->
+          <div class="form-group">
+            <label class="form-label" for="input-ob-water-goal">Daily Water Goal (ml)</label>
+            <input type="number" id="input-ob-water-goal" class="form-input" min="500" max="8000" step="100" value="2000" required>
+            <span class="form-hint">Personal habit target, not medical prescription</span>
+          </div>
+        </div>
+
+        <div id="ob-validation-error" style="display: none; padding: 10px 14px; background: rgba(220, 38, 38, 0.1); border: 1px solid var(--color-error); border-radius: var(--radius-md); color: var(--color-error); font-size: var(--font-size-xs); font-weight: 500; margin-bottom: var(--space-4);"></div>
+
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-3); border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-4);">
+          <button type="button" class="btn btn-primary" id="btn-save-onboarding-profile">
+            Save Health Profile & Continue
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       2. Active Health Dashboard (Shown when healthProfile is active)
+       ======================================================================= -->
+  <div id="health-dashboard-view" class="animate-fade-in" style="display: none;">
+
+    <!-- Summary KPI Strip -->
+    <section class="stats-strip animate-fade-in stagger-1" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: var(--space-4);" aria-label="Health Summary">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label">Daily Movement</span>
+          <div class="stat-icon" aria-hidden="true" style="color: var(--color-primary);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value tabular-nums" id="stat-kpi-steps">0</div>
+        <div class="stat-delta positive" id="stat-kpi-steps-sub">Goal: 8,000 steps</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label">Hydration Intake</span>
+          <div class="stat-icon" aria-hidden="true" style="color: #3B82F6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value tabular-nums" id="stat-kpi-water">0 ml</div>
+        <div class="stat-delta positive" id="stat-kpi-water-sub">0% of daily target</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label">BMI Screening</span>
+          <div class="stat-icon" aria-hidden="true" style="color: #8B5CF6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value tabular-nums" id="stat-kpi-bmi">--</div>
+        <div class="stat-delta" id="stat-kpi-bmi-sub">Healthy Weight</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-label">Sleep & Recovery</span>
+          <div class="stat-icon" aria-hidden="true" style="color: var(--color-success);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-value tabular-nums" id="stat-kpi-sleep">-- hrs</div>
+        <div class="stat-delta positive" id="stat-kpi-sleep-sub">Logged today</div>
+      </div>
+    </section>
+
+    <!-- Main Wellness Grid -->
+    <div class="health-grid">
+
+      <!-- SECTION 1: Daily Movement & Steps Hero (Col 7) -->
+      <section class="card health-col-8" aria-labelledby="heading-steps-hero" style="display: flex; flex-direction: column;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title" id="heading-steps-hero">Daily Activity & Step Velocity</h2>
+            <span class="form-hint" style="margin-top: 2px;">Local calendar tracker for active movement</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="badge badge-indigo" title="Web browsers cannot directly query device pedometers without mobile OS bridges. Manual entries protect user privacy.">
+              Manual Tracking Active
+            </span>
+          </div>
+        </div>
+
+        <div class="card-body" style="display: flex; flex-direction: column; gap: var(--space-4); flex: 1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+            <div style="display: flex; align-items: center; gap: var(--space-4);">
+              <!-- Circular Progress Ring -->
+              <div class="steps-ring-container">
+                <svg class="steps-ring-svg" viewBox="0 0 100 100" aria-hidden="true">
+                  <circle class="steps-ring-bg" cx="50" cy="50" r="42"/>
+                  <circle class="steps-ring-fill" id="steps-ring-fill" cx="50" cy="50" r="42" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                </svg>
+                <div class="steps-ring-text">
+                  <span class="steps-ring-percent" id="steps-percent-label">0%</span>
+                  <span style="font-size: 10px; color: var(--color-text-secondary); font-weight: 500; text-transform: uppercase;">Goal</span>
+                </div>
+              </div>
+
+              <!-- Large Counter -->
+              <div>
+                <div class="steps-hero-digits" id="steps-count-display">0</div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: 4px;">
+                  of <strong id="steps-goal-display" style="color: var(--color-text-main);">8,000</strong> daily goal
+                </div>
+                <div id="steps-remaining-label" style="font-size: 11px; font-weight: 600; color: var(--color-primary); margin-top: 2px;">
+                  8,000 steps remaining
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Add Increment Buttons -->
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+              <span style="font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase;">Quick Add:</span>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary btn-sm btn-quick-step" data-add="500">+500</button>
+                <button type="button" class="btn btn-secondary btn-sm btn-quick-step" data-add="1000">+1k</button>
+                <button type="button" class="btn btn-secondary btn-sm btn-quick-step" data-add="2500">+2.5k</button>
+                <button type="button" class="btn btn-secondary btn-sm btn-quick-step" data-add="5000">+5k</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Derived Telemetry (Distance, Active Minutes, Energy) -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--color-border-subtle); margin-top: auto;">
+            <div style="padding: 10px; background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted);">Est. Distance</span>
+              <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-main); font-family: var(--font-family-mono); margin-top: 2px;" id="stat-est-distance">0.00 km</div>
+            </div>
+            <div style="padding: 10px; background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted);">Active Movement</span>
+              <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-main); font-family: var(--font-family-mono); margin-top: 2px;" id="stat-est-active-min">0 min</div>
+            </div>
+            <div style="padding: 10px; background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted);">Est. Energy Burned</span>
+              <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-main); font-family: var(--font-family-mono); margin-top: 2px;" id="stat-est-calories">0 kcal</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: BMI Calculator & Screening (Col 4) -->
+      <section class="card health-col-4" aria-labelledby="heading-bmi-card">
+        <div class="card-header">
+          <h2 class="card-title" id="heading-bmi-card">BMI Screening Index</h2>
+          <span class="badge" id="bmi-badge-indicator">Calculated</span>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-2);">
+            <div class="bmi-hero-value" id="bmi-numeric-value">--</div>
+            <div>
+              <div style="font-weight: 600; font-size: var(--font-size-body); color: var(--color-text-main);" id="bmi-category-label">Calculating...</div>
+              <span style="font-size: 11px; color: var(--color-text-secondary);" id="bmi-category-desc">Standard adult reference screening</span>
+            </div>
+          </div>
+
+          <!-- Restrained Horizontal Range Meter -->
+          <div class="bmi-meter-wrap">
+            <div class="bmi-meter-track" id="bmi-meter-track">
+              <div class="bmi-segment bmi-seg-under" title="Underweight (&lt; 18.5)"></div>
+              <div class="bmi-segment bmi-seg-normal" title="Healthy Weight (18.5 - 24.9)"></div>
+              <div class="bmi-segment bmi-seg-over" title="Overweight (25.0 - 29.9)"></div>
+              <div class="bmi-segment bmi-seg-obese" title="Obesity Range (&ge; 30)"></div>
+              <div class="bmi-meter-pointer" id="bmi-meter-pointer" style="left: 40%;"></div>
+            </div>
+            <div class="bmi-legend">
+              <span>&lt; 18.5</span>
+              <span>18.5 &ndash; 24.9</span>
+              <span>25 &ndash; 29.9</span>
+              <span>30+</span>
+            </div>
+          </div>
+
+          <!-- Measurements Summary -->
+          <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--color-text-secondary); padding: 8px 0; border-top: 1px solid var(--color-border-subtle);">
+            <span>Height: <strong id="bmi-ref-height" style="color: var(--color-text-main);">--</strong></span>
+            <span>Weight: <strong id="bmi-ref-weight" style="color: var(--color-text-main);">--</strong></span>
+            <span>Age: <strong id="bmi-ref-age" style="color: var(--color-text-main);">Adult</strong></span>
+          </div>
+
+          <!-- Medical Safeguards Disclaimer -->
+          <div class="bmi-safeguard-box">
+            <div style="font-weight: 600; color: var(--color-text-main); margin-bottom: 2px; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              Clinical Guidance Note
+            </div>
+            BMI is a basic statistical screening ratio (weight/height&sup2;). It does not measure body composition, muscle distribution, bone density, or holistic health. For individuals under 20, age/sex growth charts must be referenced.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Hydration Engine (Col 6) -->
+      <section class="card health-col-6" aria-labelledby="heading-water-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title" id="heading-water-card">Daily Hydration Tracker</h2>
+            <span class="form-hint" style="margin-top: 2px;">Keep steady fluid balance throughout deep focus sprints</span>
+          </div>
+          <span class="badge badge-neutral" id="water-goal-badge">Goal: 2,000 ml</span>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+            <div>
+              <span style="font-size: 2rem; font-weight: 700; font-family: var(--font-family-mono); color: var(--color-text-main);" id="water-consumed-display">0</span>
+              <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary); font-weight: 500;">/ <span id="water-target-display">2,000</span> ml</span>
+            </div>
+            <span style="font-size: var(--font-size-xs); font-weight: 600; color: #3B82F6;" id="water-percent-display">0%</span>
+          </div>
+
+          <!-- Water Tank Fill Bar -->
+          <div class="water-tank-meter">
+            <div class="water-tank-fill" id="water-tank-fill" style="width: 0%;"></div>
+          </div>
+
+          <!-- Quick Log Controls -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: var(--space-4); align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm btn-quick-water" data-add="250">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              +250 ml (Glass)
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm btn-quick-water" data-add="500">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              +500 ml (Bottle)
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-custom-water-modal">+Custom</button>
+            <button type="button" class="btn btn-subtle btn-sm" id="btn-undo-water" style="margin-left: auto; color: var(--color-text-muted);" title="Undo last entry">
+              Undo (-250 ml)
+            </button>
+          </div>
+
+          <p style="font-size: 11px; color: var(--color-text-muted); margin-top: var(--space-3); line-height: 1.4;">
+            Hydration tracking is an editable personal habit goal, not a prescriptive medical recommendation. Resets automatically daily.
+          </p>
+        </div>
+      </section>
+
+      <!-- SECTION 4: Daily Wellness Check-In (Col 6) -->
+      <section class="card health-col-6" aria-labelledby="heading-wellness-card">
+        <div class="card-header">
+          <h2 class="card-title" id="heading-wellness-card">Daily Wellness Check-In</h2>
+          <span class="badge badge-success" id="wellness-status-badge">Log Today</span>
+        </div>
+        <div class="card-body">
+          <form id="form-wellness-checkin" onsubmit="return false;">
+            <!-- Energy Level -->
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+              <label class="form-label" style="font-size: var(--font-size-xs);">Energy Level</label>
+              <div class="selector-chip-group" id="energy-selector">
+                <button type="button" class="selector-chip" data-energy="1">1 Low</button>
+                <button type="button" class="selector-chip" data-energy="2">2 Moderate</button>
+                <button type="button" class="selector-chip active" data-energy="3">3 Good</button>
+                <button type="button" class="selector-chip" data-energy="4">4 High</button>
+                <button type="button" class="selector-chip" data-energy="5">5 Peak</button>
+              </div>
+            </div>
+
+            <!-- Mood State -->
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+              <label class="form-label" style="font-size: var(--font-size-xs);">Mood State</label>
+              <div class="selector-chip-group" id="mood-selector">
+                <button type="button" class="selector-chip" data-mood="tired">😴 Tired</button>
+                <button type="button" class="selector-chip" data-mood="low">🌧️ Low</button>
+                <button type="button" class="selector-chip" data-mood="neutral">😐 Neutral</button>
+                <button type="button" class="selector-chip active" data-mood="good">🙂 Good</button>
+                <button type="button" class="selector-chip" data-mood="great">⚡ Great</button>
+              </div>
+            </div>
+
+            <!-- Sleep Duration & Note -->
+            <div style="display: grid; grid-template-columns: 120px 1fr; gap: var(--space-3); margin-bottom: var(--space-3);">
+              <div class="form-group">
+                <label class="form-label" for="input-checkin-sleep" style="font-size: var(--font-size-xs);">Sleep (Hours)</label>
+                <input type="number" id="input-checkin-sleep" class="form-input" min="0" max="24" step="0.5" value="7.5" style="height: 34px;">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="input-checkin-note" style="font-size: var(--font-size-xs);">Personal Note (Optional)</label>
+                <input type="text" id="input-checkin-note" class="form-input" placeholder="e.g. Great morning stretch, feeling focused" style="height: 34px;">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="button" class="btn btn-primary btn-sm" id="btn-save-wellness-checkin">
+                Save Check-in
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- SECTION 5: 7-Day Movement Trend (Col 8) -->
+      <section class="card health-col-8" aria-labelledby="heading-activity-trend">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title" id="heading-activity-trend">7-Day Activity Trend</h2>
+            <span class="form-hint" style="margin-top: 2px;">Recorded daily step volume over the past calendar week</span>
+          </div>
+          <span class="badge badge-neutral" id="trend-summary-badge">7-Day Record</span>
+        </div>
+        <div class="card-body">
+          <!-- Activity Pillars Visualizer -->
+          <div class="activity-bars-container" id="activity-bars-container">
+            <!-- Dynamically populated by js/health.js -->
+          </div>
+
+          <!-- Trend Stats Summary Strip -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-3); margin-top: var(--space-3); font-size: var(--font-size-xs); color: var(--color-text-secondary); flex-wrap: wrap; gap: 8px;">
+            <span>Weekly Average: <strong id="stat-weekly-avg-steps" style="color: var(--color-text-main);">0</strong> steps/day</span>
+            <span>Goal Consistency: <strong id="stat-weekly-goal-days" style="color: var(--color-success);">0 / 7</strong> days met</span>
+            <span>Total Logged Distance: <strong id="stat-weekly-total-dist" style="color: var(--color-primary);">0.00 km</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: Personal Goals & Settings (Col 4) -->
+      <section class="card health-col-4" aria-labelledby="heading-goals-card">
+        <div class="card-header">
+          <h2 class="card-title" id="heading-goals-card">Health Goals & Preferences</h2>
+          <span class="badge badge-neutral">Targets</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: var(--space-3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div>
+              <div style="font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-main);">Step Target</div>
+              <div style="font-size: 11px; color: var(--color-text-secondary);">Daily active movement goal</div>
+            </div>
+            <strong id="pref-step-goal-text" style="font-family: var(--font-family-mono); color: var(--color-primary);">8,000</strong>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div>
+              <div style="font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-main);">Hydration Target</div>
+              <div style="font-size: 11px; color: var(--color-text-secondary);">Daily water intake preference</div>
+            </div>
+            <strong id="pref-water-goal-text" style="font-family: var(--font-family-mono); color: #3B82F6;">2,000 ml</strong>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div>
+              <div style="font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-main);">Data Privacy</div>
+              <div style="font-size: 11px; color: var(--color-text-secondary);">Local browser storage only</div>
+            </div>
+            <span class="badge badge-success" style="font-size: 10px;">Private</span>
+          </div>
+
+          <div style="display: flex; gap: var(--space-2); margin-top: auto; padding-top: var(--space-2);">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-edit-goals-pref" style="flex: 1;">
+              Edit Targets
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-trigger-clear-health" style="color: var(--color-error); border-color: rgba(220, 38, 38, 0.3);" title="Clear local health records">
+              Reset Data
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: Recent Health Records Log (Col 12) -->
+      <section class="card health-col-12" aria-labelledby="heading-records-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title" id="heading-records-card">Recent Wellness Logs</h2>
+            <span class="form-hint" style="margin-top: 2px;">Chronological local entries recorded across days</span>
+          </div>
+          <span class="badge badge-neutral" id="records-count-badge">0 entries</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <div style="overflow-x: auto;">
+            <table class="health-table" id="health-records-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Steps Logged</th>
+                  <th>Est. Distance</th>
+                  <th>Hydration</th>
+                  <th>Sleep Duration</th>
+                  <th>Mood & Energy</th>
+                  <th>Personal Note</th>
+                </tr>
+              </thead>
+              <tbody id="health-records-tbody">
+                <!-- Dynamically populated by js/health.js -->
+              </tbody>
+            </table>
+          </div>
+          <div id="health-records-empty" style="text-align: center; padding: var(--space-6); color: var(--color-text-muted); font-size: var(--font-size-xs);">
+            No previous records logged yet. Your daily steps and check-ins will accumulate here over time.
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       3. Modals & Dialogs
+       ======================================================================= -->
+
+  <!-- Modal 1: Edit Profile / Measurements Dialog -->
+  <div class="modal-backdrop" id="modal-edit-health-profile" role="dialog" aria-modal="true" aria-labelledby="edit-profile-title">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="edit-profile-title">Update Health Profile & Goals</h3>
+        <button class="modal-close-btn" id="btn-close-edit-profile" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-edit-health-profile" onsubmit="return false;">
+          <!-- Unit Selector -->
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label class="form-label">Units</label>
+            <div class="segmented-control" id="edit-unit-toggle">
+              <button type="button" class="segmented-btn active" data-unit="metric">Metric (cm, kg)</button>
+              <button type="button" class="segmented-btn" data-unit="imperial">Imperial (ft/in, lbs)</button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-3);">
+            <!-- Height Metric -->
+            <div class="form-group" id="group-edit-height-cm">
+              <label class="form-label" for="input-edit-height-cm">Height (cm)</label>
+              <input type="number" id="input-edit-height-cm" class="form-input" min="50" max="260" step="0.5">
+            </div>
+
+            <!-- Height Imperial -->
+            <div class="form-group" id="group-edit-height-ft" style="display: none;">
+              <label class="form-label">Height (ft & in)</label>
+              <div style="display: flex; gap: 6px;">
+                <input type="number" id="input-edit-height-ft" class="form-input" min="2" max="8" placeholder="Ft">
+                <input type="number" id="input-edit-height-in" class="form-input" min="0" max="11" placeholder="In">
+              </div>
+            </div>
+
+            <!-- Weight Metric -->
+            <div class="form-group" id="group-edit-weight-kg">
+              <label class="form-label" for="input-edit-weight-kg">Weight (kg)</label>
+              <input type="number" id="input-edit-weight-kg" class="form-input" min="20" max="300" step="0.1">
+            </div>
+
+            <!-- Weight Imperial -->
+            <div class="form-group" id="group-edit-weight-lbs" style="display: none;">
+              <label class="form-label" for="input-edit-weight-lbs">Weight (lbs)</label>
+              <input type="number" id="input-edit-weight-lbs" class="form-input" min="44" max="660" step="0.1">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-3);">
+            <div class="form-group">
+              <label class="form-label" for="input-edit-age">Age (Optional)</label>
+              <input type="number" id="input-edit-age" class="form-input" min="1" max="120">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input-edit-step-goal">Step Goal</label>
+              <input type="number" id="input-edit-step-goal" class="form-input" min="1000" max="50000" step="500">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="input-edit-water-goal">Water Target (ml)</label>
+            <input type="number" id="input-edit-water-goal" class="form-input" min="500" max="8000" step="100">
+          </div>
+
+          <div id="edit-profile-error" style="display: none; padding: 8px 12px; background: rgba(220, 38, 38, 0.1); border: 1px solid var(--color-error); border-radius: var(--radius-md); color: var(--color-error); font-size: var(--font-size-xs); margin-top: var(--space-2);"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-edit-profile">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-save-edit-profile">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Update Steps Dialog -->
+  <div class="modal-backdrop" id="modal-update-steps" role="dialog" aria-modal="true" aria-labelledby="steps-modal-title">
+    <div class="modal-dialog" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="steps-modal-title">Update Today's Steps</h3>
+        <button class="modal-close-btn" id="btn-close-steps-modal" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: var(--space-4);">
+          <label class="form-label" for="input-manual-steps">Total Step Count for Today</label>
+          <input type="number" id="input-manual-steps" class="form-input" min="0" max="100000" style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-family-mono); text-align: center;" placeholder="e.g. 6420">
+          <span class="form-hint">Enter your full step count recorded from your fitness band or pedometer.</span>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary btn-sm btn-modal-quick-step" data-add="500">+500</button>
+          <button type="button" class="btn btn-secondary btn-sm btn-modal-quick-step" data-add="1000">+1k</button>
+          <button type="button" class="btn btn-secondary btn-sm btn-modal-quick-step" data-add="2500">+2.5k</button>
+          <button type="button" class="btn btn-secondary btn-sm btn-modal-quick-step" data-add="5000">+5k</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-steps-modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-save-steps">Save Step Count</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Custom Water Dialog -->
+  <div class="modal-backdrop" id="modal-custom-water" role="dialog" aria-modal="true" aria-labelledby="water-modal-title">
+    <div class="modal-dialog" style="max-width: 380px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="water-modal-title">Log Water Intake</h3>
+        <button class="modal-close-btn" id="btn-close-custom-water" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="input-custom-water-ml">Amount in Milliliters (ml)</label>
+          <input type="number" id="input-custom-water-ml" class="form-input" min="50" max="3000" step="50" value="350" style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-family-mono); text-align: center;">
+          <span class="form-hint">Standard mug: 300 ml &bull; Pint: 475 ml</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-custom-water">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-custom-water">Log Water</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Clear Health Data Confirmation Dialog -->
+  <div class="modal-backdrop" id="modal-clear-health" role="dialog" aria-modal="true" aria-labelledby="clear-modal-title">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="clear-modal-title" style="color: var(--color-error);">Reset Health Manager Data</h3>
+        <button class="modal-close-btn" id="btn-close-clear-modal" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: var(--font-size-body); color: var(--color-text-main); line-height: 1.5; margin-bottom: var(--space-3);">
+          Are you sure you want to clear your local Health Profile, BMI records, and all recorded step/hydration history?
+        </p>
+        <p style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 0;">
+          This action will permanently delete local health records from your browser and restore the first-time setup screen.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-clear-modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-clear-health">Yes, Clear All Health Data</button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -25,6 +25,8 @@ const INITIAL_STATE = {
     isRunning: false,
     sessionsCompleted: 4
   },
+  healthProfile: null,
+  healthDailyLogs: {},
   todayTasks: [
     { id: 't-1', title: 'Complete LifeOS foundation and file architecture', priority: 'high', done: true, status: 'done', category: 'work' },
     { id: 't-2', title: 'Establish shared design system tokens and variables', priority: 'high', done: true, status: 'done', category: 'work' },
