@@ -1,9 +1,25 @@
 /* ==========================================================================
-   LifeOS Responsive Breakpoints
-   Mobile, Tablet, and Desktop Adaptations
+   LifeOS Responsive Design
+   Breakpoints for Desktop (1440px), Laptop (1280px), Tablet (768px), and Mobile (390px)
    ========================================================================== */
 
-/* Large Tablets & Medium Laptops (<= 1024px) */
+/* --------------------------------------------------------------------------
+   1. Laptop & Medium Desktops (<= 1280px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1280px) {
+  .app-content {
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .stats-strip {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Tablets & Small Laptops (<= 1024px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   :root {
     --sidebar-width: 0px;
@@ -25,38 +41,49 @@
 
   .mobile-menu-btn {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
   }
 
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  /* Grid Stack on Tablets */
   .col-span-8,
   .col-span-6,
   .col-span-4 {
     grid-column: span 12;
   }
+
+  .stats-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
 }
 
-/* Tablets & Mobile Screens (<= 768px) */
+/* --------------------------------------------------------------------------
+   3. Small Tablets & Phablets (<= 768px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   .app-header {
-    padding: 0 var(--space-md);
+    padding: 0 var(--space-4);
+  }
+
+  .header-search {
+    display: none; /* Saved for quick navigation */
   }
 
   .app-content {
-    padding: var(--space-md);
+    padding: var(--space-4);
   }
 
-  .welcome-banner {
-    padding: var(--space-lg);
-  }
-
-  .welcome-title {
-    font-size: var(--font-size-lg);
+  .page-container {
+    gap: var(--space-4);
   }
 
   .page-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--space-3);
   }
 
   .page-actions {
@@ -64,23 +91,79 @@
     justify-content: flex-start;
   }
 
-  .stats-strip {
-    grid-template-columns: 1fr;
-    gap: var(--space-sm);
+  .welcome-banner {
+    padding: var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .welcome-meta {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .dashboard-grid {
-    gap: var(--space-md);
+    gap: var(--space-4);
+  }
+
+  .widget-slot {
+    padding: var(--space-4);
+    min-height: auto;
   }
 }
 
-/* Small Phones (<= 480px) */
+/* --------------------------------------------------------------------------
+   4. Mobile Phones (<= 480px / 390px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 480px) {
-  .btn {
-    width: 100%;
+  .app-header {
+    padding: 0 var(--space-3);
+  }
+
+  .app-content {
+    padding: var(--space-3);
+  }
+
+  .stats-strip {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .welcome-title {
+    font-size: 1.1875rem; /* ~19px */
+  }
+
+  .page-title {
+    font-size: 1.375rem; /* ~22px */
   }
 
   .page-actions {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-actions .btn {
+    width: 100%;
+  }
+
+  .modal-box {
+    margin: var(--space-3);
+    max-height: calc(100vh - 24px);
+  }
+
+  .modal-body {
+    padding: var(--space-4);
+  }
+
+  .timer-digits {
+    font-size: 1.875rem; /* ~30px */
+  }
+
+  .timer-controls {
+    width: 100%;
+  }
+
+  .timer-controls .btn {
+    flex: 1;
   }
 }

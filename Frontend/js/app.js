@@ -17,8 +17,11 @@ function initLifeOS() {
   const contentContainer = document.getElementById('app-content');
   const breadcrumbContainer = document.getElementById('header-breadcrumb');
 
-  // Initialize Theme from State
+  // Initialize Theme from State (Default Dark)
   initTheme();
+
+  // Initialize Pointer-Responsive Desktop Ambient Spotlight
+  initAmbientSpotlight();
 
   // Initialize Audio Controls
   initAudioControls();
@@ -28,44 +31,63 @@ function initLifeOS() {
     router.init(contentContainer, breadcrumbContainer);
   }
 
-  // Update User Profile Widgets in Sidebar
+  // Update User Profile Widgets in Sidebar & Header
   updateUserProfileDisplay();
+  updateSidebarMetrics();
 
-  // Subscribe to state changes to keep profile in sync
-  state.subscribe((currentState) => {
+  // Initialize Onboarding Modal if needed
+  onboarding.initModal();
+
+  // Subscribe to state changes to keep profile & badges in sync
+  state.subscribe(() => {
     updateUserProfileDisplay();
+    updateSidebarMetrics();
   });
 
-  // Mobile Drawer Toggle
+  // Mobile Drawer Toggle & Backdrop
   const mobileToggle = document.getElementById('btn-mobile-menu');
   const sidebar = document.getElementById('app-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+
+  const closeMobileSidebar = () => {
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (backdrop) backdrop.classList.remove('active');
+  };
 
   if (mobileToggle && sidebar) {
     mobileToggle.addEventListener('click', () => {
       sound.playClick();
-      sidebar.classList.toggle('mobile-open');
+      const isOpen = sidebar.classList.toggle('mobile-open');
+      if (backdrop) backdrop.classList.toggle('active', isOpen);
     });
 
-    // Close when clicking outside on mobile
-    document.addEventListener('click', (e) => {
-      if (
-        sidebar.classList.contains('mobile-open') &&
-        !sidebar.contains(e.target) &&
-        !mobileToggle.contains(e.target)
-      ) {
-        sidebar.classList.remove('mobile-open');
-      }
-    });
+    if (backdrop) {
+      backdrop.addEventListener('click', () => {
+        closeMobileSidebar();
+      });
+    }
   }
 
-  // Header Quick Action (Add / Jump to Tasks)
+  // Quick Action in Top Header
   const quickActionBtn = document.getElementById('btn-quick-action');
   if (quickActionBtn) {
     quickActionBtn.addEventListener('click', () => {
       sound.playClick();
       router.navigate('tasks');
+      // If add task panel exists, trigger it open
+      setTimeout(() => {
+        const addPanel = document.getElementById('add-task-panel');
+        if (addPanel) {
+          addPanel.style.display = 'block';
+          const titleInput = document.getElementById('input-new-task-title');
+          if (titleInput) titleInput.focus();
+        }
+      }, 100);
     });
   }
+
+  // Global Quick Jump / Search Bar (⌘K / Ctrl+K)
+  initGlobalSearch();
 
   console.info('[LifeOS] Foundation established successfully.');
 }
@@ -89,18 +111,119 @@ function updateUserProfileDisplay() {
 }
 
 /**
+ * Update Sidebar Badges from active state
+ */
+function updateSidebarMetrics() {
+  const taskCountEl = document.getElementById('sidebar-task-count');
+  if (taskCountEl) {
+    const tasks = state.get('todayTasks') || [];
+    const pending = tasks.filter(t => !t.done).length;
+    taskCountEl.textContent = pending;
+  }
+}
+
+/**
+ * Initialize Global Search & Keyboard Shortcut
+ */
+function initGlobalSearch() {
+  const searchInput = document.getElementById('global-search-input');
+
+  // Command/Ctrl + K focus shortcut
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      }
+    }
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const query = searchInput.value.toLowerCase().trim();
+        if (!query) return;
+
+        const routeMap = {
+          dash: 'dashboard',
+          task: 'tasks',
+          todo: 'tasks',
+          cal: 'calendar',
+          event: 'calendar',
+          goal: 'goals',
+          okr: 'goals',
+          habit: 'habits',
+          streak: 'habits',
+          proj: 'projects',
+          note: 'notes',
+          brain: 'notes',
+          insight: 'insights',
+          metric: 'insights',
+          stat: 'insights',
+          setting: 'settings',
+          pref: 'settings'
+        };
+
+        for (const [key, route] of Object.entries(routeMap)) {
+          if (query.includes(key)) {
+            sound.playClick();
+            router.navigate(route);
+            searchInput.value = '';
+            searchInput.blur();
+            return;
+          }
+        }
+
+        // Default to tasks if unmatched
+        router.navigate('tasks');
+        searchInput.value = '';
+        searchInput.blur();
+      }
+    });
+  }
+}
+
+/**
+ * Initialize Pointer-Responsive Desktop Ambient Spotlight
+ */
+function initAmbientSpotlight() {
+  const spotlight = document.getElementById('ambient-spotlight');
+  if (!spotlight || !window.matchMedia('(pointer: fine)').matches) return;
+
+  let ticking = false;
+  window.addEventListener('pointermove', (e) => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+        if (!spotlight.classList.contains('active')) {
+          spotlight.classList.add('active');
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('pointerleave', () => {
+    spotlight.classList.remove('active');
+  });
+}
+
+/**
  * Initialize Theme Switcher (Dark / Light)
  */
 function initTheme() {
   const profile = state.get('profile') || {};
-  const currentTheme = profile.theme || 'light';
+  const currentTheme = profile.theme || 'dark';
   applyTheme(currentTheme);
 
   const themeBtn = document.getElementById('btn-theme-toggle');
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
       sound.playClick();
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
       const nextTheme = current === 'dark' ? 'light' : 'dark';
       applyTheme(nextTheme);
 
@@ -130,12 +253,16 @@ function initAudioControls() {
   const labelEl = document.getElementById('audio-toggle-label');
 
   if (audioBtn) {
+    // Set initial label based on saved muted status
+    const isMuted = localStorage.getItem('lifeos_sound_muted') === 'true';
+    if (labelEl) labelEl.textContent = isMuted ? 'Muted' : 'Sound FX';
+
     audioBtn.addEventListener('click', () => {
-      const isMuted = sound.toggleMute();
+      const nowMuted = sound.toggleMute();
       if (labelEl) {
-        labelEl.textContent = isMuted ? 'Muted' : 'Sound FX';
+        labelEl.textContent = nowMuted ? 'Muted' : 'Sound FX';
       }
-      if (!isMuted) sound.playComplete();
+      if (!nowMuted) sound.playComplete();
     });
   }
 }

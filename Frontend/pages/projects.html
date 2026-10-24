@@ -1,31 +1,38 @@
 <div class="page-container" id="projects-page">
-  <div class="page-header">
-    <div>
+
+  <!-- Page Header -->
+  <header class="page-header animate-fade-in">
+    <div class="page-header-text">
       <h1 class="page-title">Projects & Initiatives</h1>
-      <p class="page-description">Manage multi-stage initiatives, deliverables, and roadmap velocity.</p>
+      <p class="page-description">Manage multi-stage initiatives, cross-functional deliverables, and roadmap velocity.</p>
     </div>
     <div class="page-actions">
-      <button class="btn btn-primary" id="btn-show-add-project">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      <button class="btn btn-primary btn-sm" id="btn-show-add-project">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
         New Initiative
       </button>
     </div>
-  </div>
+  </header>
 
   <!-- Add Project Panel -->
-  <div id="add-project-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
-    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Create New Project</div>
-    <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
-      <input type="text" id="input-new-project-title" class="form-input" placeholder="Project name..." style="flex: 2; min-width: 200px;">
-      <input type="text" id="input-new-project-deadline" class="form-input" placeholder="Deadline (e.g. Next Week, Nov 15)" style="flex: 1; min-width: 140px;">
-      <input type="number" id="input-new-project-progress" class="form-input" placeholder="Progress %" min="0" max="100" value="40" style="width: 100px;">
-      <button class="btn btn-primary" id="btn-submit-new-project">Create</button>
-      <button class="btn btn-secondary" id="btn-cancel-add-project">Cancel</button>
+  <div id="add-project-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary); background: var(--color-bg-card);">
+    <div style="font-weight: 600; font-size: var(--font-size-card-title); margin-bottom: var(--space-3); color: var(--color-text-main);">Create New Project Initiative</div>
+    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+      <input type="text" id="input-new-project-title" class="form-input" placeholder="Project name or initiative..." style="flex: 2; min-width: 220px;" aria-label="Project name">
+      <input type="text" id="input-new-project-deadline" class="form-input" placeholder="Target Deadline (e.g. Nov 15)" style="flex: 1; min-width: 150px;" aria-label="Deadline">
+      <input type="number" id="input-new-project-progress" class="form-input" placeholder="Progress %" min="0" max="100" value="40" style="width: 110px;" aria-label="Progress percentage">
+      <div style="display: flex; gap: var(--space-2);">
+        <button class="btn btn-primary" id="btn-submit-new-project">Create Initiative</button>
+        <button class="btn btn-secondary" id="btn-cancel-add-project">Cancel</button>
+      </div>
     </div>
   </div>
 
   <!-- Projects Grid -->
-  <div id="projects-list-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
-    <!-- Dynamically rendered -->
+  <div id="projects-list-container" class="animate-fade-in stagger-1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4);">
+    <!-- Dynamically rendered by js/projects.js -->
   </div>
+
 </div>

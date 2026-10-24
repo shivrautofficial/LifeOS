@@ -1,25 +1,29 @@
 <div class="page-container" id="notes-page">
-  <div class="page-header">
-    <div>
+
+  <!-- Page Header -->
+  <header class="page-header animate-fade-in">
+    <div class="page-header-text">
       <h1 class="page-title">Second Brain & Knowledge Hub</h1>
-      <p class="page-description">Capture architectural thoughts, ideas, and cheat sheets completely offline and private.</p>
+      <p class="page-description">Capture architectural thoughts, ideas, and knowledge snippets completely offline and private.</p>
     </div>
     <div class="page-actions">
-      <button class="btn btn-primary" id="btn-show-add-note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      <button class="btn btn-primary btn-sm" id="btn-show-add-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;" aria-hidden="true">
+          <path d="M5 12h14"/><path d="M12 5v14"/>
+        </svg>
         Capture Note
       </button>
     </div>
-  </div>
+  </header>
 
   <!-- Add Note Panel -->
-  <div id="add-note-panel" class="card" style="display: none; padding: 16px; margin-bottom: var(--space-lg); background: var(--color-white-surface); border: 1px solid var(--color-electric-indigo);">
-    <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 8px;">Capture to Second Brain</div>
-    <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
-      <input type="text" id="input-new-note-title" class="form-input" placeholder="Note title...">
-      <textarea id="input-new-note-content" class="form-textarea" placeholder="Write thoughts, insights, or architectural notes..."></textarea>
-      <input type="text" id="input-new-note-tags" class="form-input" placeholder="Tags (comma separated, e.g. architecture, tech, ideas)">
-      <div style="display: flex; gap: var(--space-sm);">
+  <div id="add-note-panel" class="card animate-fade-in" style="display: none; padding: var(--space-4); margin-bottom: var(--space-4); border-color: var(--color-primary); background: var(--color-bg-card);">
+    <div style="font-weight: 600; font-size: var(--font-size-card-title); margin-bottom: var(--space-3); color: var(--color-text-main);">Capture to Second Brain</div>
+    <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+      <input type="text" id="input-new-note-title" class="form-input" placeholder="Note title or core concept..." aria-label="Note title">
+      <textarea id="input-new-note-content" class="form-textarea" placeholder="Write thoughts, insights, or architecture notes..." style="min-height: 110px;" aria-label="Note content"></textarea>
+      <input type="text" id="input-new-note-tags" class="form-input" placeholder="Tags (comma-separated, e.g. architecture, privacy, system)" aria-label="Tags">
+      <div style="display: flex; gap: var(--space-2);">
         <button class="btn btn-primary" id="btn-submit-new-note">Save Note</button>
         <button class="btn btn-secondary" id="btn-cancel-add-note">Cancel</button>
       </div>
@@ -27,7 +31,8 @@
   </div>
 
   <!-- Notes Grid -->
-  <div id="notes-list-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
-    <!-- Dynamically rendered -->
+  <div id="notes-list-container" class="animate-fade-in stagger-1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4);">
+    <!-- Dynamically rendered by js/notes.js -->
   </div>
+
 </div>

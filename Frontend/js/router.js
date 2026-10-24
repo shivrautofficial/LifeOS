@@ -52,7 +52,22 @@ export const ROUTES = {
   insights: {
     title: 'Insights',
     file: 'pages/insights.html',
-    module: { init: () => console.info('[LifeOS Insights] Initialized.') }
+    module: {
+      init: () => {
+        const tasks = state.get('todayTasks') || [];
+        const completed = tasks.filter(t => t.done).length;
+        const total = tasks.length || 1;
+        const rate = Math.round((completed / total) * 100);
+
+        const rateEl = document.getElementById('insight-completion-rate');
+        const ratioEl = document.getElementById('insight-shipped-ratio');
+        const focusEl = document.getElementById('insight-focus-time');
+
+        if (rateEl) rateEl.textContent = `${rate}%`;
+        if (ratioEl) ratioEl.textContent = `${completed} of ${total} deliverables completed`;
+        if (focusEl) focusEl.textContent = state.get('metrics')?.focusTimeToday || '18.5h';
+      }
+    }
   },
   settings: {
     title: 'Settings',

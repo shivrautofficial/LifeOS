@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "LifeOS — One Life. One Dashboard.",
   "scripts": {
-    "dev": "npx --yes serve . -p 3000",
-    "start": "npx --yes serve . -p 3000",
-    "serve": "npx --yes serve . -p 3000"
+    "dev": "npx --yes serve . -p 3000 || python3 -m http.server 3000",
+    "start": "npx --yes serve . -p 3000 || python3 -m http.server 3000",
+    "serve": "npx --yes serve . -p 3000 || python3 -m http.server 3000"
   },
-  "keywords": ["lifeos", "dashboard", "productivity"],
+  "keywords": ["lifeos", "dashboard", "productivity", "saas"],
   "author": "Sarthak",
   "license": "MIT"
 }

@@ -6,6 +6,9 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 
+let filterQuery = '';
+let activePriorityFilter = 'all';
+
 export const tasksModule = {
   /**
    * Initialize task module view
@@ -22,25 +25,51 @@ export const tasksModule = {
     const tasks = state.get('todayTasks') || [];
     const columns = ['todo', 'in_progress', 'review', 'done'];
 
+    const filtered = tasks.filter(t => {
+      const matchesQuery = !filterQuery || t.title.toLowerCase().includes(filterQuery) || t.priority.toLowerCase().includes(filterQuery);
+      const matchesPriority = activePriorityFilter === 'all' || t.priority === activePriorityFilter;
+      return matchesQuery && matchesPriority;
+    });
+
     columns.forEach(col => {
       const container = document.getElementById(`list-${col}`);
       const countEl = document.getElementById(`count-${col}`);
-      const colTasks = tasks.filter(t => (t.status || (t.done ? 'done' : 'todo')) === col);
+      const colTasks = filtered.filter(t => (t.status || (t.done ? 'done' : 'todo')) === col);
 
       if (countEl) countEl.textContent = colTasks.length;
       if (!container) return;
 
+      if (colTasks.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--color-text-muted); font-size: var(--font-size-xs); padding: 28px 12px; border: 1px dashed var(--color-border); border-radius: var(--radius-md);">
+            No tasks in this stage
+          </div>
+        `;
+        return;
+      }
+
       container.innerHTML = colTasks.map(t => {
-        const priorityColor = t.priority === 'urgent' ? 'var(--color-error)' : t.priority === 'high' ? 'var(--color-warning)' : 'var(--color-electric-indigo)';
+        const priorityColor = t.priority === 'urgent' ? 'var(--color-error)' : t.priority === 'high' ? 'var(--color-warning)' : 'var(--color-primary)';
+        const priorityBadgeClass = t.priority === 'urgent' ? 'badge-error' : t.priority === 'high' ? 'badge-warning' : 'badge-indigo';
+        const dueDate = t.dueDate || 'Today';
+
         return `
-          <div class="card" style="padding: 12px; background: var(--color-white-surface); border-left: 3px solid ${priorityColor};" data-task-id="${t.id}">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-              <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); ${t.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : ''}">${t.title}</span>
-              <button class="btn btn-sm btn-icon" data-delete-task="${t.id}" title="Delete" style="color: var(--color-text-muted); width: 22px; height: 22px;">✕</button>
+          <div class="card animate-fade-in" style="padding: 12px; background: var(--color-bg-card); border-left: 3px solid ${priorityColor}; border-radius: var(--radius-md); transition: transform var(--transition-fast), box-shadow var(--transition-fast);" data-task-id="${t.id}">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px;">
+              <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); line-height: 1.35; ${t.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : 'color: var(--color-text-main);'}">
+                ${t.title}
+              </span>
+              <button class="btn btn-icon btn-sm" data-delete-task="${t.id}" title="Delete Task" style="width: 24px; height: 24px; color: var(--color-text-muted); flex-shrink: 0;" aria-label="Delete Task">✕</button>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-xs);">
-              <span class="badge ${t.priority === 'urgent' ? 'badge-error' : t.priority === 'high' ? 'badge-warning' : 'badge-indigo'}">${t.priority}</span>
-              <select class="form-select" data-change-status="${t.id}" style="padding: 2px 6px; font-size: 11px; width: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-xs); gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="badge ${priorityBadgeClass}">${t.priority}</span>
+                <span style="font-size: 11px; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 3px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 10px; height: 10px;" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${dueDate}
+                </span>
+              </div>
+              <select class="form-select" data-change-status="${t.id}" style="height: 28px; padding: 2px 8px; font-size: 11px; width: auto;" aria-label="Update task status">
                 <option value="todo" ${t.status === 'todo' ? 'selected' : ''}>To Do</option>
                 <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
                 <option value="review" ${t.status === 'review' ? 'selected' : ''}>In Review</option>
@@ -63,11 +92,37 @@ export const tasksModule = {
     const panel = document.getElementById('add-task-panel');
     const btnCancel = document.getElementById('btn-cancel-add-task');
     const btnSubmit = document.getElementById('btn-submit-new-task');
+    const filterInput = document.getElementById('tasks-search-filter');
+    const priorityFilters = document.getElementById('tasks-priority-filters');
+
+    if (priorityFilters) {
+      priorityFilters.querySelectorAll('button').forEach(btn => {
+        btn.onclick = () => {
+          sound.playClick();
+          priorityFilters.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activePriorityFilter = btn.dataset.filterPriority || 'all';
+          this.renderKanban();
+        };
+      });
+    }
+
+    if (filterInput) {
+      filterInput.oninput = (e) => {
+        filterQuery = e.target.value.toLowerCase().trim();
+        this.renderKanban();
+      };
+    }
 
     if (btnShowAdd && panel) {
       btnShowAdd.onclick = () => {
         sound.playClick();
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        const isOpen = panel.style.display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen) {
+          const titleInput = document.getElementById('input-new-task-title');
+          if (titleInput) titleInput.focus();
+        }
       };
     }
 
@@ -83,6 +138,7 @@ export const tasksModule = {
         const titleInput = document.getElementById('input-new-task-title');
         const prioritySelect = document.getElementById('select-new-task-priority');
         const statusSelect = document.getElementById('select-new-task-status');
+        const dueSelect = document.getElementById('select-new-task-due');
 
         const title = titleInput.value.trim();
         if (!title) return;
@@ -93,6 +149,7 @@ export const tasksModule = {
           title,
           priority: prioritySelect.value,
           status: statusSelect.value,
+          dueDate: dueSelect ? dueSelect.value : 'Today',
           done: statusSelect.value === 'done',
           category: 'work'
         };
@@ -102,7 +159,7 @@ export const tasksModule = {
         state.setKey('todayTasks', tasks);
 
         titleInput.value = '';
-        panel.style.display = 'none';
+        if (panel) panel.style.display = 'none';
         this.renderKanban();
       };
     }

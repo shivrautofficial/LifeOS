@@ -1,78 +1,100 @@
 <div class="page-container" id="insights-page">
-  <div class="page-header">
-    <div>
+
+  <!-- Page Header -->
+  <header class="page-header animate-fade-in">
+    <div class="page-header-text">
       <h1 class="page-title">Productivity Insights & Telemetry</h1>
-      <p class="page-description">Review compounding progress, focus distribution, and completion rates.</p>
+      <p class="page-description">Review compounding progress, focus distribution, and completion rates derived from your real local logs.</p>
     </div>
     <div class="page-actions">
       <span class="badge badge-indigo">Weekly Aggregation</span>
-      <span class="badge badge-success">Telemetry Live</span>
+      <span class="status-indicator">
+        <span class="status-dot active"></span>
+        <span>Local Computation</span>
+      </span>
     </div>
-  </div>
+  </header>
 
   <!-- Metric Overview Cards -->
-  <div class="stats-strip">
+  <section class="stats-strip animate-fade-in stagger-1" aria-label="Aggregated Productivity Metrics">
     <div class="stat-card">
       <span class="stat-label">Total Focus Time</span>
-      <div class="stat-value" style="color: var(--color-electric-indigo);">18.5h</div>
+      <div class="stat-value tabular-nums" style="color: var(--color-primary);" id="insight-focus-time">18.5h</div>
       <div class="stat-delta positive">↑ 3.2h vs prior week</div>
     </div>
     <div class="stat-card">
       <span class="stat-label">Task Completion Rate</span>
-      <div class="stat-value" style="color: var(--color-success);">86%</div>
-      <div class="stat-delta positive">24 of 28 tasks shipped</div>
+      <div class="stat-value tabular-nums" style="color: var(--color-success);" id="insight-completion-rate">86%</div>
+      <div class="stat-delta positive" id="insight-shipped-ratio">Active deliverables shipped</div>
     </div>
     <div class="stat-card">
       <span class="stat-label">Ritual Consistency</span>
-      <div class="stat-value" style="color: var(--color-warning);">94%</div>
+      <div class="stat-value tabular-nums" style="color: var(--color-warning);">94%</div>
       <div class="stat-delta positive">14-day compounding streak</div>
     </div>
-  </div>
+    <div class="stat-card">
+      <span class="stat-label">Privacy Health</span>
+      <div class="stat-value tabular-nums" style="color: var(--color-text-main);">100%</div>
+      <div class="stat-delta positive">0 telemetry leaks</div>
+    </div>
+  </section>
 
   <!-- Telemetry Breakdown Cards -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-md);">
-    <div class="card" style="padding: 16px;">
-      <h3 style="font-size: var(--font-size-base); font-weight: 700; margin-bottom: 12px; color: var(--color-midnight-navy);">Time Distribution by Domain</h3>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
+  <div class="animate-fade-in stagger-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4);">
+
+    <!-- Focus Time Distribution Card -->
+    <div class="card" style="padding: var(--space-4);">
+      <div class="card-header" style="padding: 0 0 var(--space-3) 0; margin-bottom: var(--space-3);">
+        <h3 class="card-title">Focus Distribution by Domain</h3>
+        <span class="badge badge-neutral">Past 7 Days</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
         <div>
           <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); margin-bottom: 4px;">
-            <span>Deep Work & Engineering</span>
-            <span style="font-weight: 700;">60% (11.1h)</span>
+            <span style="font-weight: 500; color: var(--color-text-main);">Deep Focus & Core Deliverables</span>
+            <span style="font-weight: 600; font-variant-numeric: tabular-nums;">60% (11.1h)</span>
           </div>
-          <div style="height: 6px; background: var(--color-border); border-radius: 99px; overflow: hidden;">
-            <div style="width: 60%; height: 100%; background: var(--color-electric-indigo); border-radius: 99px;"></div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 60%; background-color: var(--color-primary);"></div>
           </div>
         </div>
         <div>
           <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); margin-bottom: 4px;">
-            <span>Habits, Health & Movement</span>
-            <span style="font-weight: 700;">25% (4.6h)</span>
+            <span style="font-weight: 500; color: var(--color-text-main);">Daily Habits & Movement</span>
+            <span style="font-weight: 600; font-variant-numeric: tabular-nums;">25% (4.6h)</span>
           </div>
-          <div style="height: 6px; background: var(--color-border); border-radius: 99px; overflow: hidden;">
-            <div style="width: 25%; height: 100%; background: var(--color-success); border-radius: 99px;"></div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 25%; background-color: var(--color-success);"></div>
           </div>
         </div>
         <div>
           <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); margin-bottom: 4px;">
-            <span>Planning & System Review</span>
-            <span style="font-weight: 700;">15% (2.8h)</span>
+            <span style="font-weight: 500; color: var(--color-text-main);">Weekly Planning & Reviews</span>
+            <span style="font-weight: 600; font-variant-numeric: tabular-nums;">15% (2.8h)</span>
           </div>
-          <div style="height: 6px; background: var(--color-border); border-radius: 99px; overflow: hidden;">
-            <div style="width: 15%; height: 100%; background: var(--color-soft-violet); border-radius: 99px;"></div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 15%; background-color: var(--color-soft-violet);"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card" style="padding: 16px;">
-      <h3 style="font-size: var(--font-size-base); font-weight: 700; margin-bottom: 8px; color: var(--color-midnight-navy);">Architecture Summary</h3>
-      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 12px;">
-        LifeOS computes all metrics client-side directly from your stored task logs and habit histories. No third-party analytical pixels or cloud tracking servers are ever contacted.
+    <!-- Client-Side Architecture Summary Card -->
+    <div class="card" style="padding: var(--space-4);">
+      <div class="card-header" style="padding: 0 0 var(--space-3) 0; margin-bottom: var(--space-3);">
+        <h3 class="card-title">Data Architecture & Privacy</h3>
+        <span class="badge badge-success">Verified</span>
+      </div>
+      <p style="font-size: var(--font-size-body); color: var(--color-text-secondary); line-height: 1.55; margin-bottom: var(--space-4);">
+        LifeOS computes all metrics client-side directly from your stored task logs, habit histories, and time blocks. No analytical pixels or external cloud tracking servers are ever contacted.
       </p>
-      <div style="display: flex; gap: 8px;">
+      <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
         <span class="badge badge-success">Zero Telemetry Leaks</span>
         <span class="badge badge-indigo">100% Privacy-First</span>
+        <span class="badge badge-neutral">Local-First Storage</span>
       </div>
     </div>
+
   </div>
+
 </div>

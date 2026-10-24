@@ -1,13 +1,13 @@
 /* ==========================================================================
    LifeOS Dashboard Specific Styles
-   Grid Structure, Metric Summary Cards, and Modular Widget Slots
+   Grid Structure, Welcome Banner, Metric KPI Cards, and Modular Widget Slots
    ========================================================================== */
 
 /* Dashboard Layout Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-xl);
+  gap: var(--space-5);
 }
 
 .col-span-12 { grid-column: span 12; }
@@ -17,68 +17,94 @@
 
 /* Dashboard Welcome Banner */
 .welcome-banner {
-  background: var(--gradient-surface);
+  background: linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-subtle) 100%);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-xl);
-  margin-bottom: var(--space-xl);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-lg);
-  box-shadow: var(--shadow-sm);
+  gap: var(--space-4);
+  box-shadow: var(--shadow-xs);
   position: relative;
   overflow: hidden;
 }
 
-.welcome-banner::after {
+.welcome-banner::before {
   content: '';
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  width: 220px;
-  height: 100%;
-  background: radial-gradient(circle at 100% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
-  pointer-events: none;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), #8B5CF6, transparent);
+}
+
+.welcome-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .welcome-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-midnight-navy);
-  margin-bottom: var(--space-2xs);
+  font-size: 1.375rem; /* ~22px */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  letter-spacing: -0.02em;
 }
 
 .welcome-subtitle {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-body);
   color: var(--color-text-secondary);
+  line-height: var(--line-height-snug);
 }
 
-/* Metric Stats Strip */
+.welcome-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  padding: 3px 10px;
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+/* Metric KPI Statistics Strip */
 .stats-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
 }
 
 .stat-card {
-  background-color: var(--color-white-surface);
+  background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-xs);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
-  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  gap: var(--space-2);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
   border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(99, 102, 241, 0.08);
 }
 
 .stat-card-top {
@@ -88,35 +114,43 @@
 }
 
 .stat-label {
-  font-size: var(--font-size-xs);
+  font-size: 0.6875rem; /* 11px */
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .stat-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-md);
-  background-color: var(--color-soft-lavender);
-  color: var(--color-electric-indigo);
+  background-color: var(--color-soft-indigo);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.1);
 }
 
 .stat-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
+  stroke-width: 2;
 }
 
 .stat-value {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-midnight-navy);
+  font-size: 1.625rem; /* ~26px */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
   line-height: 1.1;
-  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .stat-delta {
@@ -127,44 +161,131 @@
   gap: 4px;
 }
 
-.stat-delta.positive {
-  color: var(--color-success);
-}
+.stat-delta.positive { color: var(--color-success); }
+.stat-delta.neutral  { color: var(--color-text-secondary); }
+.stat-delta.warning  { color: var(--color-warning); }
 
-.stat-delta.neutral {
-  color: var(--color-text-secondary);
-}
-
-/* Dashboard Widget Card Container */
+/* Dashboard Widget Slot Card */
 .widget-slot {
-  background-color: var(--color-white-surface);
+  background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-xs);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  min-height: 280px;
+  gap: var(--space-3);
+  min-height: 270px;
+  transition: border-color var(--transition-fast);
+}
+
+.widget-slot:hover {
+  border-color: var(--color-border-hover);
 }
 
 .widget-slot-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .widget-slot-title {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-midnight-navy);
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-main);
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-2);
 }
 
 .widget-slot-title svg {
-  width: 18px;
-  height: 18px;
-  color: var(--color-electric-indigo);
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary);
+  stroke-width: 2;
+}
+
+/* Pomodoro Timer Specific Styling */
+.pomodoro-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) 0;
+  position: relative;
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    text-shadow: 0 0 12px var(--color-primary-glow);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 24px var(--color-primary-glow);
+    transform: scale(1.02);
+  }
+}
+
+.timer-digits {
+  font-size: 2.25rem; /* 36px */
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-mono);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.pomodoro-card.running .timer-digits {
+  color: var(--color-primary);
+  animation: timerPulse 2s ease-in-out infinite;
+}
+
+.timer-modes {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.timer-modes .segmented-btn.active {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.timer-controls {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Profession Telemetry Cards */
+.telemetry-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.telemetry-tile {
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.telemetry-tile-label {
+  font-size: 0.6875rem; /* 11px */
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.telemetry-tile-value {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  font-variant-numeric: tabular-nums;
 }

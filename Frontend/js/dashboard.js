@@ -1,6 +1,6 @@
 /* ==========================================================================
    LifeOS Dashboard Module
-   Dashboard View Orchestration, Pomodoro Timer & Profession Telemetry
+   Dashboard View Orchestration, Pomodoro Timer & Multi-Profession Telemetry
    ========================================================================== */
 
 import { state } from './state.js';
@@ -26,11 +26,12 @@ export const dashboardModule = {
   },
 
   /**
-   * Update welcome header with user name and time-based greeting
+   * Update welcome header with user name, time-based greeting, and current date
    */
   renderHeader() {
     const greetingEl = document.getElementById('dashboard-greeting');
     const badgeEl = document.getElementById('dashboard-persona-badge');
+    const dateEl = document.getElementById('dashboard-date-text');
     const profile = state.get('profile');
 
     if (greetingEl && profile) {
@@ -39,22 +40,26 @@ export const dashboardModule = {
       if (hour < 12) timeOfDay = 'Good morning';
       else if (hour < 17) timeOfDay = 'Good afternoon';
 
-      greetingEl.textContent = `${timeOfDay}, ${profile.name} 👋`;
+      greetingEl.textContent = `${timeOfDay}, ${profile.name || 'Professional'}`;
     }
 
     if (badgeEl && profile) {
       badgeEl.textContent = profile.roleTitle || 'Professional';
     }
+
+    if (dateEl) {
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateEl.textContent = new Intl.DateTimeFormat('en-US', options).format(new Date());
+    }
   },
 
   /**
-   * Update metric stats counters
+   * Update metric stats counters from real state
    */
   renderMetrics() {
-    const metrics = state.get('metrics');
-    if (!metrics) return;
-
+    const metrics = state.get('metrics') || {};
     const taskCountEl = document.getElementById('stat-active-tasks');
+    const tasksDeltaEl = document.getElementById('stat-tasks-delta');
     const habitRateEl = document.getElementById('stat-habit-rate');
     const goalsEl = document.getElementById('stat-active-goals');
     const focusTimeEl = document.getElementById('stat-focus-time');
@@ -63,31 +68,40 @@ export const dashboardModule = {
     const activeTasks = tasks.filter(t => !t.done).length;
 
     if (taskCountEl) taskCountEl.textContent = activeTasks;
+    if (tasksDeltaEl) tasksDeltaEl.textContent = `${activeTasks} remaining today`;
     if (habitRateEl) habitRateEl.textContent = metrics.habitConsistencyRate ?? '94%';
     if (goalsEl) goalsEl.textContent = metrics.goalsProgress ?? '4 / 6';
     if (focusTimeEl) focusTimeEl.textContent = metrics.focusTimeToday ?? '2.5h';
   },
 
   /**
-   * Render tasks and habits widget contents
+   * Render tasks, habits, and schedule widget contents
    */
   renderWidgets() {
     const tasksContainer = document.getElementById('dashboard-tasks-container');
     const habitsContainer = document.getElementById('dashboard-habits-container');
+    const scheduleContainer = document.getElementById('dashboard-schedule-container');
 
     const tasks = state.get('todayTasks') || [];
     const habits = state.get('todayHabits') || [];
+    const events = state.get('calendarEvents') || [];
 
     if (tasksContainer) {
       tasksContainer.innerHTML = tasks.length > 0
-        ? tasks.map(t => widgets.renderTaskItem(t)).join('')
-        : '<p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">No active tasks for today.</p>';
+        ? tasks.slice(0, 5).map(t => widgets.renderTaskItem(t)).join('')
+        : '<p style="color: var(--color-text-secondary); font-size: var(--font-size-body); padding: 12px 0;">No active tasks remaining. Great job!</p>';
     }
 
     if (habitsContainer) {
       habitsContainer.innerHTML = habits.length > 0
         ? habits.map(h => widgets.renderHabitRow(h)).join('')
-        : '<p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">No habits defined yet.</p>';
+        : '<p style="color: var(--color-text-secondary); font-size: var(--font-size-body); padding: 12px 0;">No habits configured yet.</p>';
+    }
+
+    if (scheduleContainer) {
+      scheduleContainer.innerHTML = events.length > 0
+        ? events.slice(0, 3).map(e => widgets.renderScheduleItem(e)).join('')
+        : '<p style="color: var(--color-text-secondary); font-size: var(--font-size-body); padding: 12px 0;">No schedule blocks today.</p>';
     }
   },
 
@@ -104,99 +118,111 @@ export const dashboardModule = {
     if (!container) return;
 
     if (prof === 'engineer') {
-      if (titleEl) titleEl.innerHTML = `💻 Engineering Command & Commit Telemetry`;
+      if (titleEl) titleEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Engineering Command & Sprint Telemetry`;
       if (badgeEl) badgeEl.textContent = 'CI/CD Live';
 
       // Generate simulated commit matrix
       let cells = '';
       for (let i = 0; i < 7 * 14; i++) {
         const lvl = (i % 5 === 0 || i % 7 === 0) ? Math.floor(Math.random() * 4) : Math.floor(Math.random() * 2);
-        const bg = lvl === 0 ? 'var(--color-border)' : lvl === 1 ? 'rgba(99, 102, 241, 0.3)' : lvl === 2 ? 'rgba(99, 102, 241, 0.65)' : 'var(--color-electric-indigo)';
-        cells += `<div style="width: 12px; height: 12px; border-radius: 2px; background: ${bg};" title="Sprint activity on day ${i + 1}"></div>`;
+        const bg = lvl === 0 ? 'var(--color-border)' : lvl === 1 ? 'rgba(99, 102, 241, 0.3)' : lvl === 2 ? 'rgba(99, 102, 241, 0.65)' : 'var(--color-primary)';
+        cells += `<div style="width: 12px; height: 12px; border-radius: 2px; background: ${bg};" title="Sprint activity block ${i + 1}"></div>`;
       }
 
       container.innerHTML = `
-        <div style="margin-bottom: var(--space-md);">
-          <span style="font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-text-secondary);">SPRINT COMMIT HEATMAP (PAST 14 WEEKS)</span>
-          <div style="display: grid; grid-template-rows: repeat(7, 12px); grid-auto-flow: column; gap: 4px; overflow-x: auto; padding: 8px 0;">
+        <div style="margin-bottom: var(--space-4);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 0.6875rem; font-weight: var(--font-weight-semibold); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Sprint Heatmap (14 Weeks)</span>
+            <span style="font-size: 0.6875rem; color: var(--color-text-secondary);">42 commits / sprint</span>
+          </div>
+          <div style="display: grid; grid-template-rows: repeat(7, 12px); grid-auto-flow: column; gap: 4px; overflow-x: auto; padding: 4px 0;">
             ${cells}
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-sm);">
-          <div class="card" style="padding: 10px 14px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Median API Latency</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-success);">38 ms</span>
+        <div class="telemetry-kpi-grid">
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Median API Latency</span>
+            <span class="telemetry-tile-value" style="color: var(--color-success);">38 ms</span>
           </div>
-          <div class="card" style="padding: 10px 14px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Test Coverage</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-electric-indigo);">88.4%</span>
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Test Coverage</span>
+            <span class="telemetry-tile-value" style="color: var(--color-primary);">88.4%</span>
           </div>
-          <div class="card" style="padding: 10px 14px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Uptime SLA</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-midnight-navy);">99.98%</span>
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Production SLA</span>
+            <span class="telemetry-tile-value" style="color: var(--color-text-main);">99.98%</span>
           </div>
         </div>
       `;
     } else if (prof === 'student') {
-      if (titleEl) titleEl.innerHTML = `🎓 Academic Hub & Coursework Matrix`;
-      if (badgeEl) badgeEl.textContent = 'GPA: 3.91';
+      if (titleEl) titleEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> Academic Hub & Coursework Matrix`;
+      if (badgeEl) badgeEl.textContent = 'Cumulative GPA: 3.91';
 
       container.innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-sm);">
-          <div class="card" style="padding: 14px;">
-            <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 4px;">Distributed Systems</div>
-            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: 8px;">Grade: A (85% Coursework)</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3);">
+          <div class="telemetry-tile" style="padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 600; font-size: 13px; color: var(--color-text-main);">Distributed Systems</span>
+              <span class="badge badge-success" style="font-size: 11px;">Grade: A</span>
+            </div>
+            <div style="font-size: 11px; color: var(--color-text-secondary); margin-bottom: 8px;">85% Syllabus Mastered</div>
             ${widgets.renderProgressBar(85, 'var(--color-success)')}
           </div>
-          <div class="card" style="padding: 14px;">
-            <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 4px;">Computer Networks</div>
-            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: 8px;">Grade: A- (78% Coursework)</div>
-            ${widgets.renderProgressBar(78, 'var(--color-electric-indigo)')}
+          <div class="telemetry-tile" style="padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 600; font-size: 13px; color: var(--color-text-main);">Computer Networks</span>
+              <span class="badge badge-indigo" style="font-size: 11px;">Grade: A-</span>
+            </div>
+            <div style="font-size: 11px; color: var(--color-text-secondary); margin-bottom: 8px;">78% Syllabus Mastered</div>
+            ${widgets.renderProgressBar(78, 'var(--color-primary)')}
           </div>
-          <div class="card" style="padding: 14px;">
-            <div style="font-weight: 700; font-size: var(--font-size-sm); margin-bottom: 4px;">HCI & UX Architecture</div>
-            <div style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: 8px;">Grade: A+ (94% Coursework)</div>
+          <div class="telemetry-tile" style="padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 600; font-size: 13px; color: var(--color-text-main);">HCI & Systems UX</span>
+              <span class="badge badge-success" style="font-size: 11px;">Grade: A+</span>
+            </div>
+            <div style="font-size: 11px; color: var(--color-text-secondary); margin-bottom: 8px;">94% Syllabus Mastered</div>
             ${widgets.renderProgressBar(94, 'var(--color-soft-violet)')}
           </div>
         </div>
       `;
     } else if (prof === 'founder') {
-      if (titleEl) titleEl.innerHTML = `🚀 Venture Command & Growth Metrics`;
+      if (titleEl) titleEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Venture Command & Growth Metrics`;
       if (badgeEl) badgeEl.textContent = 'Seed Stage';
 
       container.innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); margin-bottom: var(--space-sm);">
-          <div class="card" style="padding: 12px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">MRR</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-success);">$14,200</span>
+        <div class="telemetry-kpi-grid">
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Monthly Recurring Revenue</span>
+            <span class="telemetry-tile-value" style="color: var(--color-success);">$14,200</span>
           </div>
-          <div class="card" style="padding: 12px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Runway</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-warning);">16 Months</span>
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Capital Runway</span>
+            <span class="telemetry-tile-value" style="color: var(--color-warning);">16 Months</span>
           </div>
-          <div class="card" style="padding: 12px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">LTV / CAC</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-electric-indigo);">5.8x</span>
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Unit Economics (LTV / CAC)</span>
+            <span class="telemetry-tile-value" style="color: var(--color-primary);">5.8x</span>
           </div>
         </div>
       `;
     } else {
-      if (titleEl) titleEl.innerHTML = `⚡ Holistic Life & Focus Overview`;
+      if (titleEl) titleEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Holistic Wellbeing & Daily Equilibrium`;
       if (badgeEl) badgeEl.textContent = 'Equilibrium';
 
       container.innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm);">
-          <div class="card" style="padding: 12px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Sleep Avg</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-electric-indigo);">7.8 hrs</span>
+        <div class="telemetry-kpi-grid">
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Sleep Average</span>
+            <span class="telemetry-tile-value" style="color: var(--color-primary);">7.8 hrs</span>
           </div>
-          <div class="card" style="padding: 12px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Hydration</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-success);">6 / 8 Glasses</span>
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Hydration Target</span>
+            <span class="telemetry-tile-value" style="color: var(--color-success);">6 / 8 Glasses</span>
           </div>
-          <div class="card" style="padding: 12px;">
-            <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Daily Movement</span>
-            <span style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-warning);">9,400 steps</span>
+          <div class="telemetry-tile">
+            <span class="telemetry-tile-label">Daily Movement</span>
+            <span class="telemetry-tile-value" style="color: var(--color-warning);">9,400 steps</span>
           </div>
         </div>
       `;
@@ -208,6 +234,7 @@ export const dashboardModule = {
    */
   initPomodoro() {
     const digitsEl = document.getElementById('timer-digits');
+    const pomodoroCard = document.querySelector('.pomodoro-card');
     const toggleBtn = document.getElementById('btn-timer-toggle');
     const resetBtn = document.getElementById('btn-timer-reset');
     const focusBtn = document.getElementById('btn-timer-focus');
@@ -225,11 +252,19 @@ export const dashboardModule = {
     const stopTimer = () => {
       clearInterval(timerInterval);
       isTimerRunning = false;
+      if (pomodoroCard) pomodoroCard.classList.remove('running');
       if (toggleBtn) {
         toggleBtn.textContent = 'Start Focus';
         toggleBtn.classList.remove('btn-secondary');
         toggleBtn.classList.add('btn-primary');
       }
+    };
+
+    const setModeActive = (activeBtn) => {
+      [focusBtn, shortBtn, longBtn].forEach(b => {
+        if (b) b.classList.remove('active');
+      });
+      if (activeBtn) activeBtn.classList.add('active');
     };
 
     toggleBtn.onclick = () => {
@@ -238,6 +273,7 @@ export const dashboardModule = {
         stopTimer();
       } else {
         isTimerRunning = true;
+        if (pomodoroCard) pomodoroCard.classList.add('running');
         toggleBtn.textContent = 'Pause';
         toggleBtn.classList.remove('btn-primary');
         toggleBtn.classList.add('btn-secondary');
@@ -249,7 +285,7 @@ export const dashboardModule = {
           } else {
             stopTimer();
             sound.playComplete();
-            alert('🎉 Focus session completed! Great work.');
+            alert('🎉 Deep focus sprint completed! Take a short restorative break.');
           }
         }, 1000);
       }
@@ -269,6 +305,7 @@ export const dashboardModule = {
         sound.playClick();
         stopTimer();
         currentTimerMode = 'focus';
+        setModeActive(focusBtn);
         currentTimerSeconds = 25 * 60;
         updateDisplay();
       };
@@ -279,6 +316,7 @@ export const dashboardModule = {
         sound.playClick();
         stopTimer();
         currentTimerMode = 'short';
+        setModeActive(shortBtn);
         currentTimerSeconds = 5 * 60;
         updateDisplay();
       };
@@ -289,6 +327,7 @@ export const dashboardModule = {
         sound.playClick();
         stopTimer();
         currentTimerMode = 'long';
+        setModeActive(longBtn);
         currentTimerSeconds = 15 * 60;
         updateDisplay();
       };

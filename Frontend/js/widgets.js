@@ -11,19 +11,21 @@ export const widgets = {
    */
   renderTaskItem(task) {
     const priorityBadge = {
-      high: '<span class="badge badge-warning">High</span>',
       urgent: '<span class="badge badge-error">Urgent</span>',
+      high: '<span class="badge badge-warning">High</span>',
       medium: '<span class="badge badge-indigo">Medium</span>',
       low: '<span class="badge badge-neutral">Low</span>'
     }[task.priority] || '<span class="badge badge-neutral">Normal</span>';
 
     return `
-      <div class="card" style="padding: 12px 16px; margin-bottom: 8px; flex-direction: row; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <input type="checkbox" ${task.done ? 'checked' : ''} style="width: 16px; height: 16px; accent-color: var(--color-electric-indigo); cursor: pointer;" data-task-id="${task.id}">
-          <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); ${task.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : ''}">${task.title}</span>
-        </div>
-        <div>
+      <div class="card" style="padding: 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1; min-width: 0;">
+          <input type="checkbox" ${task.done ? 'checked' : ''} data-task-id="${task.id}" aria-label="Mark task done">
+          <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); line-height: 1.35; ${task.done ? 'text-decoration: line-through; color: var(--color-text-muted);' : 'color: var(--color-text-main);'}">
+            ${task.title}
+          </span>
+        </label>
+        <div style="flex-shrink: 0;">
           ${priorityBadge}
         </div>
       </div>
@@ -37,14 +39,33 @@ export const widgets = {
    */
   renderHabitRow(habit) {
     return `
-      <div class="card" style="padding: 12px 16px; margin-bottom: 8px; flex-direction: row; align-items: center; justify-content: space-between;">
-        <div style="display: flex; flex-direction: column;">
-          <span style="font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);">${habit.title}</span>
-          <span style="font-size: var(--font-size-xs); color: var(--color-warning);">🔥 ${habit.streak} day streak</span>
+      <div class="card" style="padding: 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: var(--font-size-body); font-weight: var(--font-weight-medium); color: var(--color-text-main);">${habit.title}</span>
+          <span style="font-size: var(--font-size-xs); color: var(--color-warning); font-weight: var(--font-weight-semibold);">
+            🔥 ${habit.streak || 0}d streak
+          </span>
         </div>
         <button class="btn btn-sm ${habit.done ? 'btn-primary' : 'btn-secondary'}" data-habit-id="${habit.id}">
           ${habit.done ? 'Completed' : 'Check In'}
         </button>
+      </div>
+    `;
+  },
+
+  /**
+   * Render a calendar block item
+   * @param {object} event
+   * @returns {string} HTML string
+   */
+  renderScheduleItem(event) {
+    return `
+      <div class="card" style="padding: 10px 14px; border-left: 3px solid var(--color-primary); flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;">
+        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+          <span style="font-size: var(--font-size-meta); font-weight: var(--font-weight-semibold); color: var(--color-text-main);">${event.title}</span>
+          <span style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">${event.time}</span>
+        </div>
+        <span class="badge badge-indigo" style="font-size: 11px;">${event.tag || 'Focus Block'}</span>
       </div>
     `;
   },
@@ -55,11 +76,11 @@ export const widgets = {
    * @param {string} [color]
    * @returns {string} HTML string
    */
-  renderProgressBar(percentage, color = 'var(--color-electric-indigo)') {
+  renderProgressBar(percentage, color = 'var(--color-primary)') {
     const clamped = Math.min(100, Math.max(0, percentage));
     return `
-      <div style="width: 100%; height: 6px; background-color: var(--color-border); border-radius: var(--radius-full); overflow: hidden;">
-        <div style="width: ${clamped}%; height: 100%; background-color: ${color}; border-radius: var(--radius-full); transition: width 0.3s ease;"></div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width: ${clamped}%; background-color: ${color};"></div>
       </div>
     `;
   }
