@@ -11,6 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
+  <!-- Site Icon / Favicon -->
+  <link rel="icon" type="image/png" href="assets/icons/LifeOS.png">
+  <link rel="apple-touch-icon" href="assets/icons/LifeOS.png">
+
   <!-- Core Design System & Modular Stylesheets -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
@@ -18,10 +22,18 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/health.css">
+  <link rel="stylesheet" href="css/notes.css">
+  <link rel="stylesheet" href="css/suggestions.css">
   <link rel="stylesheet" href="css/responsive.css">
 
   <!-- Supabase Client Engine (Global Browser Distribution) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.LIFEOS_CONFIG = Object.assign(window.LIFEOS_CONFIG || {}, {
+      supabaseUrl: 'https://datfcopzrkwffdecxoll.supabase.co',
+      supabaseAnonKey: 'sb_publishable_CKZkfZMH2uX4_eZfYZTzxw_1nE4Fryn'
+    });
+  </script>
 </head>
 <body>
 
@@ -53,9 +65,7 @@
       <div class="sidebar-header">
         <a href="#dashboard" class="brand-link" title="LifeOS Dashboard">
           <div class="brand-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
+            <img src="assets/icons/LifeOS.png" alt="LifeOS Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius-sm);">
           </div>
           <div class="brand-text">
             <span class="brand-title">LifeOS</span>
@@ -134,15 +144,6 @@
           <span class="nav-label">Projects</span>
         </a>
 
-        <a href="#notes" class="nav-link" data-route="notes">
-          <span class="nav-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/>
-            </svg>
-          </span>
-          <span class="nav-label">Notes</span>
-        </a>
-
         <span class="sidebar-section-title" style="margin-top: 6px;">System</span>
 
         <a href="#insights" class="nav-link" data-route="insights">
@@ -152,6 +153,15 @@
             </svg>
           </span>
           <span class="nav-label">Insights</span>
+        </a>
+
+        <a href="#suggestions" class="nav-link" data-route="suggestions">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </span>
+          <span class="nav-label">Suggestions</span>
         </a>
 
         <a href="#settings" class="nav-link" data-route="settings">
@@ -208,13 +218,12 @@
         </div>
 
         <div class="header-right">
-<<<<<<< HEAD
           <!-- Live Database Status Indicator -->
           <div id="database-status-indicator" class="db-status-pill" title="Database Connected" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: var(--radius-full); background: rgba(16, 185, 129, 0.12); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.25); cursor: pointer; user-select: none;">
             <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); display: inline-block;"></span>
             <span>DB Connected</span>
           </div>
-=======
+
           <!-- Real-Time Cloud Sync Indicator -->
           <div class="sync-indicator" id="sync-indicator" title="Cloud Real-Time Sync Active" aria-label="Sync Indicator"></div>
 
@@ -225,7 +234,6 @@
             </svg>
             Sign In
           </button>
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
           <!-- Ambient Focus Sound FX Toggle -->
           <button class="btn btn-secondary btn-sm" id="btn-audio-toggle" title="Toggle Focus Sound FX" aria-label="Toggle Sound FX">
@@ -266,9 +274,7 @@
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 8px;">
           <div class="brand-icon" style="width: 26px; height: 26px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
+            <img src="assets/icons/LifeOS.png" alt="LifeOS Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius-sm);">
           </div>
           <h2 class="modal-title" id="onboarding-modal-title">Welcome to LifeOS</h2>
         </div>
@@ -434,9 +440,7 @@
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 8px;">
           <div class="brand-icon" style="width: 28px; height: 28px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
+            <img src="assets/icons/LifeOS.png" alt="LifeOS Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius-sm);">
           </div>
           <h2 class="modal-title" id="auth-modal-title">LifeOS Identity</h2>
         </div>
@@ -496,6 +500,11 @@
               Don't have an account? 
               <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 600;" data-auth-switch="signup">Create an Account</a>
             </div>
+            <div style="margin-top: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--color-border-subtle, rgba(255,255,255,0.08));">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-auth-guest-signin" style="width: 100%; justify-content: center;">
+                Continue as Guest (Offline Mode)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -551,9 +560,16 @@
             Create LifeOS Account
           </button>
 
-          <div style="margin-top: var(--space-4); text-align: center; font-size: var(--font-size-meta); color: var(--color-text-secondary);">
-            Already have an account? 
-            <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 600;" data-auth-switch="signin">Sign In</a>
+          <div style="margin-top: var(--space-4); text-align: center; font-size: var(--font-size-meta); color: var(--color-text-secondary); display: flex; flex-direction: column; gap: var(--space-2);">
+            <div>
+              Already have an account? 
+              <a href="#" style="color: var(--color-primary); text-decoration: none; font-weight: 600;" data-auth-switch="signin">Sign In</a>
+            </div>
+            <div style="margin-top: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--color-border-subtle, rgba(255,255,255,0.08));">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-auth-guest-signup" style="width: 100%; justify-content: center;">
+                Continue as Guest (Offline Mode)
+              </button>
+            </div>
           </div>
         </div>
 

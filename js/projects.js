@@ -6,13 +6,10 @@
 import { state } from './state.js';
 import { sound } from './audio.js';
 import { widgets } from './widgets.js';
-<<<<<<< HEAD
 import { dbSync } from './dbSync.js';
-=======
 import { supabaseService } from './supabase.js';
 
 let unsubscribeState = null;
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
 export const projectsModule = {
   /**
@@ -92,13 +89,10 @@ export const projectsModule = {
         const projects = (state.get('projects') || []).filter(p => p.id !== id);
         sound.playClick();
         state.setKey('projects', projects);
-<<<<<<< HEAD
         dbSync.syncProject({ id }, 'delete');
-=======
         if (supabaseService.isConfigured()) {
           supabaseService.deleteProject(id).catch(err => console.warn(err));
         }
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
         this.renderProjects();
       };
     });
@@ -138,35 +132,22 @@ export const projectsModule = {
         const title = titleInput.value.trim();
         if (!title) return;
 
-<<<<<<< HEAD
-        const newProj = {
-=======
         const projects = state.get('projects') || [];
         const newProject = {
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
           id: 'p-' + Date.now(),
           title,
           status: 'Active',
           deadline: deadInput?.value.trim() || 'Next Month',
           progress: parseInt(progInput.value, 10) || 10
         };
-<<<<<<< HEAD
-
-        const projects = state.get('projects') || [];
-        projects.push(newProj);
-=======
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
         projects.push(newProject);
         sound.playComplete();
         state.setKey('projects', projects);
-<<<<<<< HEAD
-        dbSync.syncProject(newProj, 'upsert');
-=======
+        dbSync.syncProject(newProject, 'upsert');
         if (supabaseService.isConfigured()) {
           supabaseService.syncProject(newProject).catch(err => console.warn(err));
         }
->>>>>>> 1279229204bce482713b020288d97b2cb5cb3db0
 
         titleInput.value = '';
         if (panel) panel.style.display = 'none';

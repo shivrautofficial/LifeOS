@@ -3,8 +3,8 @@
     "name": "User",
     "roleTitle": "Software Engineer",
     "profession": "engineer",
-    "onboarded": true,
-    "theme": "dark"
+    "theme": "dark",
+    "onboarded": true
   },
   "metrics": {
     "activeTasksCount": 8,
@@ -206,6 +206,30 @@
       ],
       "pinned": true,
       "updatedAt": "Yesterday"
+    },
+    {
+      "id": "n-3",
+      "title": "Deep Work & Circadian Focus Protocol",
+      "content": "Morning peak hours between 9:00 AM and 11:30 AM yield 3x higher cognitive throughput. Protect this window from shallow communication and admin tasks.\n\nAction: Block 90-minute daily deep sprint before noon.",
+      "tags": [
+        "wellness",
+        "focus",
+        "circadian"
+      ],
+      "pinned": false,
+      "updatedAt": "Yesterday"
+    },
+    {
+      "id": "n-4",
+      "title": "Design System Identity & Tokens",
+      "content": "Linear-grade visual hierarchy: Midnight Navy (#111827) + Electric Indigo (#6366F1) + Soft Lavender (#EEF2FF). Minimal, fast, accessible frosted-glass aesthetics with zero vibe-coded clutter.",
+      "tags": [
+        "design",
+        "tokens",
+        "ui"
+      ],
+      "pinned": false,
+      "updatedAt": "2 days ago"
     }
   ],
   "calendarEvents": [
@@ -252,5 +276,5 @@
       "lastUpdated": "2026-10-24T22:37:19.808Z"
     }
   },
-  "updatedAt": "2026-10-24T22:47:11.173Z"
+  "updatedAt": "2026-10-24T23:55:25.164Z"
 }

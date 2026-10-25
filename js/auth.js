@@ -8,6 +8,33 @@ import { supabaseService } from './supabase.js';
 import { state } from './state.js';
 import { storage } from './storage.js';
 import { toast } from './toast.js';
+/**
+ * Format raw error messages into actionable, user-friendly feedback
+ * @param {any} err
+ * @returns {string}
+ */
+export function formatAuthError(err) {
+  const msg = err?.message || String(err || '');
+  if (/failed to fetch|networkerror|econnreset|aborterror/i.test(msg)) {
+    return `<strong>Cannot connect to Supabase ("Failed to fetch"):</strong><br>` +
+      `If you are in India (e.g. ACT Fibernet, Airtel, Jio), your ISP blocks <code>*.supabase.co</code> via DNS interception.<br><br>` +
+      `<strong>How to fix:</strong><br>` +
+      `1. In Chrome / Brave / Edge: Go to <em>Settings &rarr; Privacy & security &rarr; Security</em>.<br>` +
+      `2. Scroll to <strong>"Use secure DNS"</strong>, turn it on, and select <strong>Cloudflare (1.1.1.1)</strong> or Google.<br>` +
+      `3. Or click <strong>Continue as Guest</strong> below to use LifeOS offline.`;
+  }
+  if (/provider is not enabled|unsupported provider/i.test(msg)) {
+    return `<strong>Google Sign-In is not enabled:</strong><br>` +
+      `Google provider is currently disabled in your Supabase project.<br>` +
+      `Please enable it in <strong>Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Google</strong> with your Google OAuth credentials, or sign up with Email below.`;
+  }
+  if (/over_email_send_rate_limit|rate limit/i.test(msg)) {
+    return `<strong>Supabase Email Rate Limit Reached:</strong><br>` +
+      `The Supabase free tier email limit has been reached.<br>` +
+      `To fix: In <strong>Supabase Dashboard &rarr; Authentication &rarr; Providers &rarr; Email</strong>, turn off <em>"Confirm email"</em> for immediate signups without email verification limits.`;
+  }
+  return msg;
+}
 
 class AuthService {
   constructor() {
@@ -271,6 +298,7 @@ class AuthService {
     }
   }
 
+
   /**
    * Register with Email and Password
    * @param {string} email
@@ -308,7 +336,7 @@ class AuthService {
         needsVerification: !data.session && Boolean(data.user)
       };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: formatAuthError(err) };
     }
   }
 
@@ -340,7 +368,7 @@ class AuthService {
 
       return { success: true, user: data.user };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: formatAuthError(err) };
     }
   }
 
@@ -372,7 +400,7 @@ class AuthService {
       if (error) throw error;
       return { success: true };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: formatAuthError(err) };
     }
   }
 
@@ -412,7 +440,7 @@ class AuthService {
 
       return { success: true, user: data.user };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: formatAuthError(err) };
     }
   }
 
@@ -428,17 +456,38 @@ class AuthService {
     }
 
     try {
+      // 1. Generate OAuth authorization URL with skipBrowserRedirect to pre-validate
       const { data, error } = await client.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin + window.location.pathname
+          redirectTo: window.location.origin + window.location.pathname,
+          skipBrowserRedirect: true
         }
       });
 
       if (error) throw error;
+      if (!data?.url) {
+        throw new Error('No redirect URL returned by OAuth service.');
+      }
+
+      // 2. Pre-verify the provider endpoint to prevent dumping the user onto an unreachable site
+      try {
+        const probe = await fetch(data.url, { method: 'GET' });
+        if (!probe.ok) {
+          const errData = await probe.json().catch(() => null);
+          if (errData?.msg) {
+            throw new Error(errData.msg);
+          }
+        }
+      } catch (probeErr) {
+        throw probeErr;
+      }
+
+      // 3. Endpoint is verified and reachable — proceed to navigate
+      window.location.assign(data.url);
       return { success: true, url: data.url };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: formatAuthError(err) };
     }
   }
 
@@ -461,7 +510,7 @@ class AuthService {
       if (error) throw error;
       return { success: true };
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: formatAuthError(err) };
     }
   }
 

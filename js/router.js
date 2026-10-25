@@ -11,7 +11,7 @@ import { goalsModule } from './goals.js';
 import { healthModule } from './health.js';
 import { habitsModule } from './habits.js';
 import { projectsModule } from './projects.js';
-import { notesModule } from './notes.js';
+import { suggestionsModule } from './suggestions.js';
 import { settingsModule } from './settings.js';
 import { insightsModule } from './insights.js';
 
@@ -51,10 +51,15 @@ export const ROUTES = {
     file: 'pages/projects.html',
     module: projectsModule
   },
+  suggestions: {
+    title: 'Suggestions',
+    file: 'pages/suggestions.html',
+    module: suggestionsModule
+  },
   notes: {
-    title: 'Notes',
-    file: 'pages/notes.html',
-    module: notesModule
+    title: 'Suggestions',
+    file: 'pages/suggestions.html',
+    module: suggestionsModule
   },
   insights: {
     title: 'Insights',
