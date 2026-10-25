@@ -4,6 +4,11 @@ A Unified, Privacy-First Personal Life Management System built with modern Vanil
 
 ---
 
+The PPT Submission for OUR 'LifeOS' Project:
+https://docs.google.com/presentation/d/1XqRdhC0vyRZgWxez7yaQTvJnhNAw2lV-/edit?usp=sharing&ouid=100580154546910445170&rtpof=true&sd=true
+
+
+
 ## 📁 Repository Structure
 
 The project has been organized with a clean, modular structure where all logic, styles, pages, assets, services, and schemas reside in dedicated folders rather than being scattered in open space:
